@@ -564,6 +564,306 @@
     .score-range-row .label.high { color: #2e7d32; }
 
     /* ═══════════════════════════════════════
+       EMAIL TEMPLATES SCREEN
+    ═══════════════════════════════════════ */
+    .tpl-screen {
+      position: fixed; inset: 0; z-index: 500;
+      background: #fff; display: flex; flex-direction: row;
+    }
+    .tpl-screen.hidden { display: none !important; }
+    .tpl-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* Page header */
+    .tpl-header {
+      height: 68px; background: #fff; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; flex-shrink: 0;
+    }
+    .tpl-header-title { font-size: 15px; color: var(--text-1); }
+    .tpl-header-actions { display: flex; align-items: center; gap: 8px; }
+
+    /* Type dropdown */
+    .tpl-type-drop { position: relative; }
+    .tpl-type-btn {
+      display: flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 12px;
+      border: 1px solid var(--border); border-radius: 8px;
+      font-size: 13px; color: var(--text-2); background: #fff;
+      cursor: pointer; transition: border-color 0.15s; min-width: 110px;
+      font-family: 'Roboto', sans-serif;
+    }
+    .tpl-type-btn:hover { border-color: #c8cdd8; }
+    .tpl-type-btn span { flex: 1; text-align: left; }
+    .tpl-type-menu {
+      position: absolute; left: 0; top: calc(100% + 4px);
+      width: 200px; background: #fff;
+      border: 1px solid var(--border); border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      z-index: 600; overflow: hidden; display: none;
+    }
+    .tpl-type-menu.open { display: block; }
+    .tpl-type-opt {
+      width: 100%; text-align: left; padding: 8px 16px;
+      font-size: 13px; color: var(--text-1); background: none;
+      border: none; cursor: pointer; transition: background 0.12s;
+      font-family: 'Roboto', sans-serif;
+    }
+    .tpl-type-opt:hover { background: #f0f1f5; }
+    .tpl-type-opt.active { background: #eef2fd; color: #1E44CC; }
+
+    /* Search */
+    .tpl-search-wrap { position: relative; }
+    .tpl-search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+    .tpl-search {
+      height: 36px; padding: 0 12px 0 32px; width: 200px;
+      border: 1px solid var(--border); border-radius: 8px;
+      font-size: 13px; color: var(--text-1); background: #fff;
+      outline: none; font-family: 'Roboto', sans-serif;
+      transition: border-color 0.15s;
+    }
+    .tpl-search:focus { border-color: #1E44CC; }
+    .tpl-search::placeholder { color: #aaa; }
+
+    /* View toggle */
+    .tpl-view-toggle {
+      display: flex; align-items: center;
+      background: #f0f1f5; border-radius: 8px; padding: 4px; gap: 2px;
+    }
+    .tpl-view-btn {
+      width: 28px; height: 28px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: transparent; cursor: pointer;
+      color: #888; transition: all 0.15s;
+    }
+    .tpl-view-btn.active { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); color: var(--text-1); }
+    .tpl-view-btn:hover:not(.active) { color: var(--text-2); }
+
+    /* Create template button */
+    .tpl-create-btn {
+      display: flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 16px;
+      background: #1E44CC; color: #fff; border: none;
+      border-radius: 8px; font-size: 13px; cursor: pointer;
+      font-family: 'Roboto', sans-serif; transition: background 0.15s;
+    }
+    .tpl-create-btn:hover { background: #1a3ab8; }
+
+    /* Icon buttons in header */
+    .tpl-icon-btn {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border); background: #fff;
+      color: var(--text-2); cursor: pointer; transition: background 0.15s;
+    }
+    .tpl-icon-btn:hover { background: #f0f1f5; }
+
+    /* Tabs */
+    .tpl-tabs {
+      display: flex; align-items: center; padding: 0 24px;
+      border-bottom: 1px solid var(--border); background: #fff;
+      flex-shrink: 0;
+    }
+    .tpl-tab {
+      display: flex; align-items: center; gap: 6px;
+      height: 37px; padding: 0 4px; margin-right: 20px;
+      font-size: 13px; color: var(--text-2); border: none;
+      background: none; cursor: pointer; border-bottom: 2px solid transparent;
+      font-family: 'Roboto', sans-serif; transition: color 0.15s;
+      white-space: nowrap;
+    }
+    .tpl-tab:hover { color: var(--text-1); }
+    .tpl-tab.active { color: #1E44CC; border-bottom-color: #1E44CC; }
+    .tpl-tab-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 20px; height: 18px; padding: 0 6px;
+      border-radius: 10px; font-size: 11px;
+      background: #f0f1f5; color: #888;
+    }
+    .tpl-tab.active .tpl-tab-count { background: #eef2fd; color: #1E44CC; }
+
+    /* Content scroll area */
+    .tpl-content { flex: 1; overflow-y: auto; background: #fff; }
+
+    /* ─── LIST TABLE ─── */
+    .tpl-table { width: 100%; border-collapse: collapse; }
+    .tpl-table thead { position: sticky; top: 0; background: #fff; z-index: 10; }
+    .tpl-table th {
+      padding: 10px 16px; text-align: left;
+      border-bottom: 1px solid var(--border); font-weight: 400;
+    }
+    .tpl-th-sort {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; color: var(--text-2); cursor: pointer;
+      border: none; background: none; font-family: 'Roboto', sans-serif;
+      transition: color 0.12s; padding: 0;
+    }
+    .tpl-th-sort:hover { color: var(--text-1); }
+    .tpl-th-label { font-size: 12px; color: var(--text-2); font-weight: 400; }
+    .tpl-table td { padding: 0 16px; border-bottom: 1px solid #f0f1f5; vertical-align: middle; }
+    .tpl-table tbody tr { transition: background 0.12s; cursor: default; }
+    .tpl-table tbody tr:hover { background: #fafafa; }
+    .tpl-table tbody tr:hover .tpl-row-actions { opacity: 1; }
+    .tpl-row-actions { opacity: 0; transition: opacity 0.15s; }
+
+    /* Name cell */
+    .tpl-name-cell { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
+    .tpl-thumb {
+      width: 72px; height: 58px; border-radius: 6px; overflow: hidden;
+      flex-shrink: 0; background: #f0f1f5;
+    }
+    .tpl-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .tpl-name { font-size: 13px; color: var(--text-1); transition: color 0.12s; }
+    .tpl-table tbody tr:hover .tpl-name { color: #1E44CC; }
+    .tpl-date { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+    .tpl-badge-default {
+      display: inline-flex; align-items: center; padding: 2px 8px;
+      border-radius: 4px; font-size: 11px; color: var(--text-2);
+      background: #f0f1f5; margin-left: 6px;
+    }
+    .tpl-cell-text { font-size: 13px; color: var(--text-2); }
+    .tpl-cell-num { font-size: 13px; color: var(--text-1); }
+
+    /* Row more menu */
+    .tpl-more-wrap { position: relative; }
+    .tpl-more-btn {
+      width: 28px; height: 28px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: transparent; cursor: pointer;
+      color: var(--text-2); transition: background 0.12s;
+    }
+    .tpl-more-btn:hover { background: #e4e6ea; }
+    .tpl-row-menu {
+      position: absolute; right: 0; top: calc(100% + 2px);
+      width: 220px; background: #fff;
+      border: 1px solid var(--border); border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      z-index: 600; display: none;
+    }
+    .tpl-row-menu.open { display: block; }
+    .tpl-row-menu-item {
+      width: 100%; text-align: left; padding: 9px 16px;
+      font-size: 13px; color: var(--text-1); background: none;
+      border: none; cursor: pointer; transition: background 0.12s;
+      font-family: 'Roboto', sans-serif; display: block;
+    }
+    .tpl-row-menu-item:hover { background: #f0f1f5; }
+    .tpl-row-menu-item.danger { color: #d4183d; }
+    .tpl-row-menu-item.danger:hover { background: #fef2f4; }
+    .tpl-row-menu-sep { height: 1px; background: var(--border); margin: 4px 0; }
+
+    /* ─── GRID VIEW ─── */
+    .tpl-grid { padding: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .tpl-card {
+      border-radius: 10px; overflow: hidden;
+      border: 1px solid var(--border); background: #fff;
+      transition: box-shadow 0.2s, border-color 0.2s; cursor: pointer;
+    }
+    .tpl-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-color: #c8cdd8; }
+    .tpl-card-thumb { position: relative; height: 200px; overflow: hidden; background: #f0f1f5; }
+    .tpl-card-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    .tpl-card:hover .tpl-card-thumb img { transform: scale(1.02); }
+    .tpl-card-overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.55);
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 8px;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .tpl-card:hover .tpl-card-overlay { opacity: 1; }
+    .tpl-card-use {
+      width: 140px; height: 36px; background: #1E44CC; color: #fff;
+      border: none; border-radius: 8px; font-size: 13px; cursor: pointer;
+      font-family: 'Roboto', sans-serif; transition: background 0.15s;
+    }
+    .tpl-card-use:hover { background: #1a3ab8; }
+    .tpl-card-preview {
+      width: 140px; height: 36px; background: rgba(255,255,255,0.2);
+      color: #fff; border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 8px; font-size: 13px; cursor: pointer;
+      font-family: 'Roboto', sans-serif; transition: background 0.15s;
+    }
+    .tpl-card-preview:hover { background: rgba(255,255,255,0.3); }
+    .tpl-card-info { padding: 10px 12px; }
+    .tpl-card-name { font-size: 13px; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tpl-card-by { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+    /* ─── PREVIEW MODAL ─── */
+    .tpl-preview-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tpl-preview-backdrop.hidden { display: none !important; }
+    .tpl-preview-modal {
+      position: relative; z-index: 10;
+      width: calc(100vw - 140px); max-width: 1200px; height: 696px;
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden; display: flex; flex-direction: column;
+    }
+    .tpl-preview-head {
+      height: 78px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 24px;
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .tpl-preview-name { font-size: 15px; color: var(--text-1); }
+    .tpl-preview-meta { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+    .tpl-preview-actions { display: flex; align-items: center; gap: 10px; }
+    .tpl-dev-toggle {
+      display: flex; align-items: center;
+      background: #f0f1f5; border-radius: 8px; padding: 4px; gap: 2px;
+    }
+    .tpl-dev-btn {
+      width: 32px; height: 28px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: transparent; cursor: pointer;
+      color: #888; transition: all 0.15s;
+    }
+    .tpl-dev-btn.active { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.12); color: var(--text-1); }
+    .tpl-use-btn {
+      height: 36px; padding: 0 16px; background: #1E44CC; color: #fff;
+      border: none; border-radius: 8px; font-size: 13px; cursor: pointer;
+      font-family: 'Roboto', sans-serif; transition: background 0.15s;
+    }
+    .tpl-use-btn:hover { background: #1a3ab8; }
+    .tpl-close-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: transparent; cursor: pointer;
+      color: var(--text-2); transition: background 0.15s;
+    }
+    .tpl-close-btn:hover { background: #f0f1f5; }
+    .tpl-preview-body {
+      flex: 1; overflow: hidden; background: #f4f5f7;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 24px;
+    }
+    .tpl-preview-frame {
+      background: #fff; border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow-y: auto; transition: width 0.3s;
+      height: 100%;
+    }
+    .tpl-preview-frame.desktop { width: 100%; max-width: 680px; }
+    .tpl-preview-frame.mobile { width: 375px; }
+    .tpl-email-annot {
+      padding: 12px 20px; border-bottom: 1px solid #f0f1f5;
+    }
+    .tpl-email-annot-subject { font-size: 13px; color: var(--text-1); margin-bottom: 3px; }
+    .tpl-email-annot-from { font-size: 12px; color: var(--text-3); }
+    .tpl-email-biz {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; border-bottom: 1px solid #f0f1f5;
+    }
+    .tpl-email-biz-logo {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #f0f1f5; overflow: hidden; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tpl-email-biz-logo img { width: 32px; height: 32px; object-fit: contain; }
+    .tpl-email-biz-name { font-size: 13px; color: var(--text-1); }
+    .tpl-email-biz-rating { font-size: 12px; color: #888; }
+    .tpl-preview-img { width: 100%; max-height: 460px; object-fit: cover; display: block; }
+
+    /* ═══════════════════════════════════════
        OPTIMIZE EMAIL SCREEN
     ═══════════════════════════════════════ */
     .opt-screen {
@@ -976,7 +1276,7 @@
       <button class="opt-email-btn" onclick="openOptimizeScreen()">Optimize email</button>
       <button class="btn-cancel">Cancel</button>
       <div class="btn-save-wrap">
-        <button class="btn-save" onclick="showToast('Template saved!')">Save</button>
+        <button class="btn-save" onclick="saveAndOpenTemplates()">Save</button>
         <button class="btn-save-caret">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -1522,6 +1822,165 @@
   </div><!-- end opt-main -->
 </div><!-- end opt-screen -->
 
+<!-- ═══════════════════════════════════════
+     EMAIL TEMPLATES SCREEN
+═══════════════════════════════════════ -->
+<div class="tpl-screen hidden" id="tpl-screen">
+
+  <!-- Left rail (same as main) -->
+  <aside class="left-rail">
+    <div class="rail-logo">
+      <svg width="28" height="28" viewBox="0 0 100 100" fill="none">
+        <path d="M55 18 C70 18 82 28 82 42 C82 52 76 60 67 65 C68 70 70 76 74 80 L58 80 C55 74 53 68 52 63 C44 62 36 57 31 49 C24 38 27 24 38 19 C43 17 49 17 55 18 Z" fill="#1976D2"/>
+        <path d="M67 26 C74 18 85 14 90 16 C86 22 80 26 74 28 Z" fill="#1976D2"/>
+        <circle cx="62" cy="30" r="4" fill="white"/>
+      </svg>
+    </div>
+    <div class="rail-btn" title="Overview"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 11.5L12 4l9 7.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 21v-6h6v6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+    <div class="rail-btn" title="Inbox"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+    <div class="rail-btn" title="Listings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg></div>
+    <div class="rail-btn" title="Reviews"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+    <div class="rail-btn" title="Referrals"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="10" width="20" height="11" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="7" width="20" height="3" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M12 7V21" stroke="currentColor" stroke-width="1.5"/></svg></div>
+    <div class="rail-btn" title="Payments"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 6v12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+    <div class="rail-btn" title="Appointments"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4.5" width="18" height="16.5" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 3v3M16 3v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div class="rail-btn" title="Social"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M8.4 10.8l7.2-4M8.4 13.2l7.2 4" stroke="currentColor" stroke-width="1.4"/></svg></div>
+    <div class="rail-btn" title="Surveys"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M9 9l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 14h8M8 17h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+    <div class="rail-btn" title="Ticketing"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="7" width="20" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 12h20" stroke="currentColor" stroke-width="1.5"/></svg></div>
+    <div class="rail-btn" title="Contacts"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/></svg></div>
+    <div class="rail-btn active" title="Campaigns"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 9.5v5H8.5L15 18V6L8.5 9.5H5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M18 9a3 3 0 0 1 0 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div class="rail-btn" title="Automations"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 0 1-14.93 3.97" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4 12a8 8 0 0 1 14.93-3.97" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div class="rail-btn" title="Reports"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 1 1-9-9c4.97 0 9 4.03 9 9Z" stroke="currentColor" stroke-width="1.5"/></svg></div>
+    <div class="rail-btn" title="Insights"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 21h6M12 3a6 6 0 0 1 4.5 10l-.5 2H8l-.5-2A6 6 0 0 1 12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+    <div class="rail-btn" title="Competitors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 17V12M9 17V8M13 17V13M17 17V6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M2 17h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div class="rail-spacer"></div>
+    <div class="rail-sep"></div>
+    <div class="rail-btn" title="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </aside>
+
+  <!-- Main column -->
+  <div class="tpl-main">
+
+    <!-- Top nav -->
+    <nav class="top-nav">
+      <span class="top-nav-title">Campaigns</span>
+      <div class="top-nav-right">
+        <button class="nav-add-btn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button class="nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#777" stroke-width="1.5"/><path d="M7.5 7.5C7.5 6.1 8.6 5 10 5s2.5 1.1 2.5 2.5c0 1.5-2.5 2.5-2.5 4" stroke="#777" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="15" r="0.75" fill="#777"/></svg></button>
+        <div class="nav-avatar"><img src="https://i.pravatar.cc/40?img=12" alt="avatar"></div>
+        <button class="nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#777" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+    </nav>
+
+    <!-- Page header -->
+    <div class="tpl-header">
+      <span class="tpl-header-title">Email templates</span>
+      <div class="tpl-header-actions">
+        <!-- Type dropdown -->
+        <div class="tpl-type-drop" id="tpl-type-drop">
+          <button class="tpl-type-btn" onclick="toggleTplTypeDrop()">
+            <span id="tpl-type-label">All types</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="tpl-type-menu" id="tpl-type-menu">
+            <button class="tpl-type-opt active" onclick="setTplType('All types')">All types</button>
+            <button class="tpl-type-opt" onclick="setTplType('Reviews')">Reviews</button>
+            <button class="tpl-type-opt" onclick="setTplType('Referrals')">Referrals</button>
+            <button class="tpl-type-opt" onclick="setTplType('Surveys')">Surveys</button>
+            <button class="tpl-type-opt" onclick="setTplType('Customer experience')">Customer experience</button>
+            <button class="tpl-type-opt" onclick="setTplType('Announcements')">Announcements</button>
+          </div>
+        </div>
+        <!-- Search -->
+        <div class="tpl-search-wrap">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#aaa" stroke-width="1.3"/><path d="M10 10l2.5 2.5" stroke="#aaa" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <input type="text" class="tpl-search" placeholder="Search" id="tpl-search" oninput="renderTplList()">
+        </div>
+        <!-- View toggle -->
+        <div class="tpl-view-toggle">
+          <button class="tpl-view-btn active" id="tpl-view-list" title="List view" onclick="setTplView('list')">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3h12M1 7h12M1 11h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+          <button class="tpl-view-btn" id="tpl-view-grid" title="Grid view" onclick="setTplView('grid')">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+          </button>
+        </div>
+        <!-- Create template -->
+        <button class="tpl-create-btn" onclick="closeTplScreen()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Create template
+        </button>
+        <!-- More -->
+        <button class="tpl-icon-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="8" cy="13" r="1" fill="currentColor"/></svg>
+        </button>
+        <!-- Filter -->
+        <button class="tpl-icon-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tpl-tabs">
+      <button class="tpl-tab active" id="tpl-tab-saved" onclick="switchTplTab('saved')">
+        Saved <span class="tpl-tab-count" id="tpl-saved-count">8</span>
+      </button>
+      <button class="tpl-tab" id="tpl-tab-library" onclick="switchTplTab('library')">
+        Library <span class="tpl-tab-count" id="tpl-lib-count">12</span>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="tpl-content" id="tpl-content">
+      <!-- rendered by JS -->
+    </div>
+
+  </div><!-- end tpl-main -->
+
+</div><!-- end tpl-screen -->
+
+<!-- Template Preview Modal -->
+<div class="tpl-preview-backdrop hidden" id="tpl-preview-backdrop" onclick="closeTplPreview(event)">
+  <div class="tpl-preview-modal" onclick="event.stopPropagation()">
+    <div class="tpl-preview-head">
+      <div>
+        <div class="tpl-preview-name" id="tpl-preview-name">Template name</div>
+        <div class="tpl-preview-meta" id="tpl-preview-meta">Type · Created by</div>
+      </div>
+      <div class="tpl-preview-actions">
+        <div class="tpl-dev-toggle">
+          <button class="tpl-dev-btn active" id="tpl-dev-desktop" title="Desktop" onclick="setTplDevice('desktop')">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 17h6M10 14v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <button class="tpl-dev-btn" id="tpl-dev-mobile" title="Mobile" onclick="setTplDevice('mobile')">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="5" y="1" width="10" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="16" r="1" fill="currentColor"/></svg>
+          </button>
+        </div>
+        <button class="tpl-use-btn" onclick="closeTplPreviewModal()">Use template</button>
+        <button class="tpl-close-btn" onclick="closeTplPreviewModal()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="tpl-preview-body">
+      <div class="tpl-preview-frame desktop" id="tpl-preview-frame">
+        <div class="tpl-email-annot">
+          <div class="tpl-email-annot-subject" id="tpl-preview-subject">Hi! Introducing Our Delicious New Italian Dish</div>
+          <div class="tpl-email-annot-from">Olive Garden &lt;reply-to-LosAngeles.LA@olivegarden.com&gt;</div>
+        </div>
+        <div class="tpl-email-biz">
+          <div class="tpl-email-biz-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Olive_Garden_Logo.svg/200px-Olive_Garden_Logo.svg.png" alt="Olive Garden" onerror="this.style.display='none'"></div>
+          <div>
+            <div class="tpl-email-biz-name">Olive Garden, LA</div>
+            <div class="tpl-email-biz-rating">4.5★ · (532 reviews)</div>
+          </div>
+        </div>
+        <img class="tpl-preview-img" id="tpl-preview-img" src="" alt="Email preview">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   // ── Tab switching ────────────────────────
   function switchTab(tab) {
@@ -2022,6 +2481,295 @@
     document.getElementById('opt-btn-mobile').classList.toggle('active', mode === 'mobile');
     document.getElementById('opt-email-canvas').classList.toggle('mobile', mode === 'mobile');
   }
+
+  // ══════════════════════════════════════════
+  //  EMAIL TEMPLATES SCREEN
+  // ══════════════════════════════════════════
+
+  const THUMB_REVIEW   = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=240&h=200&fit=crop';
+  const THUMB_WELCOME  = 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=240&h=200&fit=crop';
+  const THUMB_ANNOUNCE = 'https://images.unsplash.com/photo-1608085574498-9e68de938b55?w=240&h=200&fit=crop';
+  const THUMB_SURVEY   = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=240&h=200&fit=crop';
+  const THUMB_REFERRAL = 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=240&h=200&fit=crop';
+  const THUMB_CX       = 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=240&h=200&fit=crop';
+  const THUMB_PASTA    = 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=680&h=460&fit=crop';
+
+  const SAVED_TEMPLATES = [
+    { id:'s1', name:'Referral request',   desc:'Thank you for choosing [Business name]. Would you ki...', thumb:THUMB_REFERRAL, type:'Referrals',           usage:49,  rate:'4.1%', by:'Emily',  loc:'Global', date:'Mar 14' },
+    { id:'s2', name:'Referral request',   desc:'Thank you for choosing [Business name]. Would you ki...', thumb:THUMB_REFERRAL, type:'Reviews',             usage:3,   rate:'80%',  by:'Harper', loc:'-',      date:'Mar 10', isDefault:true },
+    { id:'s3', name:'Survey 1',           desc:'Thank you for choosing [Business name]. Would you ki...', thumb:THUMB_SURVEY,   type:'Surveys',             usage:72,  rate:'50%',  by:'Evelyn', loc:'-',      date:'Feb 28' },
+    { id:'s4', name:'Referral request',   desc:'Thank you for choosing [Business name]. Would you ki...', thumb:THUMB_REFERRAL, type:'Reviews',             usage:575, rate:'-',    by:'Evelyn', loc:'-',      date:'Feb 20' },
+    { id:'s5', name:'Referral request',   desc:'Thank you for choosing [Business name]. Would you ki...', thumb:THUMB_REFERRAL, type:'Reviews',             usage:21,  rate:'20%',  by:'Daniel', loc:'20',     date:'Feb 12' },
+    { id:'s6', name:'Customer feedback',  desc:'Thank you for choosing [Business name]. Would you ki...', thumb:THUMB_CX,       type:'Customer experience', usage:2,   rate:'30%',  by:'Sophia', loc:'10',     date:'Jan 30' },
+    { id:'s7', name:'Welcome email',      desc:'Thank you for choosing [Business name]. Would you ki...', thumb:THUMB_WELCOME,  type:'Reviews',             usage:18,  rate:'62%',  by:'Priya',  loc:'5',      date:'Jan 18' },
+    { id:'s8', name:'New dish launch',    desc:'Announcing our all new Fettuccine Alfredo Pasta...',      thumb:THUMB_ANNOUNCE, type:'Announcements',       usage:8,   rate:'44%',  by:'Balaji', loc:'1',      date:'Mar 5' },
+  ];
+
+  const LIB_TEMPLATES = [
+    { id:'l1',  name:'Review request 1',        by:'Birdeye', thumb:THUMB_REVIEW,   cat:'Reviews' },
+    { id:'l2',  name:'Review request 1',        by:'Birdeye', thumb:THUMB_REVIEW,   cat:'Reviews' },
+    { id:'l3',  name:'Welcome email',           by:'Birdeye', thumb:THUMB_WELCOME,  cat:'Reviews' },
+    { id:'l4',  name:'Major announcement email',by:'Birdeye', thumb:THUMB_ANNOUNCE, cat:'Reviews' },
+    { id:'l5',  name:'Review request 2',        by:'Birdeye', thumb:THUMB_REVIEW,   cat:'Reviews' },
+    { id:'l6',  name:'Review request 3',        by:'Birdeye', thumb:THUMB_REVIEW,   cat:'Reviews' },
+    { id:'l7',  name:'Customer survey',         by:'Birdeye', thumb:THUMB_SURVEY,   cat:'Surveys' },
+    { id:'l8',  name:'Referral invite',         by:'Birdeye', thumb:THUMB_REFERRAL, cat:'Referrals' },
+    { id:'l9',  name:'Promotional offer',       by:'Birdeye', thumb:THUMB_ANNOUNCE, cat:'Announcements' },
+    { id:'l10', name:'Feedback request',        by:'Birdeye', thumb:THUMB_CX,       cat:'Surveys' },
+    { id:'l11', name:'New launch email',        by:'Birdeye', thumb:THUMB_ANNOUNCE, cat:'Announcements' },
+    { id:'l12', name:'Thank you email',         by:'Birdeye', thumb:THUMB_WELCOME,  cat:'Reviews' },
+  ];
+
+  let tplTab = 'saved';
+  let tplView = 'list';
+  let tplType = 'All types';
+  let tplMenuOpen = null; // id of open row menu
+
+  function saveAndOpenTemplates() {
+    showToast('Template saved!');
+    setTimeout(openTplScreen, 600);
+  }
+
+  function openTplScreen() {
+    document.getElementById('tpl-screen').classList.remove('hidden');
+    renderTplList();
+  }
+
+  function closeTplScreen() {
+    document.getElementById('tpl-screen').classList.add('hidden');
+  }
+
+  function switchTplTab(tab) {
+    tplTab = tab;
+    document.getElementById('tpl-tab-saved').classList.toggle('active', tab === 'saved');
+    document.getElementById('tpl-tab-library').classList.toggle('active', tab === 'library');
+    renderTplList();
+  }
+
+  function setTplView(view) {
+    tplView = view;
+    document.getElementById('tpl-view-list').classList.toggle('active', view === 'list');
+    document.getElementById('tpl-view-grid').classList.toggle('active', view === 'grid');
+    renderTplList();
+  }
+
+  function toggleTplTypeDrop() {
+    document.getElementById('tpl-type-menu').classList.toggle('open');
+  }
+
+  function setTplType(type) {
+    tplType = type;
+    document.getElementById('tpl-type-label').textContent = type;
+    document.getElementById('tpl-type-menu').querySelectorAll('.tpl-type-opt').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent === type);
+    });
+    document.getElementById('tpl-type-menu').classList.remove('open');
+    renderTplList();
+  }
+
+  // Close type dropdown on outside click
+  document.addEventListener('click', function(e) {
+    const drop = document.getElementById('tpl-type-drop');
+    if (drop && !drop.contains(e.target)) {
+      const menu = document.getElementById('tpl-type-menu');
+      if (menu) menu.classList.remove('open');
+    }
+    // Close row menus
+    if (tplMenuOpen && !e.target.closest('.tpl-more-wrap')) {
+      const m = document.getElementById('tpl-menu-' + tplMenuOpen);
+      if (m) m.classList.remove('open');
+      tplMenuOpen = null;
+    }
+  });
+
+  function toggleTplRowMenu(id, event) {
+    event.stopPropagation();
+    if (tplMenuOpen && tplMenuOpen !== id) {
+      const prev = document.getElementById('tpl-menu-' + tplMenuOpen);
+      if (prev) prev.classList.remove('open');
+    }
+    const menu = document.getElementById('tpl-menu-' + id);
+    if (!menu) return;
+    const isOpen = menu.classList.contains('open');
+    menu.classList.toggle('open', !isOpen);
+    tplMenuOpen = !isOpen ? id : null;
+  }
+
+  function renderTplList() {
+    const search = (document.getElementById('tpl-search').value || '').toLowerCase();
+    const content = document.getElementById('tpl-content');
+    content.innerHTML = '';
+
+    if (tplTab === 'saved') {
+      const items = SAVED_TEMPLATES.filter(t =>
+        (tplType === 'All types' || t.type === tplType) &&
+        (!search || t.name.toLowerCase().includes(search))
+      );
+      document.getElementById('tpl-saved-count').textContent = SAVED_TEMPLATES.length;
+
+      if (tplView === 'list') {
+        // ── TABLE ──
+        const table = document.createElement('table');
+        table.className = 'tpl-table';
+        table.innerHTML = `<thead><tr>
+          <th style="padding-left:24px;width:36%"><button class="tpl-th-sort">Name <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></th>
+          <th style="width:12%"><span class="tpl-th-label">Type</span></th>
+          <th style="width:9%"><button class="tpl-th-sort">Usage <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg> <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#aaa" stroke-width="1.2"/><path d="M6 5v3M6 4.5v.1" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/></svg></button></th>
+          <th style="width:10%"><button class="tpl-th-sort">Open rate <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></th>
+          <th style="width:11%"><button class="tpl-th-sort">Created by <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></th>
+          <th style="width:11%"><button class="tpl-th-sort">Locations <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></th>
+          <th style="width:44px"></th>
+        </tr></thead><tbody id="tpl-tbody"></tbody>`;
+        content.appendChild(table);
+        const tbody = document.getElementById('tpl-tbody');
+        items.forEach(t => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="padding-left:24px">
+              <div class="tpl-name-cell">
+                <div class="tpl-thumb"><img src="${t.thumb}" alt="${t.name}" loading="lazy"></div>
+                <div>
+                  <div style="display:flex;align-items:center;gap:4px">
+                    <span class="tpl-name">${t.name}</span>
+                    ${t.isDefault ? '<span class="tpl-badge-default">Default</span>' : ''}
+                  </div>
+                  <div class="tpl-date">Last updated on ${t.date}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="tpl-cell-text">${t.type}</span></td>
+            <td><span class="tpl-cell-num">${t.usage}</span></td>
+            <td><span class="tpl-cell-num">${t.rate}</span></td>
+            <td><span class="tpl-cell-text">${t.by}</span></td>
+            <td><span class="tpl-cell-text">${t.loc}</span></td>
+            <td style="padding:0 8px">
+              <div class="tpl-row-actions">
+                <div class="tpl-more-wrap">
+                  <button class="tpl-more-btn" onclick="toggleTplRowMenu('${t.id}', event)" aria-label="More options">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="3" r="1.1" fill="currentColor"/><circle cx="8" cy="8" r="1.1" fill="currentColor"/><circle cx="8" cy="13" r="1.1" fill="currentColor"/></svg>
+                  </button>
+                  <div class="tpl-row-menu" id="tpl-menu-${t.id}">
+                    <button class="tpl-row-menu-item" onclick="openTplPreview('${t.id}', 'saved')">Preview</button>
+                    <button class="tpl-row-menu-item">Edit</button>
+                    <button class="tpl-row-menu-item">Duplicate</button>
+                    <button class="tpl-row-menu-item">Show change log</button>
+                    <div class="tpl-row-menu-sep"></div>
+                    <button class="tpl-row-menu-item">Set as default</button>
+                    <button class="tpl-row-menu-item">Add to library</button>
+                    <div class="tpl-row-menu-sep"></div>
+                    <button class="tpl-row-menu-item danger">Delete</button>
+                  </div>
+                </div>
+              </div>
+            </td>`;
+          tbody.appendChild(tr);
+        });
+      } else {
+        // ── GRID (saved) ──
+        const grid = document.createElement('div');
+        grid.className = 'tpl-grid';
+        items.forEach(t => {
+          const card = document.createElement('div');
+          card.className = 'tpl-card';
+          card.innerHTML = `
+            <div class="tpl-card-thumb">
+              <img src="${t.thumb}" alt="${t.name}" loading="lazy">
+              <div class="tpl-card-overlay">
+                <button class="tpl-card-use" onclick="closeTplScreen()">Use template</button>
+                <button class="tpl-card-preview" onclick="openTplPreview('${t.id}','saved')">Preview</button>
+              </div>
+            </div>
+            <div class="tpl-card-info">
+              <div class="tpl-card-name">${t.name}</div>
+              <div class="tpl-card-by">Created by ${t.by}</div>
+            </div>`;
+          grid.appendChild(card);
+        });
+        content.appendChild(grid);
+      }
+
+    } else {
+      // ── LIBRARY TAB ──
+      const items = LIB_TEMPLATES.filter(t =>
+        (tplType === 'All types' || t.cat === tplType) &&
+        (!search || t.name.toLowerCase().includes(search))
+      );
+      document.getElementById('tpl-lib-count').textContent = LIB_TEMPLATES.length;
+
+      const grid = document.createElement('div');
+      grid.className = 'tpl-grid';
+      items.forEach(t => {
+        const card = document.createElement('div');
+        card.className = 'tpl-card';
+        card.innerHTML = `
+          <div class="tpl-card-thumb">
+            <img src="${t.thumb}" alt="${t.name}" loading="lazy">
+            <div class="tpl-card-overlay">
+              <button class="tpl-card-use" onclick="closeTplScreen()">Use template</button>
+              <button class="tpl-card-preview" onclick="openTplPreview('${t.id}','library')">Preview</button>
+            </div>
+          </div>
+          <div class="tpl-card-info">
+            <div class="tpl-card-name">${t.name}</div>
+            <div class="tpl-card-by">Created by ${t.by}</div>
+          </div>`;
+        grid.appendChild(card);
+      });
+      content.appendChild(grid);
+    }
+  }
+
+  function openTplPreview(id, source) {
+    // Close any open row menus
+    if (tplMenuOpen) {
+      const m = document.getElementById('tpl-menu-' + tplMenuOpen);
+      if (m) m.classList.remove('open');
+      tplMenuOpen = null;
+    }
+    const list = source === 'saved' ? SAVED_TEMPLATES : LIB_TEMPLATES;
+    const t = list.find(x => x.id === id);
+    if (!t) return;
+
+    const nameEl = document.getElementById('tpl-preview-name');
+    const metaEl = document.getElementById('tpl-preview-meta');
+    const imgEl  = document.getElementById('tpl-preview-img');
+    const subjEl = document.getElementById('tpl-preview-subject');
+
+    nameEl.textContent = "Preview of '" + t.name + "' template";
+    if (source === 'saved') {
+      metaEl.textContent = t.type + ' · Created by ' + t.by;
+    } else {
+      metaEl.textContent = t.cat + ' · Created by ' + t.by;
+    }
+    imgEl.src = t.thumb;
+    subjEl.textContent = 'Hi! Introducing: ' + t.name;
+
+    // Reset device to desktop
+    setTplDevice('desktop');
+    document.getElementById('tpl-preview-backdrop').classList.remove('hidden');
+  }
+
+  function closeTplPreview(event) {
+    if (event && event.target !== document.getElementById('tpl-preview-backdrop')) return;
+    closeTplPreviewModal();
+  }
+
+  function closeTplPreviewModal() {
+    document.getElementById('tpl-preview-backdrop').classList.add('hidden');
+  }
+
+  function setTplDevice(device) {
+    const frame = document.getElementById('tpl-preview-frame');
+    frame.classList.toggle('desktop', device === 'desktop');
+    frame.classList.toggle('mobile', device === 'mobile');
+    document.getElementById('tpl-dev-desktop').classList.toggle('active', device === 'desktop');
+    document.getElementById('tpl-dev-mobile').classList.toggle('active', device === 'mobile');
+  }
+
+  // Close preview on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeTplPreviewModal();
+  });
 
   // ── Init ─────────────────────────────────
   // Auto-resize initial textarea content
