@@ -9,6 +9,15 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     strong, b, th { font-weight: 400; }
 
+    /* ── Global scrollbar: hidden by default, visible on hover ── */
+    * { scrollbar-width: none; }
+    *::-webkit-scrollbar { width: 0; height: 0; }
+    *:hover { scrollbar-width: thin; scrollbar-color: #d0d3db transparent; }
+    *:hover::-webkit-scrollbar { width: 4px; height: 4px; }
+    *:hover::-webkit-scrollbar-track { background: transparent; }
+    *:hover::-webkit-scrollbar-thumb { background: #d0d3db; border-radius: 4px; }
+    *:hover::-webkit-scrollbar-thumb:hover { background: #b0b4bd; }
+
     :root {
       --blue: #1976D2;
       --blue-dark: #1565C0;
