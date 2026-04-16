@@ -1101,6 +1101,173 @@
       font-family: 'Roboto', sans-serif; cursor: pointer; transition: all 0.15s;
     }
     .chk-autofix-btn:hover { background: var(--blue-light); }
+
+    /* ── EQUAL-WIDTH TABS ── */
+    .ai-tabs { padding: 0; }
+    .ai-tab { flex: 1; justify-content: center; font-size: 14px; font-weight: 400; padding: 14px 8px 12px; }
+    .ai-tab.active { font-weight: 500; color: var(--text-1); border-bottom-color: var(--text-1); }
+    .ai-spark { background: #6C3FC7; border-radius: 3px; padding: 1px 4px; font-size: 9px; color: #fff; display: inline-flex; align-items: center; gap: 1px; }
+
+    /* ── MANUAL PANEL ── */
+    .manual-panel { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+    .manual-panel.hidden, .chat-scroll.hidden, #prompt-area.hidden { display: none !important; }
+    .manual-panel::-webkit-scrollbar { width: 3px; }
+    .manual-panel::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+
+    /* Content blocks accordion */
+    .cb-section { border-bottom: 1px solid var(--border); }
+    .cb-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 13px; cursor: pointer; user-select: none; }
+    .cb-header:hover { background: var(--bg-hover); }
+    .cb-title { font-size: 15px; font-weight: 500; color: var(--text-1); }
+    .cb-chevron { transition: transform 0.2s; color: var(--text-2); }
+    .cb-chevron.collapsed { transform: rotate(180deg); }
+
+    /* Sub-tabs: Basic / Pre-built / Saved */
+    .cb-subtabs { display: flex; border-bottom: 1px solid var(--border); background: #fff; }
+    .cb-subtab { flex: 1; text-align: center; padding: 9px 6px; font-size: 13px; color: var(--text-3); cursor: pointer; user-select: none; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+    .cb-subtab.active { color: var(--text-1); font-weight: 500; border-bottom-color: var(--text-1); }
+    .cb-subtab:hover:not(.active) { color: var(--text-2); }
+
+    /* Basic block grid */
+    .cb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px; }
+    .cb-card { border-radius: 8px; border: 1px solid var(--border); background: #fff; padding: 10px 8px 9px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: grab; transition: all 0.15s; }
+    .cb-card:hover { border-color: var(--blue); background: var(--blue-light); }
+    .cb-card:hover .cb-name { color: var(--blue); }
+    .cb-drag { color: #ccc; display: flex; align-items: center; }
+    .cb-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--text-2); }
+    .cb-name { font-size: 11.5px; color: var(--text-2); text-align: center; }
+
+    /* Search bar (Pre-built / Saved) */
+    .cb-search-wrap { padding: 10px 12px 2px; }
+    .cb-search { width: 100%; padding: 7px 10px 7px 32px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: 'Roboto', sans-serif; color: var(--text-1); background: #fff; outline: none; }
+    .cb-search:focus { border-color: var(--blue); }
+    .cb-search-wrap { position: relative; }
+    .cb-search-icon { position: absolute; left: 21px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none; }
+
+    /* Pre-built cards */
+    .pb-list { padding: 8px 12px; display: flex; flex-direction: column; gap: 10px; }
+    .pb-card { border: 1px solid var(--border); border-radius: 10px; overflow: visible; background: #fff; cursor: pointer; position: relative; }
+    .pb-card:hover { border-color: #bbb; }
+    .pb-card-inner { padding: 4px 4px 0; }
+    .pb-drag-row { display: flex; justify-content: center; padding: 6px 0 2px; color: #ccc; }
+    .pb-preview { background: var(--bg-page); border-radius: 6px; padding: 14px 12px; font-size: 12px; }
+    .pb-preview-title { font-size: 13px; font-weight: 600; color: var(--text-1); margin-bottom: 8px; }
+    .pb-preview-ai-row { display: flex; align-items: center; gap: 5px; color: #7C3AED; font-size: 11.5px; margin-bottom: 6px; }
+    .pb-preview-bullet { color: var(--text-2); font-size: 11.5px; line-height: 1.6; display: flex; gap: 4px; }
+    .pb-preview-bullet + .pb-preview-bullet { margin-top: 2px; }
+    .pb-footer { padding: 10px 12px 12px; }
+    .pb-card-name { font-size: 13.5px; font-weight: 600; color: var(--text-1); }
+    .pb-card-desc { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+    .pb-tooltip-wrap { position: relative; }
+    .pb-tooltip { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #222; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 12px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 50; }
+    .pb-tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-top-color: #222; }
+    .pb-card:hover .pb-tooltip { opacity: 1; }
+    /* Review quote card preview */
+    .pb-stars { color: #f59e0b; font-size: 15px; letter-spacing: 1px; margin: 6px 0 4px; }
+    .pb-review-text { font-size: 11.5px; color: var(--text-2); line-height: 1.5; }
+    .pb-reviewer { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+    .pb-reviewer-av { width: 22px; height: 22px; border-radius: 50%; background: #ddd; flex-shrink: 0; overflow: hidden; }
+    .pb-reviewer-av img { width: 100%; height: 100%; object-fit: cover; }
+    .pb-reviewer-name { font-size: 11.5px; font-weight: 600; color: var(--text-1); }
+    .pb-reviewer-meta { font-size: 10.5px; color: var(--text-3); }
+    /* Business hours preview */
+    .pb-biz-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+    .pb-hours-row { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-2); padding: 2px 0; }
+
+    /* Saved block cards */
+    .sv-list { padding: 8px 12px; display: flex; flex-direction: column; gap: 10px; }
+    .sv-card { border: 1px solid var(--border); border-radius: 10px; overflow: visible; background: #fff; cursor: pointer; position: relative; }
+    .sv-card:hover { border-color: #bbb; }
+    .sv-top { display: flex; align-items: center; justify-content: space-between; padding: 7px 8px 0 8px; }
+    .sv-drag { color: #ccc; display: flex; align-items: center; }
+    .sv-more-btn { width: 24px; height: 24px; border-radius: 4px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-3); opacity: 0; transition: opacity 0.15s, background 0.15s; }
+    .sv-card:hover .sv-more-btn { opacity: 1; }
+    .sv-more-btn:hover { background: var(--bg-hover); color: var(--text-1); }
+    .sv-preview { padding: 4px 8px 8px; }
+    .sv-footer { padding: 4px 12px 12px; }
+    .sv-name { font-size: 13px; font-weight: 500; color: var(--text-1); }
+    .sv-author { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+    .sv-menu { position: absolute; top: 30px; right: 8px; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.14); z-index: 200; min-width: 110px; overflow: hidden; display: none; }
+    .sv-menu.open { display: block; }
+    .sv-menu-item { padding: 10px 16px; font-size: 13.5px; color: var(--text-1); cursor: pointer; }
+    .sv-menu-item:hover { background: var(--bg-hover); }
+    /* saved card preview styles */
+    .sv-apt-preview { background: #EEF2FF; border-radius: 6px; padding: 12px; font-size: 11px; }
+    .sv-apt-headline { font-size: 13px; font-weight: 700; color: #2D3A8C; line-height: 1.3; margin-bottom: 6px; }
+    .sv-apt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 8px 0; font-size: 10.5px; color: var(--text-2); }
+    .sv-apt-item { display: flex; align-items: flex-start; gap: 4px; }
+    .sv-apt-btn { display: inline-block; background: #3B82F6; color: #fff; border-radius: 4px; padding: 4px 10px; font-size: 11px; margin-top: 6px; }
+    .sv-img-text-preview { display: flex; gap: 8px; background: var(--bg-page); border-radius: 6px; padding: 8px; }
+    .sv-img-text-preview img { width: 64px; height: 64px; border-radius: 4px; object-fit: cover; }
+    .sv-img-text-copy { font-size: 11.5px; color: var(--text-1); }
+    .sv-img-text-copy strong { font-size: 12px; }
+    .sv-need-assist-preview { border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
+    .sv-need-assist-preview h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .sv-need-assist-preview p { font-size: 11px; color: var(--text-2); margin-bottom: 8px; }
+    .sv-need-assist-btn { display: inline-block; background: #1a1a1a; color: #fff; border-radius: 20px; padding: 4px 10px; font-size: 10.5px; }
+
+    /* Layout / Styles section accordions */
+    .sec-accordion { border-top: 1px solid var(--border); }
+    .sec-acc-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; user-select: none; }
+    .sec-acc-header:hover { background: var(--bg-hover); }
+    .sec-acc-title { font-size: 15px; font-weight: 500; color: var(--text-1); }
+    .sec-acc-chevron { color: var(--text-2); transition: transform 0.2s; }
+    .sec-acc-chevron.open { transform: rotate(180deg); }
+    .sec-acc-body { padding: 12px 16px; display: none; }
+    .sec-acc-body.open { display: block; }
+
+    /* ── TOOLBAR BRAND IDENTITY & CODE ICONS ── */
+    .tb-btn-brand { position: relative; }
+    /* Brand identity dropdown */
+    .brand-dropdown { position: fixed; top: 104px; right: 10px; background: #fff; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.16); z-index: 1000; width: 310px; overflow: hidden; display: none; }
+    .brand-dropdown.open { display: block; }
+    .brand-drop-hdr { padding: 14px 16px 10px; font-size: 13px; color: var(--text-3); }
+    .brand-none-row { display: flex; align-items: center; padding: 8px 16px; cursor: pointer; font-size: 14px; color: var(--text-1); }
+    .brand-none-row:hover { background: var(--bg-hover); }
+    .brand-sep { height: 1px; background: var(--border); margin: 2px 0; }
+    .brand-option { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; }
+    .brand-option:hover { background: var(--bg-hover); }
+    .brand-option.selected { background: #F0F6FF; }
+    .brand-swatches { display: flex; gap: -4px; }
+    .brand-swatch { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.08); }
+    .brand-swatch:not(:first-child) { margin-left: -6px; }
+    .brand-opt-info { flex: 1; }
+    .brand-opt-name { font-size: 13.5px; font-weight: 500; color: var(--blue); }
+    .brand-option:not(.selected) .brand-opt-name { color: var(--text-1); }
+    .brand-opt-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+    .brand-default-badge { display: inline-block; background: #F0F0F0; border-radius: 4px; padding: 1px 7px; font-size: 10.5px; color: var(--text-2); margin-left: 6px; }
+    .brand-check { color: var(--blue); flex-shrink: 0; }
+    .brand-foot { padding: 10px 16px 12px; border-top: 1px solid var(--border); }
+    .brand-settings-link { color: var(--blue); font-size: 13.5px; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; }
+    .brand-settings-link:hover { text-decoration: underline; }
+
+    /* ── EDIT BLOCK MODAL ── */
+    .edit-block-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 3000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .edit-block-backdrop.open { opacity: 1; pointer-events: all; }
+    .edit-block-modal { background: #fff; border-radius: 12px; width: 600px; max-width: 95vw; box-shadow: 0 24px 60px rgba(0,0,0,0.18); overflow: hidden; }
+    .edit-block-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 16px; border-bottom: 1px solid var(--border); }
+    .edit-block-title { font-size: 16px; font-weight: 600; color: var(--text-1); }
+    .edit-block-close { width: 28px; height: 28px; border-radius: 6px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-2); transition: background 0.15s; }
+    .edit-block-close:hover { background: var(--bg-hover); }
+    .edit-block-preview-wrap { margin: 16px 20px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .edit-block-preview-inner { background: var(--bg-page); padding: 20px; display: flex; gap: 16px; align-items: flex-start; }
+    .edit-block-preview-inner img { width: 160px; height: 120px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+    .edit-block-preview-copy strong { font-size: 14px; font-weight: 700; color: var(--text-1); }
+    .edit-block-preview-copy p { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-top: 6px; }
+    .edit-block-body { padding: 0 20px 20px; }
+    .edit-block-label { font-size: 13px; font-weight: 500; color: var(--text-1); margin-bottom: 6px; display: flex; align-items: center; gap: 2px; }
+    .edit-block-label .req { color: #E53935; }
+    .edit-block-input { width: 100%; border: 1.5px solid var(--border); border-radius: 6px; padding: 9px 12px; font-size: 14px; font-family: 'Roboto', sans-serif; color: var(--text-1); outline: none; }
+    .edit-block-input:focus { border-color: var(--blue); }
+    .edit-block-hint { font-size: 12.5px; color: var(--text-3); margin-top: 10px; }
+    .edit-block-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--border); }
+    .edit-block-cancel { background: transparent; border: none; color: var(--blue); font-size: 14px; font-family: 'Roboto', sans-serif; padding: 7px 14px; border-radius: 4px; cursor: pointer; }
+    .edit-block-cancel:hover { background: var(--bg-hover); }
+    .edit-block-save { background: var(--blue); border: none; color: #fff; font-size: 14px; font-family: 'Roboto', sans-serif; padding: 7px 18px; border-radius: 4px; cursor: pointer; }
+    .edit-block-save:hover { background: var(--blue-dark); }
+
+    /* ── PROMPT BOX ICON TWEAKS ── */
+    .p-btn-sparkle svg { color: #555; }
   </style>
 </head>
 <body>
@@ -1381,18 +1548,21 @@
             <div class="prompt-lhs">
               <!-- Plus button -->
               <button class="p-btn" id="plus-btn" onclick="toggleAttPopup(event)" title="Add attachment">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="#555" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="#555" stroke-width="1.8" stroke-linecap="round"/></svg>
               </button>
-              <!-- Sparkle / AI edit -->
+              <!-- Sparkle / AI cursor -->
               <button class="p-btn" title="AI point &amp; edit" onclick="showToast('Click any block in the email to edit with AI')">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                  <path d="M9 2l1.2 3.6H14L11.4 7.8l1 3.2L9 9.2 5.6 11l1-3.2L4 5.6h3.8L9 2Z" stroke="#555" stroke-width="1.3" stroke-linejoin="round"/>
-                  <path d="M4 13l1.5 1.5M13.5 4.5l1 1" stroke="#555" stroke-width="1.2" stroke-linecap="round"/>
+                <svg width="17" height="17" viewBox="0 0 18 18" fill="none">
+                  <!-- cursor arrow -->
+                  <path d="M3 3l5 12 2.5-4.5L15 8Z" stroke="#555" stroke-width="1.4" stroke-linejoin="round"/>
+                  <!-- sparkle dots -->
+                  <path d="M14 2v2M13 3h2" stroke="#555" stroke-width="1.3" stroke-linecap="round"/>
+                  <path d="M16 6.5v1.5M15.2 7.2h1.5" stroke="#555" stroke-width="1.2" stroke-linecap="round"/>
                 </svg>
               </button>
               <!-- More -->
               <button class="p-btn" title="More options" onclick="showToast('More options coming soon')">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="4" cy="9" r="1.2" fill="#555"/><circle cx="9" cy="9" r="1.2" fill="#555"/><circle cx="14" cy="9" r="1.2" fill="#555"/></svg>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="3.5" cy="8" r="1.2" fill="#555"/><circle cx="8" cy="8" r="1.2" fill="#555"/><circle cx="12.5" cy="8" r="1.2" fill="#555"/></svg>
               </button>
             </div>
             <!-- Send button — filled blue circle -->
@@ -1405,6 +1575,294 @@
 
         </div><!-- end prompt-box -->
       </div><!-- end prompt-area -->
+
+      <!-- ═══════════════════════════════════
+           MANUAL EDITOR PANEL
+      ═══════════════════════════════════ -->
+      <div id="manual-panel" class="manual-panel hidden">
+
+        <!-- ── Content blocks accordion ── -->
+        <div class="cb-section">
+          <div class="cb-header" onclick="toggleCbSection(this)">
+            <span class="cb-title">Content blocks</span>
+            <svg class="cb-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="cb-body" id="cb-body">
+            <!-- Sub-tabs -->
+            <div class="cb-subtabs">
+              <div class="cb-subtab active" onclick="switchCbTab('basic', this)">Basic</div>
+              <div class="cb-subtab" onclick="switchCbTab('prebuilt', this)">Pre-built</div>
+              <div class="cb-subtab" onclick="switchCbTab('saved', this)">Saved</div>
+            </div>
+
+            <!-- ── BASIC TAB ── -->
+            <div id="cb-basic" class="cb-tab-panel">
+              <div class="cb-grid">
+                <!-- Header -->
+                <div class="cb-card" draggable="true" title="Header">
+                  <div class="cb-drag"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg></div>
+                  <div class="cb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 9h20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+                  <div class="cb-name">Header</div>
+                </div>
+                <!-- Title -->
+                <div class="cb-card" draggable="true" title="Title">
+                  <div class="cb-drag"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg></div>
+                  <div class="cb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M7 9h10M7 12h7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><text x="5" y="17" font-size="5" font-family="Arial" font-weight="700" fill="currentColor">T</text></svg></div>
+                  <div class="cb-name">Title</div>
+                </div>
+                <!-- Text -->
+                <div class="cb-card" draggable="true" title="Text">
+                  <div class="cb-drag"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg></div>
+                  <div class="cb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 10h16M4 14h12M4 18h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+                  <div class="cb-name">Text</div>
+                </div>
+                <!-- Button -->
+                <div class="cb-card" draggable="true" title="Button">
+                  <div class="cb-drag"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg></div>
+                  <div class="cb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="4" y="8" width="16" height="8" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M9 12h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+                  <div class="cb-name">Button</div>
+                </div>
+                <!-- Image -->
+                <div class="cb-card" draggable="true" title="Image">
+                  <div class="cb-drag"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg></div>
+                  <div class="cb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><circle cx="8.5" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 16l4-4 3 3 3-3 5 5" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+                  <div class="cb-name">Image</div>
+                </div>
+                <!-- Video -->
+                <div class="cb-card" draggable="true" title="Video">
+                  <div class="cb-drag"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg></div>
+                  <div class="cb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="15" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M17 9l4-2v10l-4-2" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 9.5l4 2.5-4 2.5V9.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+                  <div class="cb-name">Video</div>
+                </div>
+                <!-- Divider -->
+                <div class="cb-card" draggable="true" title="Divider">
+                  <div class="cb-drag"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg></div>
+                  <div class="cb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 12h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-dasharray="2 2"/></svg></div>
+                  <div class="cb-name">Divider</div>
+                </div>
+                <!-- Spacer -->
+                <div class="cb-card" draggable="true" title="Spacer">
+                  <div class="cb-drag"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg></div>
+                  <div class="cb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 8h16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M4 16h16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M12 8v8" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 2" stroke-linecap="round"/></svg></div>
+                  <div class="cb-name">Spacer</div>
+                </div>
+                <!-- Social links -->
+                <div class="cb-card" draggable="true" title="Social links">
+                  <div class="cb-drag"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg></div>
+                  <div class="cb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3"/><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M8.4 10.8L15.6 6.7M8.4 13.2L15.6 17.3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+                  <div class="cb-name">Social links</div>
+                </div>
+                <!-- Review -->
+                <div class="cb-card" draggable="true" title="Review">
+                  <div class="cb-drag"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg></div>
+                  <div class="cb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.5 5.1L20 9l-4 3.9 1 5.1L12 15.5 7 18l1-5.1L4 9l5.5-.9L12 3Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+                  <div class="cb-name">Review</div>
+                </div>
+                <!-- Footer -->
+                <div class="cb-card" draggable="true" title="Footer">
+                  <div class="cb-drag"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg></div>
+                  <div class="cb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 16h20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M7 19.5h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+                  <div class="cb-name">Footer</div>
+                </div>
+                <!-- HTML -->
+                <div class="cb-card" draggable="true" title="HTML">
+                  <div class="cb-drag"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="4" cy="3" r="1" fill="currentColor"/><circle cx="8" cy="3" r="1" fill="currentColor"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="8" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="9" r="1" fill="currentColor"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg></div>
+                  <div class="cb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M8 8L4 12l4 4M16 8l4 4-4 4M13 6l-2 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="cb-name">HTML</div>
+                </div>
+              </div>
+            </div><!-- end cb-basic -->
+
+            <!-- ── PRE-BUILT TAB ── -->
+            <div id="cb-prebuilt" class="cb-tab-panel hidden">
+              <div class="cb-search-wrap" style="padding:12px 12px 4px; position:relative;">
+                <svg class="cb-search-icon" width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="#999" stroke-width="1.4"/><path d="M10.5 10.5L13.5 13.5" stroke="#999" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <input class="cb-search" type="text" placeholder="Search">
+              </div>
+              <div class="pb-list">
+                <!-- Review summary -->
+                <div class="pb-card pb-tooltip-wrap" onclick="showToast('Review summary block added')">
+                  <div class="pb-tooltip">AI summary of recent customer reviews</div>
+                  <div class="pb-card-inner">
+                    <div class="pb-drag-row"><svg width="12" height="8" viewBox="0 0 12 8" fill="none"><circle cx="2" cy="2" r="1" fill="#bbb"/><circle cx="6" cy="2" r="1" fill="#bbb"/><circle cx="10" cy="2" r="1" fill="#bbb"/><circle cx="2" cy="6" r="1" fill="#bbb"/><circle cx="6" cy="6" r="1" fill="#bbb"/><circle cx="10" cy="6" r="1" fill="#bbb"/></svg></div>
+                    <div class="pb-preview">
+                      <div class="pb-preview-title">What our customers say</div>
+                      <div class="pb-preview-ai-row">
+                        <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 2L8 5.5H11.5L8.7 7.5L9.8 11L7 9L4.2 11L5.3 7.5L2.5 5.5H6L7 2Z" fill="#7C3AED"/></svg>
+                        Review summary of last 20 reviews
+                      </div>
+                      <div class="pb-preview-bullet"><span>·</span><span>Dishes feature fresh ingredients and bold flavors, with standout items like perfectly cooked steaks and creative vegan options earning consistent praise</span></div>
+                      <div class="pb-preview-bullet"><span>·</span><span>Staff provide attentive, friendly care, remembering dietary needs and handling requests seamlessly to create a welcoming VIP experience</span></div>
+                      <div class="pb-preview-bullet"><span>·</span><span>Cozy atmosphere with warm lighting and comfortable seating make diners feel at home, enhancing the overall dining enjoyment.</span></div>
+                    </div>
+                  </div>
+                  <div class="pb-footer">
+                    <div class="pb-card-name">Review summary</div>
+                    <div class="pb-card-desc">Summarize recent customer reviews using AI</div>
+                  </div>
+                </div>
+                <!-- Review quote -->
+                <div class="pb-card pb-tooltip-wrap" onclick="showToast('Review quote block added')">
+                  <div class="pb-tooltip">Highlight a single customer review</div>
+                  <div class="pb-card-inner">
+                    <div class="pb-drag-row"><svg width="12" height="8" viewBox="0 0 12 8" fill="none"><circle cx="2" cy="2" r="1" fill="#bbb"/><circle cx="6" cy="2" r="1" fill="#bbb"/><circle cx="10" cy="2" r="1" fill="#bbb"/><circle cx="2" cy="6" r="1" fill="#bbb"/><circle cx="6" cy="6" r="1" fill="#bbb"/><circle cx="10" cy="6" r="1" fill="#bbb"/></svg></div>
+                    <div class="pb-preview">
+                      <div class="pb-preview-title" style="text-align:center;">What our customer say</div>
+                      <div class="pb-stars" style="text-align:center;">★★★★★</div>
+                      <div class="pb-review-text">I had a great experience at my last tooth cleaning appointment. Dr. Jason W was very professional and I highly recommend him.</div>
+                      <div class="pb-reviewer">
+                        <div class="pb-reviewer-av"><img src="https://i.pravatar.cc/40?img=8" alt=""></div>
+                        <div>
+                          <div class="pb-reviewer-name">Thomas M</div>
+                          <div class="pb-reviewer-meta">Jan 12, 2025 · Georgia · Via Google</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pb-footer">
+                    <div class="pb-card-name">Review quote</div>
+                    <div class="pb-card-desc">Highlight a single customer review</div>
+                  </div>
+                </div>
+                <!-- Business hours -->
+                <div class="pb-card pb-tooltip-wrap" onclick="showToast('Business hours block added')">
+                  <div class="pb-tooltip">Show business hours in your preferred layout</div>
+                  <div class="pb-card-inner">
+                    <div class="pb-drag-row"><svg width="12" height="8" viewBox="0 0 12 8" fill="none"><circle cx="2" cy="2" r="1" fill="#bbb"/><circle cx="6" cy="2" r="1" fill="#bbb"/><circle cx="10" cy="2" r="1" fill="#bbb"/><circle cx="2" cy="6" r="1" fill="#bbb"/><circle cx="6" cy="6" r="1" fill="#bbb"/><circle cx="10" cy="6" r="1" fill="#bbb"/></svg></div>
+                    <div class="pb-preview">
+                      <div class="pb-biz-title">Business hours</div>
+                      <div class="pb-hours-row"><span>Mon - Fri</span><span>8:00 AM - 6:00 PM</span></div>
+                      <div class="pb-hours-row"><span>Sat</span><span>8:00 AM - 2:00 PM</span></div>
+                      <div class="pb-hours-row"><span>Sun</span><span>Closed</span></div>
+                    </div>
+                  </div>
+                  <div class="pb-footer">
+                    <div class="pb-card-name">Business hours</div>
+                    <div class="pb-card-desc">Show business hours in your preferred layout</div>
+                  </div>
+                </div>
+              </div><!-- pb-list -->
+            </div><!-- end cb-prebuilt -->
+
+            <!-- ── SAVED TAB ── -->
+            <div id="cb-saved" class="cb-tab-panel hidden">
+              <div class="cb-search-wrap" style="padding:12px 12px 4px; position:relative;">
+                <svg class="cb-search-icon" width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="#999" stroke-width="1.4"/><path d="M10.5 10.5L13.5 13.5" stroke="#999" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <input class="cb-search" type="text" placeholder="Search">
+              </div>
+              <div class="sv-list">
+                <!-- Appointment booking block -->
+                <div class="sv-card" onclick="showToast('Appointment booking block added')">
+                  <div class="sv-top">
+                    <div class="sv-drag"><svg width="12" height="8" viewBox="0 0 12 8" fill="none"><circle cx="2" cy="2" r="1" fill="#bbb"/><circle cx="6" cy="2" r="1" fill="#bbb"/><circle cx="10" cy="2" r="1" fill="#bbb"/><circle cx="2" cy="6" r="1" fill="#bbb"/><circle cx="6" cy="6" r="1" fill="#bbb"/><circle cx="10" cy="6" r="1" fill="#bbb"/></svg></div>
+                    <button class="sv-more-btn" onclick="toggleSvMenu(event,'sv-menu-1')">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="3" r="1.2" fill="currentColor"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="8" cy="13" r="1.2" fill="currentColor"/></svg>
+                    </button>
+                    <div class="sv-menu" id="sv-menu-1">
+                      <div class="sv-menu-item" onclick="openEditBlock(event,'Appointment booking block')">Edit</div>
+                      <div class="sv-menu-item" onclick="showToast('Block deleted'); this.closest('.sv-card').remove()">Delete</div>
+                    </div>
+                  </div>
+                  <div class="sv-preview">
+                    <div class="sv-apt-preview">
+                      <div class="sv-apt-headline">It's time to smile again.<br>Your next visit is due.</div>
+                      <div style="font-size:10px; color:#4b5563; margin-bottom:6px;">Hi [First Name], it's been a while since we last saw you. Whether you need a routine cleaning, a check-up, or care you've been putting off, we're here when you're ready.</div>
+                      <div class="sv-apt-grid">
+                        <div class="sv-apt-item"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="9" rx="1" stroke="#6b7280" stroke-width="1.2"/><path d="M4 1v2M8 1v2M1 5h10" stroke="#6b7280" stroke-width="1.2" stroke-linecap="round"/></svg><div><div style="font-size:9px;font-weight:600;color:#374151">Last visit</div><div style="font-size:9px;color:#6b7280">February 3, 2024 - 10:30 AM</div></div></div>
+                        <div class="sv-apt-item"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="#6b7280" stroke-width="1.2"/><path d="M2 10c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="#6b7280" stroke-width="1.2" stroke-linecap="round"/></svg><div><div style="font-size:9px;font-weight:600;color:#374151">Your dentist</div><div style="font-size:9px;color:#6b7280">Dr. Jamie Taylor</div></div></div>
+                        <div class="sv-apt-item"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 1a3 3 0 0 1 3 3c0 2.25-3 6-3 6S3 6.25 3 4a3 3 0 0 1 3-3z" stroke="#6b7280" stroke-width="1.2"/><circle cx="6" cy="4" r="1" fill="#6b7280"/></svg><div><div style="font-size:9px;font-weight:600;color:#374151">Location</div><div style="font-size:9px;color:#6b7280">1234 Smile Lane, Sunnyvale, CA 94085</div></div></div>
+                        <div class="sv-apt-item"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#6b7280" stroke-width="1.2"/><path d="M6 4v2.5l1.5 1.5" stroke="#6b7280" stroke-width="1.2" stroke-linecap="round"/></svg><div><div style="font-size:9px;font-weight:600;color:#374151">Recommended next visit</div><div style="font-size:9px;color:#6b7280">It's been over 6 months, time for a check-up!</div></div></div>
+                      </div>
+                      <div class="sv-apt-btn">Book now</div>
+                    </div>
+                  </div>
+                  <div class="sv-footer">
+                    <div class="sv-name">Appointment booking block</div>
+                    <div class="sv-author">Created by Ricky T</div>
+                  </div>
+                </div>
+
+                <!-- Image and text - 2 column -->
+                <div class="sv-card" onclick="showToast('Image and text block added')">
+                  <div class="sv-top">
+                    <div class="sv-drag"><svg width="12" height="8" viewBox="0 0 12 8" fill="none"><circle cx="2" cy="2" r="1" fill="#bbb"/><circle cx="6" cy="2" r="1" fill="#bbb"/><circle cx="10" cy="2" r="1" fill="#bbb"/><circle cx="2" cy="6" r="1" fill="#bbb"/><circle cx="6" cy="6" r="1" fill="#bbb"/><circle cx="10" cy="6" r="1" fill="#bbb"/></svg></div>
+                    <button class="sv-more-btn" onclick="toggleSvMenu(event,'sv-menu-2')">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="3" r="1.2" fill="currentColor"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="8" cy="13" r="1.2" fill="currentColor"/></svg>
+                    </button>
+                    <div class="sv-menu" id="sv-menu-2">
+                      <div class="sv-menu-item" onclick="openEditBlock(event,'Image and text - 2 column')">Edit</div>
+                      <div class="sv-menu-item" onclick="showToast('Block deleted'); this.closest('.sv-card').remove()">Delete</div>
+                    </div>
+                  </div>
+                  <div class="sv-preview">
+                    <div class="sv-img-text-preview">
+                      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop&q=70" alt="">
+                      <div class="sv-img-text-copy">
+                        <strong>Get clarity before you decide</strong>
+                        <p style="font-size:11px;color:#555;margin-top:4px;line-height:1.5;">Review key details and options so you know exactly what to expect.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sv-footer">
+                    <div class="sv-name">Image and text - 2 column</div>
+                    <div class="sv-author">Created by Tara Ghomes</div>
+                  </div>
+                </div>
+
+                <!-- Need assistance block -->
+                <div class="sv-card" onclick="showToast('Need assistance block added')">
+                  <div class="sv-top">
+                    <div class="sv-drag"><svg width="12" height="8" viewBox="0 0 12 8" fill="none"><circle cx="2" cy="2" r="1" fill="#bbb"/><circle cx="6" cy="2" r="1" fill="#bbb"/><circle cx="10" cy="2" r="1" fill="#bbb"/><circle cx="2" cy="6" r="1" fill="#bbb"/><circle cx="6" cy="6" r="1" fill="#bbb"/><circle cx="10" cy="6" r="1" fill="#bbb"/></svg></div>
+                    <button class="sv-more-btn" onclick="toggleSvMenu(event,'sv-menu-3')">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="3" r="1.2" fill="currentColor"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="8" cy="13" r="1.2" fill="currentColor"/></svg>
+                    </button>
+                    <div class="sv-menu" id="sv-menu-3">
+                      <div class="sv-menu-item" onclick="openEditBlock(event,'Need assistance block')">Edit</div>
+                      <div class="sv-menu-item" onclick="showToast('Block deleted'); this.closest('.sv-card').remove()">Delete</div>
+                    </div>
+                  </div>
+                  <div class="sv-preview">
+                    <div class="sv-need-assist-preview">
+                      <h4>Need Assistance?</h4>
+                      <p>You can schedule a call to discuss more in detail your requirements with our expert executive</p>
+                      <div class="sv-need-assist-btn">Book Online Consultation</div>
+                    </div>
+                  </div>
+                  <div class="sv-footer">
+                    <div class="sv-name">Need assistance block</div>
+                    <div class="sv-author">Created by Eva Adams</div>
+                  </div>
+                </div>
+              </div><!-- sv-list -->
+            </div><!-- end cb-saved -->
+
+          </div><!-- end cb-body -->
+        </div><!-- end cb-section -->
+
+        <!-- ── Layout accordion ── -->
+        <div class="sec-accordion">
+          <div class="sec-acc-header" onclick="toggleSecAcc(this)">
+            <span class="sec-acc-title">Layout</span>
+            <svg class="sec-acc-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="sec-acc-body">
+            <p style="font-size:13px;color:var(--text-3);">Layout options coming soon.</p>
+          </div>
+        </div>
+
+        <!-- ── Styles accordion ── -->
+        <div class="sec-accordion">
+          <div class="sec-acc-header" onclick="toggleSecAcc(this)">
+            <span class="sec-acc-title">Styles</span>
+            <svg class="sec-acc-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="sec-acc-body">
+            <p style="font-size:13px;color:var(--text-3);">Style options coming soon.</p>
+          </div>
+        </div>
+
+      </div><!-- end manual-panel -->
+
     </div><!-- end ai-panel -->
 
     <!-- ═══════════════════════════════════════
@@ -1424,20 +1882,35 @@
         </div>
         <div class="tb-divider"></div>
         <button class="tb-btn" title="Undo" onclick="showToast('Undo')">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 6H9a4 4 0 0 1 0 8H5" stroke="#555" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 3L2 6l3 3" stroke="#555" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M4 7H10a4.5 4.5 0 0 1 0 9H6" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 4L3 7l3 3" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <button class="tb-btn" title="Redo" onclick="showToast('Redo')">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M13 6H7a4 4 0 0 0 0 8h4" stroke="#555" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 3l3 3-3 3" stroke="#555" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M14 7H8a4.5 4.5 0 0 0 0 9h4" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 4l3 3-3 3" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <div class="tb-divider"></div>
         <button class="tb-btn" title="Preview" onclick="showToast('Preview mode')">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M1.5 8s2.5-5 6.5-5 6.5 5 6.5 5-2.5 5-6.5 5-6.5-5-6.5-5Z" stroke="#555" stroke-width="1.4"/><circle cx="8" cy="8" r="2" stroke="#555" stroke-width="1.4"/></svg>
+          <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M2 9s2.8-5.5 7-5.5S16 9 16 9s-2.8 5.5-7 5.5S2 9 2 9Z" stroke="#444" stroke-width="1.5"/><circle cx="9" cy="9" r="2.2" stroke="#444" stroke-width="1.4"/></svg>
         </button>
         <button class="tb-btn" title="Send test" onclick="showToast('Test email sent! ✓')">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M14 8L2 2l3 6-3 6 12-6Z" stroke="#555" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M15 9L2 3l3 6-3 6 13-6Z" stroke="#444" stroke-width="1.5" stroke-linejoin="round"/></svg>
         </button>
+        <!-- Brand identity -->
+        <button class="tb-btn tb-btn-brand" id="tb-brand-btn" title="Brand identity" onclick="toggleBrandDropdown(event)">
+          <svg width="17" height="17" viewBox="0 0 20 20" fill="none">
+            <circle cx="7" cy="7" r="3" stroke="#444" stroke-width="1.4"/>
+            <path d="M1 17c0-3.3 2.7-6 6-6" stroke="#444" stroke-width="1.4" stroke-linecap="round"/>
+            <circle cx="14" cy="7" r="2.2" stroke="#444" stroke-width="1.3"/>
+            <path d="M11 17c0-2.5 1.8-4.5 4-5" stroke="#444" stroke-width="1.3" stroke-linecap="round"/>
+            <path d="M17 3l.5 1.5L19 5l-1.5.5L17 7l-.5-1.5L15 5l1.5-.5L17 3Z" fill="#444"/>
+          </svg>
+        </button>
+        <!-- Code -->
+        <button class="tb-btn" title="View code" onclick="showToast('HTML source code')">
+          <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M5 5L1 9l4 4M13 5l4 4-4 4M10 3l-2 12" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <!-- Settings -->
         <button class="tb-btn" title="Settings" onclick="showToast('Email settings')">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="#555" stroke-width="1.4"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4" stroke="#555" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="2.5" stroke="#444" stroke-width="1.4"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2M3.8 3.8l1.4 1.4M12.8 12.8l1.4 1.4M3.8 14.2l1.4-1.4M12.8 5.2l1.4-1.4" stroke="#444" stroke-width="1.4" stroke-linecap="round"/></svg>
         </button>
       </div>
 
@@ -1937,8 +2410,127 @@
   function switchTab(tab) {
     document.getElementById('tab-ai').classList.toggle('active', tab === 'ai');
     document.getElementById('tab-manual').classList.toggle('active', tab === 'manual');
-    if (tab === 'manual') showToast('Manual editor coming soon');
+    const chatScroll = document.getElementById('chat-scroll');
+    const promptArea = document.getElementById('prompt-area');
+    const manualPanel = document.getElementById('manual-panel');
+    if (tab === 'manual') {
+      chatScroll.classList.add('hidden');
+      promptArea.classList.add('hidden');
+      manualPanel.classList.remove('hidden');
+    } else {
+      chatScroll.classList.remove('hidden');
+      promptArea.classList.remove('hidden');
+      manualPanel.classList.add('hidden');
+    }
   }
+
+  // ── Content blocks accordion ─────────────
+  function toggleCbSection(headerEl) {
+    const body = document.getElementById('cb-body');
+    const chevron = headerEl.querySelector('.cb-chevron');
+    const isOpen = !body.classList.contains('hidden');
+    body.classList.toggle('hidden', isOpen);
+    chevron.classList.toggle('collapsed', isOpen);
+  }
+
+  // ── Content block sub-tabs ───────────────
+  function switchCbTab(tab, el) {
+    document.querySelectorAll('.cb-subtab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.cb-tab-panel').forEach(p => p.classList.add('hidden'));
+    document.getElementById('cb-' + tab).classList.remove('hidden');
+  }
+
+  // ── Section accordions (Layout/Styles) ───
+  function toggleSecAcc(headerEl) {
+    const body = headerEl.nextElementSibling;
+    const chevron = headerEl.querySelector('.sec-acc-chevron');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    chevron.classList.toggle('open', !isOpen);
+  }
+
+  // ── Saved card ⋮ menu ────────────────────
+  function toggleSvMenu(e, menuId) {
+    e.stopPropagation();
+    const menu = document.getElementById(menuId);
+    const isOpen = menu.classList.contains('open');
+    // close all menus first
+    document.querySelectorAll('.sv-menu').forEach(m => m.classList.remove('open'));
+    if (!isOpen) menu.classList.add('open');
+  }
+
+  // ── Edit block modal ────────────────────
+  function openEditBlock(e, blockName) {
+    e.stopPropagation();
+    document.querySelectorAll('.sv-menu').forEach(m => m.classList.remove('open'));
+    document.getElementById('edit-block-name-input').value = blockName;
+    // Update preview based on block
+    if (blockName === 'Appointment booking block') {
+      document.getElementById('edit-block-preview-img').src = 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=320&h=240&fit=crop&q=80';
+      document.getElementById('edit-block-preview-title').textContent = 'Your next visit is due';
+    } else if (blockName === 'Need assistance block') {
+      document.getElementById('edit-block-preview-img').src = 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=320&h=240&fit=crop&q=80';
+      document.getElementById('edit-block-preview-title').textContent = 'Need Assistance?';
+    } else {
+      document.getElementById('edit-block-preview-img').src = 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=320&h=240&fit=crop&q=80';
+      document.getElementById('edit-block-preview-title').textContent = 'Get clarity before you decide';
+    }
+    document.getElementById('edit-block-backdrop').classList.add('open');
+  }
+
+  function closeEditBlock() {
+    document.getElementById('edit-block-backdrop').classList.remove('open');
+  }
+
+  function saveEditBlock() {
+    const name = document.getElementById('edit-block-name-input').value.trim();
+    if (!name) return;
+    showToast('Block "' + name + '" saved!', true);
+    closeEditBlock();
+  }
+
+  // ── Brand identity dropdown ──────────────
+  let selectedBrand = 'olive';
+  function toggleBrandDropdown(e) {
+    e.stopPropagation();
+    const dd = document.getElementById('brand-dropdown');
+    dd.classList.toggle('open');
+  }
+
+  function selectBrand(brand) {
+    selectedBrand = brand;
+    document.querySelectorAll('.brand-option').forEach(o => {
+      o.classList.remove('selected');
+      const check = o.querySelector('.brand-check');
+      if (check) check.remove();
+    });
+    document.querySelectorAll('.brand-none-row').forEach(r => r.style.fontWeight = '400');
+    if (brand !== 'none') {
+      const el = document.getElementById('brand-' + brand);
+      if (el) {
+        el.classList.add('selected');
+        const check = document.createElementNS('http://www.w3.org/2000/svg','svg');
+        check.setAttribute('class','brand-check');
+        check.setAttribute('width','16');
+        check.setAttribute('height','16');
+        check.setAttribute('viewBox','0 0 16 16');
+        check.setAttribute('fill','none');
+        check.innerHTML = '<path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+        el.appendChild(check);
+      }
+    } else {
+      document.querySelectorAll('.brand-none-row').forEach(r => r.style.fontWeight = '600');
+    }
+    showToast('Brand identity updated');
+    document.getElementById('brand-dropdown').classList.remove('open');
+  }
+
+  // Close brand dropdown on outside click
+  document.addEventListener('click', () => {
+    document.getElementById('brand-dropdown').classList.remove('open');
+    document.querySelectorAll('.sv-menu').forEach(m => m.classList.remove('open'));
+  });
 
   // ── Top chip selection ────────────────────
   function selectTopChip(el, type) {
@@ -2798,6 +3390,84 @@
         <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><path d="M9 3v9M5 9l4 4 4-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 14h12" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
         Download PDF
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── BRAND IDENTITY DROPDOWN ── -->
+<div class="brand-dropdown" id="brand-dropdown" onclick="event.stopPropagation()">
+  <div class="brand-drop-hdr">Select a brand identity</div>
+  <div class="brand-none-row" onclick="selectBrand('none')">None</div>
+  <div class="brand-sep"></div>
+  <!-- Olive Garden corporate -->
+  <div class="brand-option selected" id="brand-olive" onclick="selectBrand('olive')">
+    <div class="brand-swatches">
+      <div class="brand-swatch" style="background:#7a3d1f;"></div>
+      <div class="brand-swatch" style="background:#c0392b;"></div>
+    </div>
+    <div class="brand-opt-info">
+      <div class="brand-opt-name">Olive garden corporate <span class="brand-default-badge">Default</span></div>
+      <div class="brand-opt-sub">All locations</div>
+    </div>
+    <svg class="brand-check" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <!-- Utah -->
+  <div class="brand-option" id="brand-utah" onclick="selectBrand('utah')">
+    <div class="brand-swatches">
+      <div class="brand-swatch" style="background:#6d28d9;"></div>
+      <div class="brand-swatch" style="background:#8b5cf6;"></div>
+    </div>
+    <div class="brand-opt-info">
+      <div class="brand-opt-name">Utah - Brand identity</div>
+      <div class="brand-opt-sub">5 locations</div>
+    </div>
+  </div>
+  <!-- New York -->
+  <div class="brand-option" id="brand-ny" onclick="selectBrand('ny')">
+    <div class="brand-swatches">
+      <div class="brand-swatch" style="background:#93c5fd;"></div>
+      <div class="brand-swatch" style="background:#fbbf24;"></div>
+    </div>
+    <div class="brand-opt-info">
+      <div class="brand-opt-name">New York - Brand identity</div>
+      <div class="brand-opt-sub">New York City, NY</div>
+    </div>
+  </div>
+  <div class="brand-sep"></div>
+  <div class="brand-foot">
+    <a class="brand-settings-link" href="#" onclick="return false;">
+      Brand identity settings
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 2M12 2H6M12 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</div>
+
+<!-- ── EDIT BLOCK MODAL ── -->
+<div class="edit-block-backdrop" id="edit-block-backdrop" onclick="closeEditBlock()">
+  <div class="edit-block-modal" onclick="event.stopPropagation()">
+    <div class="edit-block-head">
+      <span class="edit-block-title">Edit block</span>
+      <button class="edit-block-close" onclick="closeEditBlock()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="edit-block-preview-wrap">
+      <div class="edit-block-preview-inner">
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=320&h=240&fit=crop&q=80" alt="" id="edit-block-preview-img">
+        <div class="edit-block-preview-copy">
+          <strong id="edit-block-preview-title">Get clarity before you decide</strong>
+          <p>Review key details and options so you know exactly what to expect.</p>
+        </div>
+      </div>
+    </div>
+    <div class="edit-block-body">
+      <div class="edit-block-label">Block name <span class="req">*</span></div>
+      <input class="edit-block-input" id="edit-block-name-input" type="text" value="Image and text - 2 column">
+      <div class="edit-block-hint">You can access this block from the Saved tab to reuse it in other templates</div>
+    </div>
+    <div class="edit-block-foot">
+      <button class="edit-block-cancel" onclick="closeEditBlock()">Cancel</button>
+      <button class="edit-block-save" onclick="saveEditBlock()">Save</button>
     </div>
   </div>
 </div>
