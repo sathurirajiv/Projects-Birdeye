@@ -3744,6 +3744,10 @@
   function closeImgPanel() {
     document.getElementById('img-props-panel').classList.remove('open');
     imgPanelOpen = false;
+    if (selectedBlock) {
+      selectedBlock.classList.remove('selected');
+      selectedBlock = null;
+    }
   }
   function setImgSize(btn, size) {
     document.querySelectorAll('.img-props-size-btn').forEach(b => b.classList.remove('active'));
