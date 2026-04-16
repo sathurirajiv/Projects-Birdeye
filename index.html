@@ -347,14 +347,15 @@
     .img-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .img-thumb.selected { border-color: var(--blue); }
     .thumb-remove {
-      position: absolute; top: -5px; right: -5px;
+      position: absolute; top: 4px; right: 4px;
       width: 16px; height: 16px; border-radius: 50%;
-      background: #333; color: #fff;
+      background: rgba(0,0,0,0.55); color: #fff;
       font-size: 9px; display: flex; align-items: center; justify-content: center;
       cursor: pointer; z-index: 2; line-height: 1;
-      transition: background 0.15s;
+      opacity: 0; transition: opacity 0.15s, background 0.15s;
     }
-    .thumb-remove:hover { background: #000; }
+    .img-thumb-wrap:hover .thumb-remove { opacity: 1; }
+    .thumb-remove:hover { background: rgba(0,0,0,0.8); }
 
     /* PDF chip in prompt box */
     .pdf-chip-wrap {
@@ -368,14 +369,15 @@
     }
     .pdf-chip-prompt:hover { background: var(--bg-hover); }
     .pdf-chip-remove {
-      position: absolute; top: -5px; right: -5px;
+      position: absolute; top: 4px; right: 4px;
       width: 16px; height: 16px; border-radius: 50%;
-      background: #333; color: #fff;
+      background: rgba(0,0,0,0.55); color: #fff;
       font-size: 9px; display: flex; align-items: center; justify-content: center;
       cursor: pointer; z-index: 2; line-height: 1;
-      transition: background 0.15s;
+      opacity: 0; transition: opacity 0.15s, background 0.15s;
     }
-    .pdf-chip-remove:hover { background: #000; }
+    .pdf-chip-wrap:hover .pdf-chip-remove { opacity: 1; }
+    .pdf-chip-remove:hover { background: rgba(0,0,0,0.8); }
     .pdf-doc-icon {
       width: 32px; height: 32px; background: #FFF3E0; border-radius: 4px;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
