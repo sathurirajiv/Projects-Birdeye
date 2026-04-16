@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    strong, b, th { font-weight: 400; }
 
     :root {
       --blue: #1976D2;
@@ -396,7 +397,7 @@
       width: 32px; height: 32px; background: #FFF3E0; border-radius: 5px;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-    .pdf-viewer-title { font-size: 14px; font-weight: 600; color: var(--text-1); flex: 1; }
+    .pdf-viewer-title { font-size: 14px; font-weight: 400; color: var(--text-1); flex: 1; }
     .pdf-viewer-subtitle { font-size: 12px; color: var(--text-3); margin-top: 2px; }
     .pdf-viewer-close {
       width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border);
@@ -413,8 +414,8 @@
       background: #fff; border-radius: 4px; padding: 40px 48px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
-    .pdf-page-mock h2 { font-size: 22px; font-weight: 700; color: #111; margin: 0 0 6px; }
-    .pdf-page-mock h3 { font-size: 15px; font-weight: 600; color: #333; margin: 20px 0 6px; }
+    .pdf-page-mock h2 { font-size: 22px; font-weight: 400; color: #111; margin: 0 0 6px; }
+    .pdf-page-mock h3 { font-size: 15px; font-weight: 400; color: #333; margin: 20px 0 6px; }
     .pdf-page-mock p { font-size: 13px; color: #555; line-height: 1.7; margin: 0 0 10px; }
     .pdf-page-mock .pdf-divider { height: 1px; background: #eee; margin: 16px 0; }
     .pdf-color-row { display: flex; gap: 10px; margin: 10px 0; }
@@ -546,11 +547,11 @@
     /* Email sections */
     .e-header { padding: 18px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #f0f0f0; }
     .og-logo { width: 62px; height: 62px; flex-shrink: 0; }
-    .e-biz-name { font-size: 16px; font-weight: 600; color: #1a1a1a; line-height: 1.3; }
+    .e-biz-name { font-size: 16px; font-weight: 400; color: #1a1a1a; line-height: 1.3; }
     .e-biz-rating { font-size: 12.5px; color: var(--text-3); margin-top: 3px; }
     .e-star { color: #F9A825; }
     .e-title-section { padding: 28px 40px 20px; }
-    .e-title { font-size: 27px; font-weight: 700; color: #1a1a1a; line-height: 1.3; margin-bottom: 12px; }
+    .e-title { font-size: 27px; font-weight: 400; color: #1a1a1a; line-height: 1.3; margin-bottom: 12px; }
     .e-divider { height: 1px; background: #EEEEEE; }
     .e-hero { width: 100%; height: 270px; object-fit: cover; display: block; }
     .e-body { padding: 26px 40px; }
@@ -561,7 +562,7 @@
     .e-cta-section { padding: 4px 40px 30px; text-align: center; }
     .e-cta-btn {
       display: inline-block; background: var(--blue); color: #fff;
-      padding: 12px 34px; border-radius: 4px; font-size: 15px; font-weight: 500;
+      padding: 12px 34px; border-radius: 4px; font-size: 15px; font-weight: 400;
       cursor: pointer; text-decoration: none; transition: background 0.15s;
     }
     .e-cta-btn:hover { background: var(--blue-dark); }
@@ -662,7 +663,7 @@
       height: 52px; display: flex; align-items: center; gap: 8px;
       padding: 0 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
-    .tpl-sidebar-logo-name { font-size: 15px; font-weight: 600; color: var(--text-1); }
+    .tpl-sidebar-logo-name { font-size: 15px; font-weight: 400; color: var(--text-1); }
     .tpl-create-wf-btn {
       margin: 12px 14px 8px; display: flex; align-items: center;
       justify-content: space-between; height: 36px; padding: 0 12px;
@@ -673,7 +674,7 @@
     .tpl-create-wf-btn:hover { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
     .tpl-nav-scroll { flex: 1; overflow-y: auto; padding: 4px 0 8px; }
     .tpl-nav-sec-label {
-      font-size: 11px; font-weight: 500; color: var(--text-3); letter-spacing: 0.05em;
+      font-size: 11px; font-weight: 400; color: var(--text-3); letter-spacing: 0.05em;
       text-transform: uppercase; padding: 10px 18px 4px;
     }
     .tpl-nav-item {
@@ -682,7 +683,7 @@
       transition: background 0.12s, color 0.12s; user-select: none;
     }
     .tpl-nav-item:hover { background: #f5f6f8; color: var(--text-1); }
-    .tpl-nav-item.active { background: #eef2fd; color: #1E44CC; font-weight: 500; }
+    .tpl-nav-item.active { background: #eef2fd; color: #1E44CC; font-weight: 400; }
     .tpl-nav-item svg { flex-shrink: 0; opacity: 0.6; }
     .tpl-nav-item.active svg { opacity: 1; }
     .tpl-nav-bottom { border-top: 1px solid var(--border); padding: 6px 0; flex-shrink: 0; }
@@ -1148,7 +1149,7 @@
     /* ── EQUAL-WIDTH TABS ── */
     .ai-tabs { padding: 0; }
     .ai-tab { flex: 1; justify-content: center; font-size: 14px; font-weight: 400; padding: 14px 8px 12px; }
-    .ai-tab.active { font-weight: 500; color: var(--text-1); border-bottom-color: var(--text-1); }
+    .ai-tab.active { font-weight: 400; color: var(--text-1); border-bottom-color: var(--text-1); }
     .ai-spark { background: #6C3FC7; border-radius: 3px; padding: 1px 4px; font-size: 9px; color: #fff; display: inline-flex; align-items: center; gap: 1px; }
 
     /* ── MANUAL PANEL ── */
@@ -1161,14 +1162,14 @@
     .cb-section { border-bottom: 1px solid var(--border); }
     .cb-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 13px; cursor: pointer; user-select: none; }
     .cb-header:hover { background: var(--bg-hover); }
-    .cb-title { font-size: 15px; font-weight: 500; color: var(--text-1); }
+    .cb-title { font-size: 15px; font-weight: 400; color: var(--text-1); }
     .cb-chevron { transition: transform 0.2s; color: var(--text-2); }
     .cb-chevron.collapsed { transform: rotate(180deg); }
 
     /* Sub-tabs: Basic / Pre-built / Saved */
     .cb-subtabs { display: flex; align-items: center; gap: 2px; padding: 8px 10px; border-bottom: 1px solid var(--border); background: #fff; }
     .cb-subtab { flex: 1; text-align: center; padding: 6px 8px; font-size: 13px; color: var(--text-3); cursor: pointer; user-select: none; border-radius: 7px; border-bottom: none; margin-bottom: 0; transition: all 0.15s; }
-    .cb-subtab.active { color: var(--text-1); font-weight: 500; background: #e8eaee; }
+    .cb-subtab.active { color: var(--text-1); font-weight: 400; background: #e8eaee; }
     .cb-subtab:hover:not(.active) { color: var(--text-2); background: #f3f4f6; }
 
     /* Basic block grid */
@@ -1194,12 +1195,12 @@
     .pb-card-inner { padding: 4px 4px 0; }
     .pb-drag-row { display: flex; justify-content: center; padding: 6px 0 2px; color: #ccc; }
     .pb-preview { background: var(--bg-page); border-radius: 6px; padding: 14px 12px; font-size: 12px; }
-    .pb-preview-title { font-size: 13px; font-weight: 600; color: var(--text-1); margin-bottom: 8px; }
+    .pb-preview-title { font-size: 13px; font-weight: 400; color: var(--text-1); margin-bottom: 8px; }
     .pb-preview-ai-row { display: flex; align-items: center; gap: 5px; color: #7C3AED; font-size: 11.5px; margin-bottom: 6px; }
     .pb-preview-bullet { color: var(--text-2); font-size: 11.5px; line-height: 1.6; display: flex; gap: 4px; }
     .pb-preview-bullet + .pb-preview-bullet { margin-top: 2px; }
     .pb-footer { padding: 10px 12px 12px; }
-    .pb-card-name { font-size: 13.5px; font-weight: 600; color: var(--text-1); }
+    .pb-card-name { font-size: 13.5px; font-weight: 400; color: var(--text-1); }
     .pb-card-desc { font-size: 12px; color: var(--text-3); margin-top: 2px; }
     .pb-tooltip-wrap { position: relative; }
     .pb-tooltip { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #222; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 12px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 50; }
@@ -1211,10 +1212,10 @@
     .pb-reviewer { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
     .pb-reviewer-av { width: 22px; height: 22px; border-radius: 50%; background: #ddd; flex-shrink: 0; overflow: hidden; }
     .pb-reviewer-av img { width: 100%; height: 100%; object-fit: cover; }
-    .pb-reviewer-name { font-size: 11.5px; font-weight: 600; color: var(--text-1); }
+    .pb-reviewer-name { font-size: 11.5px; font-weight: 400; color: var(--text-1); }
     .pb-reviewer-meta { font-size: 10.5px; color: var(--text-3); }
     /* Business hours preview */
-    .pb-biz-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+    .pb-biz-title { font-size: 13px; font-weight: 400; margin-bottom: 8px; }
     .pb-hours-row { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-2); padding: 2px 0; }
 
     /* Saved block cards */
@@ -1228,7 +1229,7 @@
     .sv-more-btn:hover { background: var(--bg-hover); color: var(--text-1); }
     .sv-preview { padding: 4px 8px 8px; }
     .sv-footer { padding: 4px 12px 12px; }
-    .sv-name { font-size: 13px; font-weight: 500; color: var(--text-1); }
+    .sv-name { font-size: 13px; font-weight: 400; color: var(--text-1); }
     .sv-author { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
     .sv-menu { position: absolute; top: 30px; right: 8px; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.14); z-index: 200; min-width: 110px; overflow: hidden; display: none; }
     .sv-menu.open { display: block; }
@@ -1236,7 +1237,7 @@
     .sv-menu-item:hover { background: var(--bg-hover); }
     /* saved card preview styles */
     .sv-apt-preview { background: #EEF2FF; border-radius: 6px; padding: 12px; font-size: 11px; }
-    .sv-apt-headline { font-size: 13px; font-weight: 700; color: #2D3A8C; line-height: 1.3; margin-bottom: 6px; }
+    .sv-apt-headline { font-size: 13px; font-weight: 400; color: #2D3A8C; line-height: 1.3; margin-bottom: 6px; }
     .sv-apt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 8px 0; font-size: 10.5px; color: var(--text-2); }
     .sv-apt-item { display: flex; align-items: flex-start; gap: 4px; }
     .sv-apt-btn { display: inline-block; background: #3B82F6; color: #fff; border-radius: 4px; padding: 4px 10px; font-size: 11px; margin-top: 6px; }
@@ -1245,7 +1246,7 @@
     .sv-img-text-copy { font-size: 11.5px; color: var(--text-1); }
     .sv-img-text-copy strong { font-size: 12px; }
     .sv-need-assist-preview { border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
-    .sv-need-assist-preview h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .sv-need-assist-preview h4 { font-size: 13px; font-weight: 400; margin-bottom: 4px; }
     .sv-need-assist-preview p { font-size: 11px; color: var(--text-2); margin-bottom: 8px; }
     .sv-need-assist-btn { display: inline-block; background: #1a1a1a; color: #fff; border-radius: 20px; padding: 4px 10px; font-size: 10.5px; }
 
@@ -1253,7 +1254,7 @@
     .sec-accordion { border-top: 1px solid var(--border); }
     .sec-acc-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; user-select: none; }
     .sec-acc-header:hover { background: var(--bg-hover); }
-    .sec-acc-title { font-size: 15px; font-weight: 500; color: var(--text-1); }
+    .sec-acc-title { font-size: 15px; font-weight: 400; color: var(--text-1); }
     .sec-acc-chevron { color: var(--text-2); transition: transform 0.2s; }
     .sec-acc-chevron.open { transform: rotate(180deg); }
     .sec-acc-body { padding: 12px 16px; display: none; }
@@ -1275,7 +1276,7 @@
     .brand-swatch { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.08); }
     .brand-swatch:not(:first-child) { margin-left: -6px; }
     .brand-opt-info { flex: 1; }
-    .brand-opt-name { font-size: 13.5px; font-weight: 500; color: var(--blue); }
+    .brand-opt-name { font-size: 13.5px; font-weight: 400; color: var(--blue); }
     .brand-option:not(.selected) .brand-opt-name { color: var(--text-1); }
     .brand-opt-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
     .brand-default-badge { display: inline-block; background: #F0F0F0; border-radius: 4px; padding: 1px 7px; font-size: 10.5px; color: var(--text-2); margin-left: 6px; }
@@ -1289,16 +1290,16 @@
     .edit-block-backdrop.open { opacity: 1; pointer-events: all; }
     .edit-block-modal { background: #fff; border-radius: 12px; width: 600px; max-width: 95vw; box-shadow: 0 24px 60px rgba(0,0,0,0.18); overflow: hidden; }
     .edit-block-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 16px; border-bottom: 1px solid var(--border); }
-    .edit-block-title { font-size: 16px; font-weight: 600; color: var(--text-1); }
+    .edit-block-title { font-size: 16px; font-weight: 400; color: var(--text-1); }
     .edit-block-close { width: 28px; height: 28px; border-radius: 6px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-2); transition: background 0.15s; }
     .edit-block-close:hover { background: var(--bg-hover); }
     .edit-block-preview-wrap { margin: 16px 20px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
     .edit-block-preview-inner { background: var(--bg-page); padding: 20px; display: flex; gap: 16px; align-items: flex-start; }
     .edit-block-preview-inner img { width: 160px; height: 120px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
-    .edit-block-preview-copy strong { font-size: 14px; font-weight: 700; color: var(--text-1); }
+    .edit-block-preview-copy strong { font-size: 14px; font-weight: 400; color: var(--text-1); }
     .edit-block-preview-copy p { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-top: 6px; }
     .edit-block-body { padding: 0 20px 20px; }
-    .edit-block-label { font-size: 13px; font-weight: 500; color: var(--text-1); margin-bottom: 6px; display: flex; align-items: center; gap: 2px; }
+    .edit-block-label { font-size: 13px; font-weight: 400; color: var(--text-1); margin-bottom: 6px; display: flex; align-items: center; gap: 2px; }
     .edit-block-label .req { color: #E53935; }
     .edit-block-input { width: 100%; border: 1.5px solid var(--border); border-radius: 6px; padding: 9px 12px; font-size: 14px; font-family: 'Roboto', sans-serif; color: var(--text-1); outline: none; }
     .edit-block-input:focus { border-color: var(--blue); }
@@ -1811,10 +1812,10 @@
                       <div class="sv-apt-headline">It's time to smile again.<br>Your next visit is due.</div>
                       <div style="font-size:10px; color:#4b5563; margin-bottom:6px;">Hi [First Name], it's been a while since we last saw you. Whether you need a routine cleaning, a check-up, or care you've been putting off, we're here when you're ready.</div>
                       <div class="sv-apt-grid">
-                        <div class="sv-apt-item"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="9" rx="1" stroke="#6b7280" stroke-width="1.2"/><path d="M4 1v2M8 1v2M1 5h10" stroke="#6b7280" stroke-width="1.2" stroke-linecap="round"/></svg><div><div style="font-size:9px;font-weight:600;color:#374151">Last visit</div><div style="font-size:9px;color:#6b7280">February 3, 2024 - 10:30 AM</div></div></div>
-                        <div class="sv-apt-item"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="#6b7280" stroke-width="1.2"/><path d="M2 10c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="#6b7280" stroke-width="1.2" stroke-linecap="round"/></svg><div><div style="font-size:9px;font-weight:600;color:#374151">Your dentist</div><div style="font-size:9px;color:#6b7280">Dr. Jamie Taylor</div></div></div>
-                        <div class="sv-apt-item"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 1a3 3 0 0 1 3 3c0 2.25-3 6-3 6S3 6.25 3 4a3 3 0 0 1 3-3z" stroke="#6b7280" stroke-width="1.2"/><circle cx="6" cy="4" r="1" fill="#6b7280"/></svg><div><div style="font-size:9px;font-weight:600;color:#374151">Location</div><div style="font-size:9px;color:#6b7280">1234 Smile Lane, Sunnyvale, CA 94085</div></div></div>
-                        <div class="sv-apt-item"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#6b7280" stroke-width="1.2"/><path d="M6 4v2.5l1.5 1.5" stroke="#6b7280" stroke-width="1.2" stroke-linecap="round"/></svg><div><div style="font-size:9px;font-weight:600;color:#374151">Recommended next visit</div><div style="font-size:9px;color:#6b7280">It's been over 6 months, time for a check-up!</div></div></div>
+                        <div class="sv-apt-item"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="9" rx="1" stroke="#6b7280" stroke-width="1.2"/><path d="M4 1v2M8 1v2M1 5h10" stroke="#6b7280" stroke-width="1.2" stroke-linecap="round"/></svg><div><div style="font-size:9px;font-weight:400;color:#374151">Last visit</div><div style="font-size:9px;color:#6b7280">February 3, 2024 - 10:30 AM</div></div></div>
+                        <div class="sv-apt-item"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2" stroke="#6b7280" stroke-width="1.2"/><path d="M2 10c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="#6b7280" stroke-width="1.2" stroke-linecap="round"/></svg><div><div style="font-size:9px;font-weight:400;color:#374151">Your dentist</div><div style="font-size:9px;color:#6b7280">Dr. Jamie Taylor</div></div></div>
+                        <div class="sv-apt-item"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 1a3 3 0 0 1 3 3c0 2.25-3 6-3 6S3 6.25 3 4a3 3 0 0 1 3-3z" stroke="#6b7280" stroke-width="1.2"/><circle cx="6" cy="4" r="1" fill="#6b7280"/></svg><div><div style="font-size:9px;font-weight:400;color:#374151">Location</div><div style="font-size:9px;color:#6b7280">1234 Smile Lane, Sunnyvale, CA 94085</div></div></div>
+                        <div class="sv-apt-item"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#6b7280" stroke-width="1.2"/><path d="M6 4v2.5l1.5 1.5" stroke="#6b7280" stroke-width="1.2" stroke-linecap="round"/></svg><div><div style="font-size:9px;font-weight:400;color:#374151">Recommended next visit</div><div style="font-size:9px;color:#6b7280">It's been over 6 months, time for a check-up!</div></div></div>
                       </div>
                       <div class="sv-apt-btn">Book now</div>
                     </div>
