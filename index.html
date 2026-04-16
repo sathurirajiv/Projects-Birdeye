@@ -1166,10 +1166,10 @@
     .cb-chevron.collapsed { transform: rotate(180deg); }
 
     /* Sub-tabs: Basic / Pre-built / Saved */
-    .cb-subtabs { display: flex; border-bottom: 1px solid var(--border); background: #fff; }
-    .cb-subtab { flex: 1; text-align: center; padding: 9px 6px; font-size: 13px; color: var(--text-3); cursor: pointer; user-select: none; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
-    .cb-subtab.active { color: var(--text-1); font-weight: 500; border-bottom-color: var(--text-1); }
-    .cb-subtab:hover:not(.active) { color: var(--text-2); }
+    .cb-subtabs { display: flex; align-items: center; gap: 2px; padding: 8px 10px; border-bottom: 1px solid var(--border); background: #fff; }
+    .cb-subtab { flex: 1; text-align: center; padding: 6px 8px; font-size: 13px; color: var(--text-3); cursor: pointer; user-select: none; border-radius: 7px; border-bottom: none; margin-bottom: 0; transition: all 0.15s; }
+    .cb-subtab.active { color: var(--text-1); font-weight: 500; background: #e8eaee; }
+    .cb-subtab:hover:not(.active) { color: var(--text-2); background: #f3f4f6; }
 
     /* Basic block grid */
     .cb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px; }
