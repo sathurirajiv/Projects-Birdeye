@@ -121,7 +121,7 @@
 
     /* ── PAGE LAYOUT (full-height rail + main column) ── */
     .page-layout { display: flex; height: 100vh; overflow: hidden; }
-    .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; margin-left: 56px; }
 
     /* ── APP LAYOUT (below top nav) ── */
     .app-layout { display: flex; flex: 1; overflow: hidden; }
@@ -132,7 +132,7 @@
       width: 56px; background: #EAECF0; border-right: 1px solid #D8DCE4;
       display: flex; flex-direction: column; align-items: center;
       padding: 12px 0 14px; gap: 0; flex-shrink: 0; overflow: visible;
-      position: relative; z-index: 200;
+      position: fixed; left: 0; top: 0; bottom: 0; z-index: 600;
     }
     .rail-logo { margin-bottom: 14px; cursor: pointer; padding: 4px; }
     .rail-btn {
@@ -341,11 +341,12 @@
     }
     .img-thumb {
       width: 58px; height: 58px; border-radius: 8px;
-      overflow: hidden; border: 2px solid transparent;
-      transition: border-color 0.15s;
+      overflow: hidden; border: 1.5px solid var(--border);
+      transition: border-color 0.15s; cursor: pointer;
     }
     .img-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .img-thumb.selected { border-color: var(--blue); }
+    .img-thumb:hover { border-color: #c0c6d4; }
+    .img-thumb.selected { border-color: var(--border); }
     .thumb-remove {
       position: absolute; top: 4px; right: 4px;
       width: 16px; height: 16px; border-radius: 50%;
@@ -445,6 +446,41 @@
       transition: background 0.15s;
     }
     .pdf-dl-btn:hover { background: var(--blue-dark); }
+
+    /* ── Image Viewer Modal ── */
+    .img-viewer-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+      z-index: 9000; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .img-viewer-backdrop.open { opacity: 1 !important; pointer-events: all !important; }
+    .img-viewer-modal {
+      background: #fff; border-radius: 12px; width: 760px; max-width: 95vw;
+      height: 88vh; display: flex; flex-direction: column; overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.18); transform: scale(0.96);
+      transition: transform 0.2s;
+    }
+    .img-viewer-backdrop.open .img-viewer-modal { transform: scale(1); }
+    .img-viewer-body {
+      flex: 1; background: #f4f6f7; position: relative;
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+      overflow: hidden;
+    }
+    .img-viewer-img-wrap { max-width: 100%; max-height: 100%; display: flex; align-items: center; justify-content: center; }
+    .img-viewer-img-wrap img { max-width: 100%; max-height: calc(88vh - 140px); object-fit: contain; border-radius: 6px; display: block; }
+    .img-viewer-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 38px; height: 38px; border-radius: 50%;
+      background: #fff; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12); transition: background 0.15s;
+      z-index: 2;
+    }
+    .img-viewer-nav:hover { background: var(--bg-hover); }
+    .img-viewer-nav.prev { left: 14px; }
+    .img-viewer-nav.next { right: 14px; }
+    .img-viewer-nav[disabled] { opacity: 0.3; cursor: default; pointer-events: none; }
 
     /* More chips arrow */
     .more-chips-arrow {
@@ -739,6 +775,97 @@
       width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--border); background: #fff;
     }
 
+    /* Canvas drop indicator */
+    .canvas-drop-indicator {
+      display: none; height: 3px; background: var(--blue); border-radius: 2px;
+      margin: 0 8px; pointer-events: none; position: relative;
+    }
+    .canvas-drop-indicator::before {
+      content: ''; position: absolute; left: -4px; top: -4px;
+      width: 10px; height: 10px; border-radius: 50%; background: var(--blue);
+    }
+    .email-canvas.drag-over { outline: 2px dashed var(--blue); outline-offset: -4px; }
+
+    /* Email review block styles */
+    .e-review-section {
+      background: #f9f9f9; border-radius: 10px; padding: 24px 28px;
+      text-align: center; margin: 4px 0;
+    }
+    .e-review-section-title {
+      font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px;
+    }
+    .e-review-stars { font-size: 20px; color: #F59E0B; margin-bottom: 14px; letter-spacing: 2px; }
+    .e-review-body { font-size: 14px; color: #444; line-height: 1.7; margin-bottom: 16px; }
+    .e-review-author {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .e-review-av {
+      width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
+    }
+    .e-review-author-info { text-align: left; }
+    .e-review-name { font-size: 13px; font-weight: 500; color: #1a1a1a; }
+    .e-review-meta { font-size: 11px; color: #888; margin-top: 1px; }
+
+    /* Review quote right panel — reuses img-props-panel sizing/transition */
+    .rq-panel {
+      width: 0; flex-shrink: 0; overflow: hidden;
+      transition: width 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .rq-panel.open { width: 292px; }
+    .rq-panel-inner {
+      width: 276px; background: #fff; border: 1px solid var(--border); border-radius: 12px;
+      margin: 8px 8px 8px 0; display: flex; flex-direction: column;
+      height: calc(100% - 16px); overflow: hidden;
+    }
+    .rq-panel-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px 12px; flex-shrink: 0; border-bottom: 1px solid var(--border);
+    }
+    .rq-panel-title { font-size: 14px; color: var(--text-1); }
+    .rq-panel-scroll { flex: 1; overflow-y: auto; padding-bottom: 16px; }
+    .rq-panel-scroll::-webkit-scrollbar { width: 3px; }
+    .rq-panel-scroll::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+    .rq-row {
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+    }
+    .rq-row:last-child { border-bottom: none; }
+    .rq-toggle-row {
+      display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .rq-label { font-size: 13px; color: var(--text-1); display: flex; align-items: center; gap: 5px; }
+    .rq-label-hint { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+    .rq-req { color: #DC2626; }
+    .rq-input {
+      width: 100%; height: 36px; border: 1px solid var(--border); border-radius: 8px;
+      padding: 0 10px; font-size: 13px; color: var(--text-1); background: #fff;
+      font-family: 'Roboto', sans-serif; outline: none; margin-top: 7px; display: block;
+      transition: border-color 0.15s; box-sizing: border-box;
+    }
+    .rq-input:focus { border-color: var(--blue); }
+    .rq-select-wrap { position: relative; margin-top: 7px; }
+    .rq-select {
+      width: 100%; height: 36px; border: 1px solid var(--border); border-radius: 8px;
+      padding: 0 28px 0 10px; font-size: 13px; color: var(--text-1); background: #fff;
+      appearance: none; cursor: pointer; font-family: 'Roboto', sans-serif; outline: none;
+    }
+    .rq-select:focus { border-color: var(--blue); }
+    .rq-select-wrap::after {
+      content: ''; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      border: 4px solid transparent; border-top-color: var(--text-3); margin-top: 2px;
+      pointer-events: none;
+    }
+    .rq-filter-sec { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .rq-filter-title { font-size: 12px; color: var(--text-3); margin-bottom: 8px; }
+    .rq-filter-selects { display: flex; flex-direction: column; gap: 7px; }
+    .rq-showall { font-size: 12px; color: var(--blue); cursor: pointer; margin-top: 8px; display: inline-block; }
+    .rq-showall:hover { text-decoration: underline; }
+    .rq-info-icon {
+      width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--text-3);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 9px; color: var(--text-3); cursor: default;
+    }
+
     /* Clickable block in email canvas */
     .email-block-wrap { position: relative; cursor: pointer; }
     .email-block-wrap.selected::after {
@@ -817,7 +944,7 @@
        EMAIL TEMPLATES SCREEN
     ═══════════════════════════════════════ */
     .tpl-screen {
-      position: fixed; inset: 0; z-index: 500;
+      position: fixed; top: 0; right: 0; bottom: 0; left: 56px; z-index: 500;
       background: #fff; display: flex; flex-direction: row;
     }
     .tpl-screen.hidden { display: none !important; }
@@ -825,46 +952,57 @@
 
     /* ─── L2 SIDEBAR ─── */
     .tpl-sidebar {
-      width: 228px; flex-shrink: 0; display: flex; flex-direction: column;
-      border-right: 1px solid var(--border); background: #fff; overflow: hidden;
+      width: 248px; flex-shrink: 0; display: flex; flex-direction: column;
+      border-right: 1px solid var(--border); background: #f8f9fb; overflow: hidden;
     }
-    .tpl-sidebar-logo {
-      height: 52px; display: flex; align-items: center; gap: 8px;
-      padding: 0 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    .tpl-sidebar-logo { display: none; }
+    .tpl-product-title {
+      padding: 18px 18px 18px; font-size: 14px; font-weight: 400;
+      color: var(--text-1); flex-shrink: 0;
     }
-    .tpl-sidebar-logo-name { font-size: 15px; font-weight: 400; color: var(--text-1); }
     .tpl-create-wf-btn {
-      margin: 12px 14px 8px; display: flex; align-items: center;
-      justify-content: space-between; height: 36px; padding: 0 12px;
-      border: 1.5px dashed #c5c9d4; border-radius: 8px;
-      font-size: 13px; color: var(--text-1); background: #fff;
-      cursor: pointer; font-family: 'Roboto', sans-serif; transition: border-color 0.15s, background 0.15s;
-    }
-    .tpl-create-wf-btn:hover { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
-    .tpl-nav-scroll { flex: 1; overflow-y: auto; padding: 4px 0 8px; }
-    .tpl-nav-sec-label {
-      font-size: 11px; font-weight: 400; color: var(--text-3); letter-spacing: 0.05em;
-      text-transform: uppercase; padding: 10px 18px 4px;
-    }
-    .tpl-nav-item {
-      display: flex; align-items: center; gap: 8px; height: 34px;
-      padding: 0 18px; font-size: 13px; color: var(--text-2); cursor: pointer;
-      transition: background 0.12s, color 0.12s; user-select: none;
-    }
-    .tpl-nav-item:hover { background: #f5f6f8; color: var(--text-1); }
-    .tpl-nav-item.active { background: #eef2fd; color: #1E44CC; font-weight: 400; }
-    .tpl-nav-item svg { flex-shrink: 0; opacity: 0.6; }
-    .tpl-nav-item.active svg { opacity: 1; }
-    .tpl-nav-bottom { border-top: 1px solid var(--border); padding: 6px 0; flex-shrink: 0; }
-    .tpl-nav-avatar-row {
-      display: flex; align-items: center; gap: 8px; padding: 8px 14px;
-      margin: 4px 8px; border-radius: 8px; cursor: pointer;
+      margin: 0; display: flex; align-items: center;
+      justify-content: space-between; height: 40px; padding: 0 18px;
+      border: none; border-radius: 0; width: 100%;
+      font-size: 13px; color: var(--text-1); background: transparent;
+      cursor: pointer; font-family: 'Roboto', sans-serif; font-weight: 400;
       transition: background 0.12s;
     }
-    .tpl-nav-avatar-row:hover { background: #f5f6f8; }
-    .tpl-nav-avatar-img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
-    .tpl-nav-avatar-name { font-size: 13px; color: var(--text-1); }
-    .tpl-nav-avatar-role { font-size: 11px; color: var(--text-3); }
+    .tpl-create-wf-btn:hover { background: #eef0f4; }
+    .tpl-create-wf-icon {
+      width: 24px; height: 24px; border-radius: 50%; background: var(--blue);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .tpl-nav-scroll { flex: 1; overflow-y: auto; padding: 2px 0 16px; }
+
+    /* Accordion */
+    .tpl-acc-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 18px; font-size: 13px; font-weight: 400; color: var(--text-1);
+      cursor: pointer; user-select: none; transition: background 0.12s;
+    }
+    .tpl-acc-hdr:hover { background: #eef0f4; }
+    .tpl-acc-chevron { color: var(--text-3); transition: transform 0.2s; display: flex; align-items: center; }
+    .tpl-acc-hdr.closed .tpl-acc-chevron { transform: rotate(180deg); }
+    .tpl-acc-body { overflow: hidden; transition: none; }
+    .tpl-acc-body.hidden { display: none; }
+    .tpl-acc-item {
+      display: flex; align-items: center; height: 34px;
+      margin: 1px 8px; padding: 0 10px; border-radius: 7px;
+      font-size: 13px; font-weight: 300; color: var(--text-2);
+      cursor: pointer; transition: background 0.12s, color 0.12s; user-select: none;
+    }
+    .tpl-acc-item:hover { background: #eef0f4; color: var(--text-1); }
+    .tpl-acc-item.active { background: #e4e6eb; color: var(--text-1); font-weight: 400; }
+
+    /* Reports row */
+    .tpl-reports-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 18px; font-size: 13px; font-weight: 400; color: var(--text-1);
+      cursor: pointer; transition: background 0.12s; user-select: none;
+    }
+    .tpl-reports-row:hover { background: #eef0f4; }
+    .tpl-reports-row svg { color: var(--text-3); }
 
     /* Page header */
     .tpl-header {
@@ -935,11 +1073,11 @@
     .tpl-create-btn {
       display: flex; align-items: center; gap: 6px;
       height: 36px; padding: 0 16px;
-      background: #1E44CC; color: #fff; border: none;
+      background: var(--blue); color: #fff; border: none;
       border-radius: 8px; font-size: 13px; cursor: pointer;
       font-family: 'Roboto', sans-serif; transition: background 0.15s;
     }
-    .tpl-create-btn:hover { background: #1a3ab8; }
+    .tpl-create-btn:hover { background: var(--blue-dark); }
 
     /* Icon buttons in header */
     .tpl-icon-btn {
@@ -1052,9 +1190,26 @@
       transition: box-shadow 0.2s, border-color 0.2s; cursor: pointer;
     }
     .tpl-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-color: #c8cdd8; }
-    .tpl-card-thumb { position: relative; height: 200px; overflow: hidden; background: #f0f1f5; }
-    .tpl-card-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
-    .tpl-card:hover .tpl-card-thumb img { transform: scale(1.02); }
+    .tpl-card-thumb {
+      height: 220px; overflow: hidden; position: relative;
+      background: #D9DFF0; cursor: pointer;
+    }
+    .tpl-thumb-preview {
+      position: absolute; inset: 0;
+      overflow: hidden; pointer-events: none;
+    }
+    .tpl-thumb-email {
+      width: 560px;
+      transform: scale(0.355);
+      transform-origin: bottom center;
+      position: absolute; bottom: 0;
+      left: 50%; margin-left: -280px;
+      font-family: 'Roboto', sans-serif;
+      pointer-events: none; background: #fff;
+      border-radius: 8px 8px 0 0;
+      box-shadow: 0 -6px 28px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
     .tpl-card-overlay {
       position: absolute; inset: 0; background: rgba(0,0,0,0.55);
       display: flex; flex-direction: column; align-items: center;
@@ -1160,7 +1315,7 @@
        OPTIMIZE EMAIL SCREEN
     ═══════════════════════════════════════ */
     .opt-screen {
-      position: fixed; inset: 0; z-index: 500;
+      position: fixed; top: 0; right: 0; bottom: 0; left: 56px; z-index: 500;
       background: #fff; display: flex; flex-direction: row;
     }
     .opt-screen.hidden { display: none !important; }
@@ -1481,6 +1636,640 @@
 
     /* ── PROMPT BOX ICON TWEAKS ── */
     .p-btn-sparkle svg { color: #555; }
+
+  /* ══════════════════════════════════════════
+     DARK MODE
+  ══════════════════════════════════════════ */
+  [data-theme="dark"] {
+    --blue: #5094E8;
+    --blue-dark: #3D7DD4;
+    --blue-light: rgba(80,148,232,0.14);
+    --blue-active-bg: rgba(80,148,232,0.12);
+    --border: #252A3A;
+    --bg-page: #0F1117;
+    --bg-hover: #1D2130;
+    --bg-ai: #14101F;
+    --text-1: #E3E7F0;
+    --text-2: #8B93A6;
+    --text-3: #50596A;
+    --text-4: #343C50;
+    --shadow-sm: 0 1px 4px rgba(0,0,0,0.45);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.6);
+    color-scheme: dark;
+  }
+
+  /* Left icon rail */
+  [data-theme="dark"] .left-rail { background:#090C11; border-right-color:#181C28; }
+  [data-theme="dark"] .rail-btn { color:#50596A; }
+  [data-theme="dark"] .rail-btn:hover { background:#1A1E2C; color:var(--text-2); }
+  [data-theme="dark"] .rail-btn.active { background:#172040; color:var(--blue); }
+  [data-theme="dark"] .rail-sep { background:#181C28; }
+
+  /* Theme toggle icon swap */
+  [data-theme="dark"] .icon-sun { display:none; }
+  [data-theme="dark"] .icon-moon { display:block !important; }
+  .icon-moon { display:none; }
+
+  /* White-background surfaces */
+  [data-theme="dark"] .top-nav,
+  [data-theme="dark"] .sec-header,
+  [data-theme="dark"] .tpl-header,
+  [data-theme="dark"] .tpl-screen,
+  [data-theme="dark"] .opt-screen,
+  [data-theme="dark"] .dash-screen,
+  [data-theme="dark"] .askai-screen,
+  [data-theme="dark"] .dash-hero-hdr,
+  [data-theme="dark"] .dash-stat-card,
+  [data-theme="dark"] .dash-card,
+  [data-theme="dark"] .dash-ai-card,
+  [data-theme="dark"] .askai-chat-pane,
+  [data-theme="dark"] .askai-review-footer,
+  [data-theme="dark"] .askai-review-hdr,
+  [data-theme="dark"] .askai-input-bar,
+  [data-theme="dark"] .askai-asset-card,
+  [data-theme="dark"] .tpl-tabs,
+  [data-theme="dark"] .tpl-card,
+  [data-theme="dark"] .tpl-card-info,
+  [data-theme="dark"] .pdf-viewer-modal,
+  [data-theme="dark"] .pdf-viewer-header,
+  [data-theme="dark"] .img-viewer-modal,
+  [data-theme="dark"] .edit-block-modal,
+  [data-theme="dark"] .edit-block-head,
+  [data-theme="dark"] .email-sub-bar,
+  [data-theme="dark"] .tpl-preview-modal { background:#1A1D2A; }
+
+  /* Sidebar surfaces — slightly darker */
+  [data-theme="dark"] .tpl-sidebar,
+  [data-theme="dark"] .dash-sidebar,
+  [data-theme="dark"] .editor-sidebar,
+  [data-theme="dark"] .ai-create-panel { background:#13161E; }
+
+  /* Page bg */
+  [data-theme="dark"] .tpl-main,
+  [data-theme="dark"] .dash-main,
+  [data-theme="dark"] .askai-cards-scroll,
+  [data-theme="dark"] .askai-review-pane,
+  [data-theme="dark"] .editor-main,
+  [data-theme="dark"] .editor-canvas-wrap { background:var(--bg-page); }
+
+  /* Editor canvas */
+  [data-theme="dark"] .editor-canvas { background:#1A1D2A; }
+
+  /* Borders */
+  [data-theme="dark"] .top-nav,
+  [data-theme="dark"] .sec-header,
+  [data-theme="dark"] .tpl-header,
+  [data-theme="dark"] .tpl-tabs,
+  [data-theme="dark"] .tpl-card-hdr,
+  [data-theme="dark"] .dash-card-hdr,
+  [data-theme="dark"] .dash-hero-hdr,
+  [data-theme="dark"] .askai-review-hdr,
+  [data-theme="dark"] .askai-review-footer,
+  [data-theme="dark"] .askai-input-bar,
+  [data-theme="dark"] .askai-chat-hdr,
+  [data-theme="dark"] .pdf-viewer-header,
+  [data-theme="dark"] .pdf-footer-bar,
+  [data-theme="dark"] .edit-block-head,
+  [data-theme="dark"] .edit-block-foot { border-color:var(--border) !important; }
+
+  /* Accordion & nav rows */
+  [data-theme="dark"] .tpl-acc-hdr:hover,
+  [data-theme="dark"] .tpl-create-wf-btn:hover,
+  [data-theme="dark"] .tpl-nav-standalone:hover,
+  [data-theme="dark"] .tpl-reports-row:hover { background:#1D2130; }
+  [data-theme="dark"] .tpl-acc-item:hover { background:#1D2130; color:var(--text-1); }
+  [data-theme="dark"] .tpl-acc-item.active { background:#172040; color:var(--text-1); }
+  [data-theme="dark"] .tpl-nav-standalone.active { background:#172040; }
+
+  /* Tabs */
+  [data-theme="dark"] .tpl-tab { color:var(--text-3); border-bottom-color:transparent; }
+  [data-theme="dark"] .tpl-tab.active { color:var(--blue); border-bottom-color:var(--blue); }
+  [data-theme="dark"] .tpl-tab-count { background:#252A3A; color:var(--text-3); }
+  [data-theme="dark"] .tpl-tab.active .tpl-tab-count { background:rgba(80,148,232,0.18); color:var(--blue); }
+
+  /* Table */
+  [data-theme="dark"] .tpl-table th { color:var(--text-3); border-bottom-color:var(--border); }
+  [data-theme="dark"] .tpl-table td { border-bottom-color:#1D2130; color:var(--text-2); }
+  [data-theme="dark"] .tpl-table tr:hover td { background:#1D2130; }
+  [data-theme="dark"] .tpl-badge-default { background:#172040; color:var(--blue); }
+  [data-theme="dark"] .tpl-type-badge { background:#252A3A; color:var(--text-2); }
+
+  /* Search & toolbar */
+  [data-theme="dark"] .tpl-search-wrap { background:#13161E; border-color:var(--border); }
+  [data-theme="dark"] .tpl-search { color:var(--text-1); background:transparent; }
+  [data-theme="dark"] .tpl-view-toggle { background:#13161E; border-color:var(--border); }
+  [data-theme="dark"] .tpl-view-btn { color:var(--text-3); }
+  [data-theme="dark"] .tpl-view-btn.active { background:#172040; color:var(--blue); }
+  [data-theme="dark"] .tpl-type-btn { background:#13161E; border-color:var(--border); color:var(--text-2); }
+
+  /* Dropdowns / menus */
+  [data-theme="dark"] .tpl-row-menu,
+  [data-theme="dark"] .tpl-type-menu,
+  [data-theme="dark"] .brand-dropdown { background:#1D2130; border-color:var(--border); box-shadow:0 6px 24px rgba(0,0,0,0.55); }
+  [data-theme="dark"] .tpl-row-menu-item { color:var(--text-2); }
+  [data-theme="dark"] .tpl-row-menu-item:hover { background:#252A3A; color:var(--text-1); }
+  [data-theme="dark"] .tpl-row-menu-sep { background:var(--border); }
+  [data-theme="dark"] .tpl-type-opt { color:var(--text-2); }
+  [data-theme="dark"] .tpl-type-opt:hover { background:#252A3A; color:var(--text-1); }
+  [data-theme="dark"] .tpl-type-opt.active { background:#172040; color:var(--blue); }
+
+  /* Inputs & textareas */
+  [data-theme="dark"] input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+  [data-theme="dark"] textarea,
+  [data-theme="dark"] select { background:#13161E; border-color:var(--border); color:var(--text-1); }
+  [data-theme="dark"] input::placeholder,
+  [data-theme="dark"] textarea::placeholder { color:var(--text-4); }
+  [data-theme="dark"] .sec-title { color:var(--text-1); }
+  [data-theme="dark"] .sec-title:focus { border-color:var(--blue); }
+
+  /* Buttons */
+  [data-theme="dark"] .btn-cancel { border-color:var(--border); color:var(--text-2); background:transparent; }
+  [data-theme="dark"] .btn-cancel:hover { background:var(--bg-hover); }
+  [data-theme="dark"] .icon-btn-sm:hover { background:var(--bg-hover); }
+  [data-theme="dark"] .nav-icon:hover { background:var(--bg-hover); }
+  [data-theme="dark"] .tpl-more-btn { color:var(--text-3); }
+  [data-theme="dark"] .tpl-more-btn:hover { background:var(--bg-hover); color:var(--text-1); }
+
+  /* Dashboard */
+  [data-theme="dark"] .dash-stat-delta { color:#22C55E; }
+  [data-theme="dark"] .dash-stat-delta.neutral { color:var(--text-3); }
+  [data-theme="dark"] .dash-status-pill.draft { background:#2A1F08; color:#FCD34D; }
+  [data-theme="dark"] .dash-status-pill.active { background:#092618; color:#4ADE80; }
+  [data-theme="dark"] .dash-ai-tag { background:rgba(167,139,250,0.15); color:#A78BFA; }
+  [data-theme="dark"] .dash-asset-item { border-bottom-color:#1D2130; }
+  [data-theme="dark"] .dash-asset-item:hover,
+  [data-theme="dark"] .dash-rec-item:hover { background:#1D2130; }
+  [data-theme="dark"] .dash-rec-item { border-bottom-color:#1D2130; }
+  [data-theme="dark"] .dash-ai-rec-pill { background:rgba(167,139,250,0.15); color:#A78BFA; }
+  [data-theme="dark"] .dash-ai-card:hover { border-color:var(--blue); box-shadow:0 2px 14px rgba(80,148,232,0.12); }
+  [data-theme="dark"] .dash-askai-box { background:#13161E; border-color:var(--border); }
+  [data-theme="dark"] .dash-askai-box:hover { border-color:var(--blue); box-shadow:0 0 0 3px rgba(80,148,232,0.1); }
+  [data-theme="dark"] .dash-table th { color:var(--text-3); border-bottom-color:var(--border); }
+  [data-theme="dark"] .dash-table td { border-bottom-color:#1D2130; }
+  [data-theme="dark"] .dash-table tr:hover td { background:#1D2130; }
+
+  /* Ask AI chat */
+  [data-theme="dark"] .askai-bubble-user { background:#1C2250; color:#A5B4FF; }
+  [data-theme="dark"] .askai-bubble-agent { background:#1E2235; color:var(--text-2); }
+  [data-theme="dark"] .askai-agent-label { color:#A78BFA; }
+  [data-theme="dark"] .askai-dots { background:#1E2235; }
+  [data-theme="dark"] .askai-dots span { background:#50596A; }
+  [data-theme="dark"] .askai-starter-btn { background:#13161E; border-color:var(--border); color:var(--text-2); }
+  [data-theme="dark"] .askai-starter-btn:hover { background:#1C2250; border-color:#818CF8; color:#A5B4FF; }
+  [data-theme="dark"] .askai-chat-input { background:#13161E; border-color:var(--border); color:var(--text-1); }
+  [data-theme="dark"] .askai-send-btn { background:#4F46E5; }
+  [data-theme="dark"] .askai-approve-all { color:#818CF8; }
+
+  /* Ask AI review tabs & cards */
+  [data-theme="dark"] .askai-tab { color:var(--text-3); }
+  [data-theme="dark"] .askai-tab.active { color:#818CF8; border-bottom-color:#818CF8; }
+  [data-theme="dark"] .askai-asset-card.upnext { background:#111318; border-color:#252A3A; }
+  [data-theme="dark"] .askai-asset-tag.email { background:rgba(129,140,248,0.14); color:#818CF8; }
+  [data-theme="dark"] .askai-asset-tag.sms { background:rgba(52,211,153,0.12); color:#34D399; }
+  [data-theme="dark"] .askai-asset-tag.segment { background:rgba(167,139,250,0.14); color:#A78BFA; }
+  [data-theme="dark"] .askai-asset-tag.upnext { background:rgba(251,191,36,0.1); color:#FCD34D; }
+  [data-theme="dark"] .askai-btn-approve { border-color:#22C55E; color:#22C55E; background:transparent; }
+  [data-theme="dark"] .askai-btn-approve:hover { background:rgba(34,197,94,0.1); }
+  [data-theme="dark"] .askai-btn-approve.approved { background:rgba(34,197,94,0.14); }
+  [data-theme="dark"] .askai-btn-edit { border-color:var(--border); color:var(--text-2); background:transparent; }
+  [data-theme="dark"] .askai-btn-edit:hover { background:var(--bg-hover); }
+  [data-theme="dark"] .askai-continue-btn { background:#E3E7F0; color:#0F1117; }
+  [data-theme="dark"] .askai-continue-btn:hover { background:#fff; }
+  [data-theme="dark"] .askai-review-empty { color:var(--text-3); }
+
+  /* PDF viewer */
+  [data-theme="dark"] .pdf-footer-bar { background:#13161E; }
+  [data-theme="dark"] .pdf-viewer-close:hover { background:var(--bg-hover); color:var(--text-1); }
+  [data-theme="dark"] .img-viewer-body { background:#0F1117; }
+  [data-theme="dark"] .img-viewer-nav { background:rgba(26,29,42,0.9); color:var(--text-2); }
+  [data-theme="dark"] .img-viewer-nav:hover { background:rgba(37,42,58,0.95); }
+
+  /* Edit block modal */
+  [data-theme="dark"] .edit-block-input { background:#13161E; border-color:var(--border); color:var(--text-1); }
+  [data-theme="dark"] .edit-block-cancel { border-color:var(--border); color:var(--text-2); background:transparent; }
+  [data-theme="dark"] .edit-block-cancel:hover { background:var(--bg-hover); }
+  [data-theme="dark"] .edit-block-hint { color:var(--text-3); }
+
+  /* Brand dropdown */
+  [data-theme="dark"] .brand-option:hover { background:#252A3A; }
+  [data-theme="dark"] .brand-option.selected { background:#172040; }
+  [data-theme="dark"] .brand-none-row:hover { background:#252A3A; }
+  [data-theme="dark"] .brand-sep { background:var(--border); }
+  [data-theme="dark"] .brand-drop-hdr { color:var(--text-3); }
+
+  /* Toast */
+  [data-theme="dark"] #toast { background:#E3E7F0; color:#0F1117; }
+
+  /* Template preview modal */
+  [data-theme="dark"] .tpl-preview-backdrop { background:rgba(0,0,0,0.72); }
+  [data-theme="dark"] .tpl-preview-inner { background:#1A1D2A; }
+  [data-theme="dark"] .tpl-preview-meta { color:var(--text-3); }
+  [data-theme="dark"] .tpl-dev-btn { background:#13161E; border-color:var(--border); color:var(--text-2); }
+  [data-theme="dark"] .tpl-dev-btn.active { background:var(--blue); color:#fff; border-color:var(--blue); }
+  [data-theme="dark"] .tpl-preview-close:hover { background:var(--bg-hover); }
+
+  /* AI panel (opt screen) */
+  [data-theme="dark"] .p-msg-bubble.ai { background:#1E2235; color:var(--text-2); }
+  [data-theme="dark"] .p-type-tab { color:var(--text-3); border-bottom-color:transparent; }
+  [data-theme="dark"] .p-type-tab.active { color:var(--blue); border-bottom-color:var(--blue); }
+  [data-theme="dark"] .p-attach-item { background:#13161E; border-color:var(--border); }
+
+  /* Card thumbnails - keep email preview light (don't invert email content) */
+  [data-theme="dark"] .tpl-card-thumb { background:#1D2130; }
+  [data-theme="dark"] .tpl-thumb-preview { background:#1D2130; }
+  /* tpl-thumb-email stays white — it's actual email HTML preview */
+
+  /* ── Theme toggle button ── */
+  .theme-toggle-btn {
+    width: 40px; height: 40px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #6B7280; border: none;
+    background: transparent; transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+  }
+  .theme-toggle-btn:hover { background: #dde0e7; color: #374151; }
+  [data-theme="dark"] .theme-toggle-btn { color: #50596A; }
+  [data-theme="dark"] .theme-toggle-btn:hover { background: #1A1E2C; color: #E3E7F0; }
+
+  /* ── STANDALONE NAV ITEMS (Dashboard, Ask Marketing AI) ── */
+  .tpl-nav-standalone {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 38px; padding: 0 18px; font-size: 13px; font-weight: 400;
+    color: var(--text-2); cursor: pointer; transition: background 0.12s;
+    user-select: none; flex-shrink: 0;
+  }
+  .tpl-nav-standalone:hover { background: #eef0f4; color: var(--text-1); }
+  .tpl-nav-standalone.active { color: var(--text-1); background: #eef0f4; }
+  .tpl-nav-ai-pill {
+    font-size: 10px; font-weight: 500; background: linear-gradient(135deg,#7C3AED,#1976D2);
+    color: #fff; border-radius: 10px; padding: 1px 6px; letter-spacing: 0.3px;
+    flex-shrink: 0;
+  }
+
+  /* ── DASHBOARD SCREEN ── */
+  .dash-screen {
+    position: fixed; top: 0; right: 0; bottom: 0; left: 56px; z-index: 500;
+    background: #fff; display: flex; flex-direction: row;
+  }
+  .dash-screen.hidden { display: none; }
+
+  /* ── Dashboard sidebar ── */
+  .dash-sidebar {
+    width: 248px; flex-shrink: 0; display: flex; flex-direction: column;
+    border-right: 1px solid var(--border); background: #f8f9fb; overflow: hidden;
+  }
+
+  /* ── Dashboard main ── */
+  .dash-main {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden;
+    background: var(--bg-page);
+  }
+  .dash-hero-hdr {
+    background: #fff; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; gap: 20px;
+  }
+  .dash-hero-left { flex: 1; }
+  .dash-hero-title { font-size: 18px; font-weight: 400; color: var(--text-1); line-height: 1.2; }
+  .dash-hero-sub { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+  .dash-askai-box {
+    display: flex; align-items: center; gap: 10px;
+    border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
+    background: #FAFBFF; cursor: pointer; min-width: 280px; max-width: 380px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .dash-askai-box:hover { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(25,118,210,0.08); }
+  .dash-askai-box-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: linear-gradient(135deg, #7C3AED, #1976D2);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .dash-askai-box-text { flex: 1; font-size: 13px; color: var(--blue); }
+  .dash-askai-box-text span { color: var(--text-3); }
+
+  /* Body scroll */
+  .dash-body { flex: 1; overflow-y: auto; padding: 24px; }
+  .dash-section-label {
+    font-size: 10px; font-weight: 500; color: var(--text-3); text-transform: uppercase;
+    letter-spacing: 0.8px; margin-bottom: 14px;
+  }
+
+  /* Performance stats */
+  .dash-stats { display: grid; grid-template-columns: repeat(6,1fr); gap: 12px; margin-bottom: 28px; }
+  .dash-stat-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .dash-stat-label { font-size: 12px; color: var(--text-3); margin-bottom: 8px; line-height: 1.4; }
+  .dash-stat-value { font-size: 26px; font-weight: 400; color: var(--text-1); line-height: 1; }
+  .dash-stat-delta { font-size: 11px; color: #16A34A; margin-top: 7px; }
+  .dash-stat-delta.neutral { color: var(--text-3); }
+
+  /* Start with AI cards */
+  .dash-ai-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
+  .dash-ai-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s;
+    display: flex; flex-direction: column;
+  }
+  .dash-ai-card:hover { border-color: var(--blue); box-shadow: 0 2px 14px rgba(25,118,210,0.09); }
+  .dash-ai-card-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px; font-size: 20px;
+  }
+  .dash-ai-card-title { font-size: 14px; font-weight: 400; color: var(--text-1); margin-bottom: 6px; }
+  .dash-ai-card-desc { font-size: 12px; color: var(--text-3); line-height: 1.6; flex: 1; }
+  .dash-ai-card-link { font-size: 12px; color: var(--blue); margin-top: 14px; display: flex; align-items: center; gap: 4px; }
+
+  /* Bottom two-col */
+  .dash-bottom-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .dash-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden;
+  }
+  .dash-card-hdr {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px 12px; border-bottom: 1px solid var(--border);
+  }
+  .dash-card-title { font-size: 13px; font-weight: 400; color: var(--text-1); }
+  .dash-card-link { font-size: 12px; color: var(--blue); cursor: pointer; }
+  .dash-card-link:hover { text-decoration: underline; }
+  .dash-asset-list { display: flex; flex-direction: column; }
+  .dash-asset-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 18px; border-bottom: 1px solid #f3f4f6;
+    font-size: 13px; color: var(--text-2);
+  }
+  .dash-asset-item:last-child { border-bottom: none; }
+  .dash-asset-item:hover { background: #fafafa; }
+  .dash-asset-item-meta { display: flex; align-items: center; gap: 10px; }
+  .dash-asset-type { font-size: 11px; color: var(--text-3); }
+  .dash-status-pill {
+    display: inline-flex; align-items: center; font-size: 11px; padding: 3px 9px;
+    border-radius: 20px; font-weight: 400; flex-shrink: 0;
+  }
+  .dash-status-pill.draft { background: #FEF3C7; color: #92400E; }
+  .dash-status-pill.active { background: #DCFCE7; color: #15803D; }
+  .dash-status-pill.paused { background: #F3F4F6; color: #6B7280; }
+  .dash-status-pill.review { background: #EDE9FE; color: #6D28D9; }
+  .dash-rec-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 18px; border-bottom: 1px solid #f3f4f6;
+    font-size: 13px; color: var(--text-2);
+  }
+  .dash-rec-item:last-child { border-bottom: none; }
+  .dash-rec-item:hover { background: #fafafa; cursor: pointer; }
+  .dash-rec-item-left { display: flex; flex-direction: column; gap: 2px; }
+  .dash-rec-item-sub { font-size: 11px; color: var(--text-3); }
+  .dash-ai-rec-pill {
+    font-size: 10px; background: #EDE9FE; color: #6D28D9;
+    border-radius: 10px; padding: 2px 8px; flex-shrink: 0;
+  }
+
+  /* Active campaigns table */
+  .dash-full-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
+  .dash-table { width: 100%; border-collapse: collapse; }
+  .dash-table th {
+    font-size: 11px; font-weight: 500; color: var(--text-3); text-transform: uppercase;
+    letter-spacing: 0.5px; padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid var(--border); background: #fafbfc;
+  }
+  .dash-table td {
+    padding: 11px 14px; font-size: 13px; color: var(--text-2);
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .dash-table tr:last-child td { border-bottom: none; }
+  .dash-table tr:hover td { background: #fafafa; }
+  .dash-table td.name { color: var(--text-1); }
+  .dash-tbl-bar { background: #E8F0FE; border-radius: 4px; height: 5px; width: 100%; min-width: 60px; }
+  .dash-tbl-bar-fill { height: 5px; background: var(--blue); border-radius: 4px; }
+  .dash-tbl-sparkline { color: #16A34A; font-size: 12px; }
+  .dash-tbl-sparkline.down { color: #DC2626; }
+
+  /* Audience segments */
+  .dash-three-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .dash-seg-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 18px; border-bottom: 1px solid #f3f4f6;
+    font-size: 13px; color: var(--text-2);
+  }
+  .dash-seg-item:last-child { border-bottom: none; }
+  .dash-seg-item:hover { background: #fafafa; }
+  .dash-seg-count { font-size: 12px; color: var(--text-3); }
+  .dash-seg-delta { font-size: 11px; color: #16A34A; }
+  .dash-seg-delta.neg { color: #DC2626; }
+  .dash-workflow-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 18px; border-bottom: 1px solid #f3f4f6;
+    font-size: 13px; color: var(--text-2);
+  }
+  .dash-workflow-item:last-child { border-bottom: none; }
+  .dash-workflow-item:hover { background: #fafafa; }
+  .dash-workflow-meta { display: flex; flex-direction: column; gap: 2px; }
+  .dash-workflow-sub { font-size: 11px; color: var(--text-3); }
+  .dash-workflow-rate { font-size: 12px; color: var(--text-1); font-weight: 400; }
+
+  /* ── ASK MARKETING AI SCREEN ── */
+  .askai-screen {
+    position: fixed; top: 0; right: 0; bottom: 0; left: 56px; z-index: 500;
+    background: #fff; display: flex; flex-direction: row;
+  }
+  .askai-screen.hidden { display: none; }
+
+  /* ── Chat pane (left) ── */
+  .askai-chat-pane {
+    width: 42%; flex-shrink: 0; display: flex; flex-direction: column;
+    border-right: 1px solid var(--border); background: #fff; overflow: hidden;
+  }
+  .askai-chat-hdr {
+    padding: 20px 24px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .askai-chat-hdr-text { display: flex; flex-direction: column; }
+  .askai-chat-hdr-title { font-size: 17px; font-weight: 400; color: var(--text-1); }
+  .askai-chat-hdr-sub { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+  .askai-cancel-btn {
+    display: flex; align-items: center; gap: 5px; padding: 6px 12px;
+    border: 1px solid var(--border); border-radius: 6px; background: transparent;
+    color: var(--text-2); font-size: 12px; font-weight: 500; cursor: pointer;
+    transition: background .15s, color .15s; flex-shrink: 0; margin-top: 2px;
+  }
+  .askai-cancel-btn:hover { background: var(--bg-hover); color: var(--text-1); }
+  .askai-chat-msgs {
+    flex: 1; overflow-y: auto; padding: 20px 24px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  /* User bubble */
+  .askai-bubble-user {
+    background: #EEEDF8; border-radius: 16px 16px 4px 16px;
+    padding: 12px 16px; font-size: 14px; color: #3730A3; line-height: 1.6;
+    align-self: flex-end; max-width: 86%;
+  }
+  /* Agent message */
+  .askai-agent-msg { display: flex; flex-direction: column; gap: 6px; max-width: 92%; }
+  .askai-agent-label { font-size: 12px; color: #6D28D9; font-weight: 400; }
+  .askai-bubble-agent {
+    background: #F3F4F6; border-radius: 4px 16px 16px 16px;
+    padding: 12px 16px; font-size: 14px; color: var(--text-2); line-height: 1.7;
+  }
+  .askai-bubble-agent ul { margin: 8px 0 0 4px; padding-left: 16px; display: flex; flex-direction: column; gap: 4px; }
+  .askai-bubble-agent li { font-size: 13px; color: var(--text-2); }
+  /* Typing indicator */
+  .askai-typing-row {
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .askai-dots {
+    display: inline-flex; gap: 5px; background: #F3F4F6;
+    border-radius: 4px 16px 16px 16px; padding: 12px 16px;
+  }
+  .askai-dots span {
+    width: 7px; height: 7px; border-radius: 50%; background: #9CA3AF;
+    animation: chatDot 1.3s infinite ease-in-out;
+  }
+  .askai-dots span:nth-child(2) { animation-delay: 0.18s; }
+  .askai-dots span:nth-child(3) { animation-delay: 0.36s; }
+  @keyframes chatDot { 0%,80%,100%{transform:scale(0.7);opacity:.5} 40%{transform:scale(1);opacity:1} }
+
+  /* Input bar */
+  .askai-input-bar {
+    border-top: 1px solid var(--border); padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0; background: #fff;
+  }
+  .askai-chat-input {
+    flex: 1; height: 44px; border: 1px solid var(--border); border-radius: 22px;
+    padding: 0 18px; font-size: 14px; font-family: 'Roboto', sans-serif;
+    color: var(--text-1); outline: none; background: #fff; transition: border-color 0.15s;
+  }
+  .askai-chat-input:focus { border-color: #818CF8; }
+  .askai-chat-input::placeholder { color: var(--text-4); }
+  .askai-send-btn {
+    width: 40px; height: 40px; border-radius: 50%; border: none; flex-shrink: 0;
+    background: #4F46E5; color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .askai-send-btn:hover { background: #4338CA; }
+
+  /* ── Review pane (right) ── */
+  .askai-review-pane {
+    flex: 1; display: flex; flex-direction: column; background: #F5F5F5; overflow: hidden;
+  }
+  .askai-review-hdr {
+    background: #fff; border-bottom: 1px solid var(--border); padding: 18px 24px 0;
+    flex-shrink: 0;
+  }
+  .askai-review-hdr-row {
+    display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px;
+  }
+  .askai-review-title { font-size: 16px; font-weight: 400; color: var(--text-1); }
+  .askai-review-sub { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+  .askai-approve-all {
+    font-size: 13px; color: #4F46E5; cursor: pointer; white-space: nowrap;
+    border: none; background: none; font-family: 'Roboto', sans-serif;
+    transition: color 0.12s; margin-top: 2px;
+  }
+  .askai-approve-all:hover { color: #4338CA; }
+  /* Tabs */
+  .askai-tabs { display: flex; gap: 0; }
+  .askai-tab {
+    padding: 8px 18px; font-size: 13px; color: var(--text-3); cursor: pointer;
+    border-bottom: 2px solid transparent; transition: color 0.12s, border-color 0.12s;
+    user-select: none;
+  }
+  .askai-tab:hover { color: var(--text-1); }
+  .askai-tab.active { color: #4F46E5; border-bottom-color: #4F46E5; }
+
+  /* Cards scroll area */
+  .askai-cards-scroll {
+    flex: 1; overflow-y: auto; padding: 20px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  /* Asset card */
+  .askai-asset-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .askai-asset-card-top {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+  }
+  .askai-asset-tag {
+    font-size: 12px; border-radius: 20px; padding: 3px 10px; font-weight: 400;
+  }
+  .askai-asset-tag.email { background: #EEF0FB; color: #4338CA; }
+  .askai-asset-tag.sms { background: #CCFBF1; color: #0F766E; }
+  .askai-asset-tag.segment { background: #EDE9FE; color: #6D28D9; }
+  .askai-asset-counter { font-size: 12px; color: var(--text-3); }
+  .askai-asset-title { font-size: 15px; font-weight: 400; color: var(--text-1); margin-bottom: 6px; line-height: 1.4; }
+  .askai-asset-meta { font-size: 12px; color: var(--text-3); line-height: 1.6; margin-bottom: 14px; }
+  .askai-asset-actions { display: flex; align-items: center; gap: 8px; }
+  .askai-btn-approve {
+    height: 32px; padding: 0 16px; border: 1.5px solid #16A34A; border-radius: 8px;
+    font-size: 13px; color: #16A34A; background: #fff; cursor: pointer;
+    font-family: 'Roboto', sans-serif; transition: background 0.12s;
+  }
+  .askai-btn-approve:hover { background: #F0FDF4; }
+  .askai-btn-approve.approved { background: #DCFCE7; border-color: #16A34A; color: #15803D; }
+  .askai-btn-edit {
+    height: 32px; padding: 0 16px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 13px; color: var(--text-2); background: #fff; cursor: pointer;
+    font-family: 'Roboto', sans-serif; transition: background 0.12s;
+  }
+  .askai-btn-edit:hover { background: var(--bg-hover); }
+  .askai-btn-skip {
+    height: 32px; padding: 0 12px; border: none; border-radius: 8px;
+    font-size: 13px; color: var(--text-3); background: transparent; cursor: pointer;
+    font-family: 'Roboto', sans-serif; transition: color 0.12s;
+  }
+  .askai-btn-skip:hover { color: var(--text-2); }
+  /* Workflow "up next" card — dashed border */
+  .askai-asset-card.upnext {
+    border-style: dashed; border-color: #D1D5DB; background: #FAFAFA;
+  }
+  .askai-asset-tag.upnext { background: #FEF3C7; color: #92400E; }
+
+  /* Review footer */
+  .askai-review-footer {
+    background: #fff; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; flex-shrink: 0;
+  }
+  .askai-footer-status { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+  .askai-continue-btn {
+    height: 48px; padding: 0 28px; background: var(--text-1); color: #fff;
+    border: none; border-radius: 10px; font-size: 15px; font-family: 'Roboto', sans-serif;
+    cursor: pointer; transition: background 0.15s; display: flex; align-items: center; gap: 8px;
+  }
+  .askai-continue-btn:hover { background: #333; }
+
+  /* Empty / initial state */
+  .askai-chat-empty {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 10px; padding: 40px; text-align: center;
+  }
+  .askai-chat-empty-icon {
+    width: 52px; height: 52px; border-radius: 14px; margin-bottom: 4px;
+    background: linear-gradient(135deg, #EDE9FE, #DBEAFE);
+    display: flex; align-items: center; justify-content: center; font-size: 24px;
+  }
+  .askai-chat-empty-title { font-size: 15px; color: var(--text-2); }
+  .askai-chat-empty-sub { font-size: 13px; color: var(--text-3); line-height: 1.6; max-width: 280px; }
+  .askai-starter-prompts { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; width: 100%; max-width: 340px; }
+  .askai-starter-btn {
+    border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+    font-size: 12px; color: var(--text-2); cursor: pointer; text-align: left;
+    background: #fff; transition: border-color 0.15s, background 0.15s;
+    font-family: 'Roboto', sans-serif;
+  }
+  .askai-starter-btn:hover { border-color: #818CF8; background: #EEEDF8; color: #4338CA; }
+
+  /* Review empty state */
+  .askai-review-empty {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 8px; color: var(--text-3); padding: 40px; text-align: center;
+  }
+  .askai-review-empty-sub { font-size: 13px; max-width: 260px; line-height: 1.6; }
+
   </style>
 </head>
 <body>
@@ -1491,20 +2280,22 @@
   <!-- LEFT RAIL NAV -->
   <aside class="left-rail">
     <div class="rail-logo">
-      <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
-        <!-- wing -->
-        <path d="M4 17C2 11 5 4 12 6C15 7 17 10 19 14" fill="#1565C0"/>
-        <!-- tail -->
-        <path d="M5 25C2 29 2 33 8 30L13 25" fill="#1565C0"/>
-        <!-- body -->
-        <circle cx="17" cy="21" r="9" fill="#1976D2"/>
-        <!-- head -->
-        <circle cx="22" cy="10" r="7" fill="#1976D2"/>
-        <!-- beak -->
-        <path d="M28 7.5L32 6.5L28.5 12Z" fill="#1565C0"/>
-        <!-- eye -->
-        <circle cx="24" cy="9" r="2.2" fill="white"/>
-        <circle cx="24.5" cy="8.7" r="1.1" fill="#0D47A1"/>
+      <svg width="28" height="28" viewBox="0 0 100 100" fill="none">
+        <!-- Round body -->
+        <circle cx="58" cy="62" r="28" fill="#1976D2"/>
+        <!-- Neck / upper body merging into head -->
+        <ellipse cx="44" cy="36" rx="14" ry="18" fill="#1976D2"/>
+        <!-- Head -->
+        <circle cx="50" cy="20" r="14" fill="#1976D2"/>
+        <!-- Tail sweep left-down -->
+        <path d="M30 72 C18 80 8 90 4 98 C10 88 14 76 28 68 Z" fill="#1565C0"/>
+        <!-- Wing left -->
+        <path d="M20 50 C6 38 2 22 14 14 C18 24 22 36 30 46 Z" fill="#1565C0"/>
+        <!-- Beak -->
+        <path d="M62 14 L78 10 L66 22 Z" fill="#1565C0"/>
+        <!-- Eye -->
+        <circle cx="56" cy="17" r="4" fill="white"/>
+        <circle cx="57" cy="16" r="2" fill="#0D47A1"/>
       </svg>
     </div>
     <div class="rail-btn" title="Overview"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 11.5L12 4l9 7.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 21v-6h6v6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
@@ -1518,13 +2309,19 @@
     <div class="rail-btn" title="Surveys"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M9 9l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 14h8M8 17h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
     <div class="rail-btn" title="Ticketing"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="13" height="13" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h9A1.5 1.5 0 0 1 20 5.5v9A1.5 1.5 0 0 1 18.5 16H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
     <div class="rail-btn" title="Contacts"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v7.5"/><path d="M11 5.5v-2a1.5 1.5 0 0 1 3 0v8.5"/><path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1-6 6h-2a7 7 0 0 1-7-7v-.5a2 2 0 0 1 4 0v.5"/></svg></div>
-    <div class="rail-btn active" title="Campaigns"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8.5c1.8 1.1 3 2.9 3 4.8s-1.2 3.7-3 4.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 5v14l-5-3.5H5a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h4L14 5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
-    <div class="rail-btn rail-has-badge" title="Automations"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0 1 13.65-5.65L21 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12a8 8 0 0 1-13.65 5.65L3 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 6v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 18v-3h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="rail-badge"></span></div>
+    <div class="rail-btn" title="Campaigns"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8.5c1.8 1.1 3 2.9 3 4.8s-1.2 3.7-3 4.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 5v14l-5-3.5H5a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h4L14 5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+    <div class="rail-btn rail-has-badge active" title="Automations"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0 1 13.65-5.65L21 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12a8 8 0 0 1-13.65 5.65L3 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 6v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 18v-3h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="rail-badge"></span></div>
     <div class="rail-btn" title="Reports"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 1 0 10 10H12V2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M15 2.5A10 10 0 0 1 22 9.5H15V2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
     <div class="rail-btn" title="Insights"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 21h6M12 3a6 6 0 0 1 4.5 10l-.5 2H8l-.5-2A6 6 0 0 1 12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 17v1a3 3 0 0 0 6 0v-1" stroke="currentColor" stroke-width="1.5"/></svg></div>
     <div class="rail-btn" title="Competitors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 17V12M9 17V8M13 17V13M17 17V6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M2 17h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
     <div class="rail-spacer"></div>
     <div class="rail-sep"></div>
+    <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle light/dark mode" onclick="toggleTheme()">
+      <!-- Sun (shown in dark mode) -->
+      <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <!-- Moon (shown in light mode) -->
+      <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
     <div class="rail-btn" title="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
   </aside>
 
@@ -1594,7 +2391,7 @@
         </div>
       </div>
       <button class="opt-email-btn" onclick="openOptimizeScreen()">Optimize email</button>
-      <button class="btn-cancel">Cancel</button>
+      <button class="btn-cancel" onclick="openTplScreen()">Cancel</button>
       <div class="btn-save-wrap">
         <button class="btn-save" onclick="saveAndOpenTemplates()">Save</button>
         <button class="btn-save-caret">
@@ -1727,17 +2524,17 @@
           <!-- Attachments inside box (shown when there are attachments) -->
           <div class="prompt-attachments" id="prompt-attachments">
             <!-- Pre-loaded demo attachments to match the design -->
-            <div class="img-thumb-wrap" id="thumb-demo-1">
+            <div class="img-thumb-wrap" id="thumb-demo-1" onclick="openImgViewer(0)">
               <div class="img-thumb">
                 <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=120&h=120&fit=crop&q=70" alt="food">
               </div>
-              <div class="thumb-remove" onclick="removeDemoThumb('thumb-demo-1')">✕</div>
+              <div class="thumb-remove" onclick="event.stopPropagation();removeDemoThumb('thumb-demo-1')">✕</div>
             </div>
-            <div class="img-thumb-wrap" id="thumb-demo-2">
-              <div class="img-thumb selected">
+            <div class="img-thumb-wrap" id="thumb-demo-2" onclick="openImgViewer(1)">
+              <div class="img-thumb">
                 <img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=120&h=120&fit=crop&q=70" alt="fettuccine">
               </div>
-              <div class="thumb-remove" onclick="removeDemoThumb('thumb-demo-2')">✕</div>
+              <div class="thumb-remove" onclick="event.stopPropagation();removeDemoThumb('thumb-demo-2')">✕</div>
             </div>
             <div class="pdf-chip-wrap" id="thumb-demo-pdf">
               <div class="pdf-chip-prompt" onclick="openPdfViewer('Brand book')">
@@ -1915,7 +2712,7 @@
                   </div>
                 </div>
                 <!-- Review quote -->
-                <div class="pb-card pb-tooltip-wrap" onclick="showToast('Review quote block added')">
+                <div class="pb-card pb-tooltip-wrap" draggable="true" ondragstart="pbDragStart(event,'review-quote')" onclick="showToast('Drag the Review quote block onto the canvas')" style="cursor:grab">
                   <div class="pb-tooltip">Highlight a single customer review</div>
                   <div class="pb-card-inner">
                     <div class="pb-drag-row"><svg width="12" height="8" viewBox="0 0 12 8" fill="none"><circle cx="2" cy="2" r="1" fill="#bbb"/><circle cx="6" cy="2" r="1" fill="#bbb"/><circle cx="10" cy="2" r="1" fill="#bbb"/><circle cx="2" cy="6" r="1" fill="#bbb"/><circle cx="6" cy="6" r="1" fill="#bbb"/><circle cx="10" cy="6" r="1" fill="#bbb"/></svg></div>
@@ -2142,7 +2939,11 @@
 
       <!-- Email canvas scroll -->
       <div class="email-scroll">
-        <div class="email-canvas" id="email-canvas">
+        <div class="email-canvas" id="email-canvas"
+          ondragover="canvasDragOver(event)"
+          ondragleave="canvasDragLeave(event)"
+          ondrop="canvasDrop(event)">
+          <div class="canvas-drop-indicator" id="canvas-drop-indicator"></div>
 
           <!-- Business header -->
           <div class="email-block" onclick="selectBlock(event,this)">
@@ -2370,6 +3171,104 @@
         </div>
       </div>
 
+      <!-- Review Quote Properties Panel -->
+      <div class="rq-panel" id="rq-panel">
+        <div class="rq-panel-inner">
+          <div class="rq-panel-hdr">
+            <span class="rq-panel-title">Review quote details</span>
+            <button class="img-props-close-btn" onclick="closeReviewPanel()">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="rq-panel-scroll">
+            <!-- Dynamic review toggle -->
+            <div class="rq-toggle-row">
+              <span class="rq-label">Dynamic review</span>
+              <div class="img-tog" id="rq-dynamic-tog" onclick="toggleImgTog('rq-dynamic-tog')"></div>
+            </div>
+            <!-- Title -->
+            <div class="rq-row">
+              <div class="rq-label">Title <span class="rq-req">*</span></div>
+              <input class="rq-input" id="rq-title-input" type="text" value="What our customer say"
+                oninput="updateReviewTitle(this.value)">
+            </div>
+            <!-- Review selection -->
+            <div class="rq-row">
+              <div class="rq-label">Review selection <span class="rq-req">*</span></div>
+              <div class="rq-select-wrap">
+                <select class="rq-select">
+                  <option selected>Recent</option>
+                  <option>Highest rated</option>
+                  <option>Most helpful</option>
+                  <option>Featured</option>
+                  <option>Manual</option>
+                </select>
+              </div>
+            </div>
+            <!-- Filter reviews by -->
+            <div class="rq-filter-sec">
+              <div class="rq-filter-title">Filter reviews by</div>
+              <div class="rq-filter-selects">
+                <div class="rq-select-wrap">
+                  <select class="rq-select">
+                    <option selected>5 star rating</option>
+                    <option>4 star rating</option>
+                    <option>3 star rating</option>
+                    <option>Any rating</option>
+                  </select>
+                </div>
+                <div class="rq-select-wrap">
+                  <select class="rq-select">
+                    <option selected>Google</option>
+                    <option>Facebook</option>
+                    <option>Yelp</option>
+                    <option>All sources</option>
+                  </select>
+                </div>
+                <div class="rq-select-wrap">
+                  <select class="rq-select">
+                    <option value="" disabled selected>Review content</option>
+                    <option>With photos</option>
+                    <option>With text</option>
+                    <option>Any</option>
+                  </select>
+                </div>
+                <div class="rq-select-wrap">
+                  <select class="rq-select">
+                    <option value="" disabled selected>Character count</option>
+                    <option>&lt; 100 chars</option>
+                    <option>100–300 chars</option>
+                    <option>&gt; 300 chars</option>
+                  </select>
+                </div>
+                <div class="rq-select-wrap">
+                  <select class="rq-select">
+                    <option value="" disabled selected>Location</option>
+                    <option>All locations</option>
+                    <option>Palo Alto, CA</option>
+                    <option>Georgia</option>
+                  </select>
+                </div>
+              </div>
+              <span class="rq-showall">Show all</span>
+            </div>
+            <!-- Personalize by location -->
+            <div class="rq-toggle-row">
+              <span class="rq-label">
+                Personalize by location
+                <span class="rq-info-icon">?</span>
+              </span>
+              <div class="img-tog on" id="rq-location-tog" onclick="toggleImgTog('rq-location-tog')"></div>
+            </div>
+            <!-- Show featured reviews -->
+            <div class="rq-toggle-row">
+              <span class="rq-label">Show featured reviews</span>
+              <div class="img-tog" id="rq-featured-tog" onclick="toggleImgTog('rq-featured-tog')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div><!-- end email-panel -->
   </div><!-- end content-area -->
   </div><!-- end right-section -->
@@ -2391,19 +3290,8 @@
 ═══════════════════════════════════════ -->
 <div class="opt-screen hidden" id="opt-screen">
 
-  <!-- Left rail (same as main) -->
-  <aside class="left-rail">
-    <div class="rail-logo">
-      <svg width="28" height="28" viewBox="0 0 56 56" fill="none">
-        <circle cx="36" cy="22" r="13" fill="#1976D2"/>
-        <ellipse cx="26" cy="38" rx="16" ry="11" fill="#1976D2"/>
-        <path d="M47 18L56 16L47 27Z" fill="#1565C0"/>
-        <circle cx="40" cy="17" r="3.5" fill="white"/>
-        <circle cx="41" cy="16.5" r="1.8" fill="#0D47A1"/>
-        <path d="M11 34C5 26 8 14 18 18L26 34Z" fill="#1565C0"/>
-        <path d="M10 43C4 47 3 54 11 50L19 43Z" fill="#1565C0"/>
-      </svg>
-    </div>
+  <!-- Left rail removed: now fixed globally above all screens -->
+  <div style="display:none">
     <div class="rail-btn" title="Overview"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 11.5L12 4l9 7.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 21v-6h6v6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
     <div class="rail-btn" title="Inbox"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H7.5L4 21V6a2 2 0 0 1 0-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="8.5" cy="11" r="1.1" fill="currentColor"/><circle cx="12" cy="11" r="1.1" fill="currentColor"/><circle cx="15.5" cy="11" r="1.1" fill="currentColor"/></svg></div>
     <div class="rail-btn" title="Listings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg></div>
@@ -2415,15 +3303,14 @@
     <div class="rail-btn" title="Surveys"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M9 9l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 14h8M8 17h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
     <div class="rail-btn" title="Ticketing"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="13" height="13" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h9A1.5 1.5 0 0 1 20 5.5v9A1.5 1.5 0 0 1 18.5 16H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
     <div class="rail-btn" title="Contacts"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v7.5"/><path d="M11 5.5v-2a1.5 1.5 0 0 1 3 0v8.5"/><path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1-6 6h-2a7 7 0 0 1-7-7v-.5a2 2 0 0 1 4 0v.5"/></svg></div>
-    <div class="rail-btn active" title="Campaigns"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8.5c1.8 1.1 3 2.9 3 4.8s-1.2 3.7-3 4.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 5v14l-5-3.5H5a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h4L14 5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
-    <div class="rail-btn rail-has-badge" title="Automations"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0 1 13.65-5.65L21 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12a8 8 0 0 1-13.65 5.65L3 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 6v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 18v-3h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="rail-badge"></span></div>
+    <div class="rail-btn" title="Campaigns"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8.5c1.8 1.1 3 2.9 3 4.8s-1.2 3.7-3 4.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 5v14l-5-3.5H5a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h4L14 5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+    <div class="rail-btn rail-has-badge active" title="Automations"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0 1 13.65-5.65L21 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12a8 8 0 0 1-13.65 5.65L3 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 6v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 18v-3h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="rail-badge"></span></div>
     <div class="rail-btn" title="Reports"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 1 0 10 10H12V2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M15 2.5A10 10 0 0 1 22 9.5H15V2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
     <div class="rail-btn" title="Insights"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 21h6M12 3a6 6 0 0 1 4.5 10l-.5 2H8l-.5-2A6 6 0 0 1 12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 17v1a3 3 0 0 0 6 0v-1" stroke="currentColor" stroke-width="1.5"/></svg></div>
     <div class="rail-btn" title="Competitors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 17V12M9 17V8M13 17V13M17 17V6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M2 17h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
     <div class="rail-spacer"></div>
     <div class="rail-sep"></div>
-    <div class="rail-btn" title="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-  </aside>
+  </div><!-- end hidden duplicate rail -->
 
   <!-- Main content column -->
   <div class="opt-main">
@@ -2616,68 +3503,64 @@
 
   <!-- L2 Sidebar -->
   <aside class="tpl-sidebar">
-    <div class="tpl-sidebar-logo">
-      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-        <path d="M4 17C2 11 5 4 12 6C15 7 17 10 19 14" fill="#1565C0"/>
-        <path d="M5 25C2 29 2 33 8 30L13 25" fill="#1565C0"/>
-        <circle cx="17" cy="21" r="9" fill="#1976D2"/>
-        <circle cx="22" cy="10" r="7" fill="#1976D2"/>
-        <path d="M28 7.5L32 6.5L28.5 12Z" fill="#1565C0"/>
-        <circle cx="24" cy="9" r="2.2" fill="white"/>
-        <circle cx="24.5" cy="8.7" r="1.1" fill="#0D47A1"/>
-      </svg>
-      <span class="tpl-sidebar-logo-name">Birdeye</span>
-    </div>
 
-    <button class="tpl-create-wf-btn">
-      Create workflow
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <!-- Product title -->
+    <div class="tpl-product-title">Marketing Automation AI</div>
+
+    <!-- Create workflow -->
+    <button class="tpl-create-wf-btn" onclick="showAskAI()">
+      Ask Marketing AI
+      <div class="tpl-create-wf-icon" style="background:linear-gradient(135deg,#6D28D9,#4F46E5)">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.4 4.2H14l-3.5 2.5 1.3 4.1L8 10.5l-3.8 2.3 1.3-4.1L2 6.2h4.6L8 2z" fill="white"/></svg>
+      </div>
     </button>
 
+    <!-- Dashboard & Ask AI nav items -->
+    <div class="tpl-nav-standalone" id="tpl-nav-dashboard" onclick="showDashboard()">Dashboard</div>
+    <!-- Accordion nav -->
     <nav class="tpl-nav-scroll">
-      <div class="tpl-nav-sec-label">Agents</div>
-      <div class="tpl-nav-item">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 2l2.5 5.1L18 8l-4 3.9 0.9 5.6L10 15l-4.9 2.5L6 12 2 8l5.5-.9Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
-        Reputation
+
+      <!-- Agents accordion -->
+      <div class="tpl-acc-hdr closed" onclick="toggleTplAcc('acc-agents', this)">
+        Agents
+        <span class="tpl-acc-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 9l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </div>
-      <div class="tpl-nav-item">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M3 3h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H6L3 16V4a1 1 0 0 1 0-1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
-        Conversations
-      </div>
-      <div class="tpl-nav-item">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 8h16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M6 2v2M14 2v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-        Appointments
-      </div>
-      <div class="tpl-nav-item">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.4"/><path d="M10 6v4l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-        Surveys
+      <div class="tpl-acc-body hidden" id="acc-agents">
+        <div class="tpl-acc-item">Workflow agents</div>
+        <div class="tpl-acc-item">Automations agents</div>
+        <div class="tpl-acc-item">Campaign agents</div>
       </div>
 
-      <div class="tpl-nav-sec-label" style="margin-top:4px">Templates AI</div>
-      <div class="tpl-nav-item active">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 8h10M5 11h7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-        Email
+      <!-- Templates AI accordion -->
+      <div class="tpl-acc-hdr" onclick="toggleTplAcc('acc-templates', this)">
+        Templates AI
+        <span class="tpl-acc-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 9l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </div>
-      <div class="tpl-nav-item">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><rect x="5" y="1" width="10" height="18" rx="2" stroke="currentColor" stroke-width="1.4"/><circle cx="10" cy="16" r="0.8" fill="currentColor"/></svg>
-        Text
+      <div class="tpl-acc-body" id="acc-templates">
+        <div class="tpl-acc-item active">Email</div>
+        <div class="tpl-acc-item">Text</div>
       </div>
-      <div class="tpl-nav-item">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h16M6 2v5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-        Landing pages
-      </div>
-    </nav>
 
-    <div class="tpl-nav-bottom">
-      <div class="tpl-nav-item">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M16 10c0 .4.3 1.4.3 1.4l1.2 0.7-1 1.7-1.3-.7s-.8.5-1.2.7l-.3 1.4h-2l-.3-1.4c-.4-.2-1.2-.7-1.2-.7l-1.3.7-1-1.7 1.2-.7s.3-1 .3-1.4-.3-1.4-.3-1.4L4 7.9l1-1.7 1.3.7s.8-.5 1.2-.7L7.8 5h2l.3 1.4c.4.2 1.2.7 1.2.7l1.3-.7 1 1.7-1.2.7s-.3 1-.4 1.4z" stroke="currentColor" stroke-width="1.4"/></svg>
+      <!-- Settings accordion -->
+      <div class="tpl-acc-hdr closed" onclick="toggleTplAcc('acc-settings', this)">
         Settings
+        <span class="tpl-acc-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 9l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </div>
-      <div class="tpl-nav-item">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M4 14V9M8 14V5M12 14V11M16 14V3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M2 14h16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <div class="tpl-acc-body hidden" id="acc-settings">
+        <div class="tpl-acc-item">Communication restriction</div>
+        <div class="tpl-acc-item">Text images</div>
+        <div class="tpl-acc-item">Manage tags</div>
+        <div class="tpl-acc-item">Opt-in configuration</div>
+        <div class="tpl-acc-item">Email settings</div>
+      </div>
+
+      <!-- Reports standalone -->
+      <div class="tpl-reports-row">
         Reports
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 2h2v2M12 2L7 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 3H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-    </div>
+
+    </nav>
   </aside>
 
   <!-- Main column -->
@@ -2685,7 +3568,7 @@
 
     <!-- Top nav -->
     <nav class="top-nav">
-      <span class="top-nav-title">Marketing Automation AI</span>
+      <span class="top-nav-title"></span>
       <div class="top-nav-right">
         <button class="nav-icon" title="Help"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#777" stroke-width="1.5"/><path d="M7.5 7.5C7.5 6.1 8.6 5 10 5s2.5 1.1 2.5 2.5c0 1.5-2.5 2.5-2.5 4" stroke="#777" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="15" r="0.75" fill="#777"/></svg></button>
         <div class="nav-avatar"><img src="https://i.pravatar.cc/40?img=12" alt="avatar"></div>
@@ -3446,19 +4329,279 @@
     { id:'s8', name:'New dish launch',    desc:'Announcing our all new Fettuccine Alfredo Pasta...',      thumb:THUMB_ANNOUNCE, type:'Announcements',       usage:8,   rate:'44%',  by:'Balaji', loc:'1',      date:'Mar 5' },
   ];
 
+  const TEMPLATE_HTML = {
+  l1: `<div style="background:#fff;padding:28px 32px;max-width:560px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+      <div style="width:44px;height:44px;background:#f0f0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">🫒</div>
+      <div><div style="font-size:14px;font-weight:500;color:#111">Olive Garden</div><div style="font-size:12px;color:#888">4.5★ (532 reviews)</div></div>
+    </div>
+    <div style="font-size:22px;font-weight:700;color:#111;margin-bottom:12px;line-height:1.3">Your feedback will help us get better</div>
+    <div style="font-size:14px;color:#555;margin-bottom:24px;line-height:1.6">Thank you for choosing Olive Garden. Would you kindly take a moment to tell us about your recent experience?</div>
+    <a style="display:flex;align-items:center;gap:12px;background:#34A853;color:#fff;text-decoration:none;padding:14px 20px;border-radius:8px;font-size:14px;font-weight:500;margin-bottom:10px">
+      <div style="background:#fff;border-radius:4px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:14px">G</div>
+      Review us on Google
+    </a>
+    <a style="display:flex;align-items:center;gap:12px;background:#1877F2;color:#fff;text-decoration:none;padding:14px 20px;border-radius:8px;font-size:14px;font-weight:500;margin-bottom:20px">
+      <div style="background:#fff;border-radius:4px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#1877F2;font-weight:700">f</div>
+      Review us on Facebook
+    </a>
+    <div style="font-size:13px;color:#555;margin-bottom:16px">If your experience wasn't great, we want to make it right.</div>
+    <a style="display:block;background:#E53935;color:#fff;text-decoration:none;padding:14px 20px;border-radius:8px;font-size:14px;font-weight:500;text-align:center;margin-bottom:28px">Contact us directly</a>
+    <div style="font-size:13px;color:#777;border-top:1px solid #eee;padding-top:16px">Have a great day,<br>Olive Garden<br>(605) 345-6562</div>
+  </div>`,
+
+  l2: `<div style="background:#fff;max-width:560px">
+    <div style="background:#1976D2;padding:36px 32px;text-align:center">
+      <div style="font-size:13px;color:rgba(255,255,255,0.8);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">HOW DID WE DO?</div>
+      <div style="font-size:26px;font-weight:700;color:#fff;line-height:1.3">Rate Your Recent Experience</div>
+    </div>
+    <div style="padding:32px">
+      <div style="text-align:center;margin-bottom:28px">
+        <div style="font-size:15px;color:#333;margin-bottom:16px">Tap a star to leave your rating</div>
+        <div style="font-size:40px;letter-spacing:6px">⭐⭐⭐⭐⭐</div>
+      </div>
+      <div style="background:#f8f9fb;border-radius:10px;padding:20px;margin-bottom:20px">
+        <div style="font-size:13px;color:#888;margin-bottom:8px">Share more details (optional)</div>
+        <div style="border:1px solid #ddd;border-radius:6px;padding:12px;min-height:64px;background:#fff;font-size:13px;color:#bbb">Tell us about your visit...</div>
+      </div>
+      <a style="display:block;background:#1976D2;color:#fff;text-decoration:none;padding:15px;border-radius:8px;font-size:15px;font-weight:500;text-align:center;margin-bottom:24px">Submit My Review</a>
+      <div style="text-align:center;font-size:12px;color:#aaa">Powered by Birdeye · Unsubscribe</div>
+    </div>
+  </div>`,
+
+  l3: `<div style="background:#fff;max-width:560px">
+    <div style="background:linear-gradient(135deg,#667eea,#764ba2);padding:48px 32px;text-align:center">
+      <div style="font-size:36px;margin-bottom:12px">👋</div>
+      <div style="font-size:28px;font-weight:700;color:#fff;margin-bottom:8px">Welcome to Birdeye!</div>
+      <div style="font-size:15px;color:rgba(255,255,255,0.85)">You're all set. Let's get started.</div>
+    </div>
+    <div style="padding:32px">
+      <div style="font-size:15px;color:#444;line-height:1.7;margin-bottom:28px">Hi there! We're thrilled to have you on board. Here's how to make the most of your account in just a few steps:</div>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:28px">
+        <div style="display:flex;align-items:flex-start;gap:14px"><div style="width:32px;height:32px;background:#667eea;border-radius:50%;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div><div><div style="font-size:14px;font-weight:500;color:#111;margin-bottom:4px">Complete your profile</div><div style="font-size:13px;color:#777">Add your business details and logo</div></div></div>
+        <div style="display:flex;align-items:flex-start;gap:14px"><div style="width:32px;height:32px;background:#667eea;border-radius:50%;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div><div><div style="font-size:14px;font-weight:500;color:#111;margin-bottom:4px">Connect your channels</div><div style="font-size:13px;color:#777">Google, Facebook, Yelp and more</div></div></div>
+        <div style="display:flex;align-items:flex-start;gap:14px"><div style="width:32px;height:32px;background:#667eea;border-radius:50%;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div><div><div style="font-size:14px;font-weight:500;color:#111;margin-bottom:4px">Send your first campaign</div><div style="font-size:13px;color:#777">Reach customers in minutes</div></div></div>
+      </div>
+      <a style="display:block;background:#667eea;color:#fff;text-decoration:none;padding:15px;border-radius:8px;font-size:15px;font-weight:500;text-align:center">Get Started Now →</a>
+    </div>
+  </div>`,
+
+  l4: `<div style="background:#fff;max-width:560px">
+    <div style="background:#0D0D0D;padding:48px 32px;text-align:center;position:relative;overflow:hidden">
+      <div style="font-size:11px;color:#F59E0B;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px">BIG ANNOUNCEMENT</div>
+      <div style="font-size:32px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:16px">We're Launching Something New</div>
+      <div style="font-size:15px;color:rgba(255,255,255,0.65);margin-bottom:28px">A major update that changes everything. You'll want to be first in line.</div>
+      <a style="display:inline-block;background:#F59E0B;color:#000;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700">Get Early Access</a>
+    </div>
+    <div style="padding:32px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px">
+        <div style="text-align:center;padding:16px;background:#f9f9f9;border-radius:10px"><div style="font-size:24px;margin-bottom:8px">⚡</div><div style="font-size:13px;font-weight:500;color:#111">Faster</div><div style="font-size:12px;color:#888">10x speed</div></div>
+        <div style="text-align:center;padding:16px;background:#f9f9f9;border-radius:10px"><div style="font-size:24px;margin-bottom:8px">🔒</div><div style="font-size:13px;font-weight:500;color:#111">Secure</div><div style="font-size:12px;color:#888">Enterprise grade</div></div>
+        <div style="text-align:center;padding:16px;background:#f9f9f9;border-radius:10px"><div style="font-size:24px;margin-bottom:8px">🤖</div><div style="font-size:13px;font-weight:500;color:#111">AI-Powered</div><div style="font-size:12px;color:#888">Smart insights</div></div>
+      </div>
+      <div style="text-align:center;font-size:12px;color:#aaa">Unsubscribe · Privacy Policy</div>
+    </div>
+  </div>`,
+
+  l5: `<div style="background:#fff;max-width:560px">
+    <div style="background:#fff;border-bottom:3px solid #34A853;padding:20px 32px;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:18px;font-weight:700;color:#34A853">ReviewBoost</div>
+      <div style="font-size:12px;color:#888">Powered by Birdeye</div>
+    </div>
+    <div style="padding:36px 32px">
+      <div style="background:#E8F5E9;border-radius:12px;padding:24px;text-align:center;margin-bottom:24px">
+        <div style="font-size:40px;margin-bottom:8px">🌟</div>
+        <div style="font-size:20px;font-weight:700;color:#1B5E20;margin-bottom:6px">You Visited Us Recently!</div>
+        <div style="font-size:14px;color:#388E3C">We'd love to hear what you thought</div>
+      </div>
+      <div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:24px">Hi [Customer Name], your opinion matters to us. A quick review takes just 30 seconds and helps other customers find us.</div>
+      <div style="display:flex;gap:10px;margin-bottom:24px">
+        <a style="flex:1;display:block;background:#34A853;color:#fff;text-decoration:none;padding:14px;border-radius:8px;font-size:14px;font-weight:500;text-align:center">⭐ Leave a Review</a>
+        <a style="flex:1;display:block;background:#fff;color:#34A853;text-decoration:none;padding:14px;border-radius:8px;font-size:14px;font-weight:500;text-align:center;border:1px solid #34A853">Not Now</a>
+      </div>
+      <div style="font-size:12px;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:16px">© 2024 Birdeye · Unsubscribe</div>
+    </div>
+  </div>`,
+
+  l6: `<div style="background:#f4f4f4;max-width:560px;padding:16px">
+    <div style="background:#1E293B;border-radius:12px 12px 0 0;padding:28px 28px 20px;text-align:center">
+      <div style="font-size:13px;color:#94A3B8;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">MONTHLY NEWSLETTER</div>
+      <div style="font-size:24px;font-weight:700;color:#fff">The Insider — April 2024</div>
+    </div>
+    <div style="background:#fff;padding:24px 28px;margin-bottom:2px">
+      <div style="display:flex;gap:16px;margin-bottom:20px">
+        <div style="width:80px;height:80px;background:#E0E7FF;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px">📈</div>
+        <div><div style="font-size:15px;font-weight:600;color:#111;margin-bottom:6px">Business Reviews Up 40%</div><div style="font-size:13px;color:#666;line-height:1.6">Businesses using Birdeye saw a 40% increase in reviews this quarter. Here's what the top performers did differently...</div></div>
+      </div>
+      <a style="display:inline-block;color:#4F46E5;font-size:13px;font-weight:500;text-decoration:none">Read full story →</a>
+    </div>
+    <div style="background:#fff;padding:24px 28px;margin-bottom:2px">
+      <div style="display:flex;gap:16px">
+        <div style="width:80px;height:80px;background:#FEF3C7;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px">💡</div>
+        <div><div style="font-size:15px;font-weight:600;color:#111;margin-bottom:6px">5 Tips for Better Customer Retention</div><div style="font-size:13px;color:#666;line-height:1.6">Keeping customers coming back is more cost-effective than acquiring new ones. We share proven strategies...</div></div>
+      </div>
+    </div>
+    <div style="background:#1E293B;border-radius:0 0 12px 12px;padding:16px 28px;text-align:center">
+      <div style="font-size:12px;color:#64748B">Unsubscribe · Privacy Policy · © 2024 Birdeye</div>
+    </div>
+  </div>`,
+
+  l7: `<div style="background:#fff;max-width:560px">
+    <div style="background:#7C3AED;padding:36px 32px;text-align:center">
+      <div style="font-size:13px;color:rgba(255,255,255,0.75);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">CUSTOMER SURVEY</div>
+      <div style="font-size:24px;font-weight:700;color:#fff;margin-bottom:8px">How Are We Doing?</div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.8)">Takes only 2 minutes · Your feedback shapes our future</div>
+    </div>
+    <div style="padding:28px 32px">
+      <div style="margin-bottom:20px">
+        <div style="font-size:13px;font-weight:500;color:#333;margin-bottom:10px">1. How likely are you to recommend us?</div>
+        <div style="display:flex;gap:4px">
+          ${[1,2,3,4,5,6,7,8,9,10].map(n => `<div style="flex:1;padding:8px 0;background:${n<=6?'#f3f4f6':n<=8?'#DDD6FE':'#7C3AED'};color:${n>8?'#fff':'#555'};border-radius:4px;font-size:12px;text-align:center;font-weight:500">${n}</div>`).join('')}
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#aaa;margin-top:4px"><span>Not likely</span><span>Very likely</span></div>
+      </div>
+      <div style="margin-bottom:20px">
+        <div style="font-size:13px;font-weight:500;color:#333;margin-bottom:10px">2. Overall satisfaction with our service?</div>
+        <div style="display:flex;gap:8px">
+          ${['😞','😐','🙂','😊','🤩'].map((e,i) => `<div style="flex:1;text-align:center;padding:10px 4px;background:${i===3?'#EDE9FE':'#f9f9f9'};border-radius:8px;border:${i===3?'2px solid #7C3AED':'2px solid transparent'}"><div style="font-size:20px">${e}</div></div>`).join('')}
+        </div>
+      </div>
+      <a style="display:block;background:#7C3AED;color:#fff;text-decoration:none;padding:15px;border-radius:8px;font-size:15px;font-weight:500;text-align:center">Submit Survey</a>
+    </div>
+  </div>`,
+
+  l8: `<div style="background:#fff;max-width:560px">
+    <div style="background:linear-gradient(135deg,#F97316,#EF4444);padding:40px 32px;text-align:center">
+      <div style="font-size:13px;color:rgba(255,255,255,0.85);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">REFERRAL PROGRAM</div>
+      <div style="font-size:30px;font-weight:800;color:#fff;margin-bottom:8px">Give $20, Get $20</div>
+      <div style="font-size:15px;color:rgba(255,255,255,0.9)">Share with friends and you both save</div>
+    </div>
+    <div style="padding:32px;text-align:center">
+      <div style="font-size:14px;color:#555;margin-bottom:20px">Your unique referral code:</div>
+      <div style="background:#FFF7ED;border:2px dashed #F97316;border-radius:10px;padding:18px;margin-bottom:20px">
+        <div style="font-size:28px;font-weight:800;letter-spacing:6px;color:#EA580C;font-family:monospace">SAVE20-XK9</div>
+      </div>
+      <a style="display:block;background:linear-gradient(135deg,#F97316,#EF4444);color:#fff;text-decoration:none;padding:15px;border-radius:8px;font-size:15px;font-weight:600;margin-bottom:12px">Share My Code 🎉</a>
+      <div style="display:flex;gap:10px;margin-bottom:24px">
+        <a style="flex:1;display:block;padding:12px;background:#f0f0f0;border-radius:8px;font-size:13px;color:#333;text-decoration:none;text-align:center">📧 Email</a>
+        <a style="flex:1;display:block;padding:12px;background:#f0f0f0;border-radius:8px;font-size:13px;color:#333;text-decoration:none;text-align:center">📱 SMS</a>
+        <a style="flex:1;display:block;padding:12px;background:#f0f0f0;border-radius:8px;font-size:13px;color:#333;text-decoration:none;text-align:center">🔗 Copy</a>
+      </div>
+      <div style="font-size:12px;color:#aaa">Terms apply · Unsubscribe</div>
+    </div>
+  </div>`,
+
+  l9: `<div style="background:#fff;max-width:560px">
+    <div style="background:#DC2626;padding:12px 32px;text-align:center">
+      <div style="font-size:13px;font-weight:700;color:#fff;letter-spacing:2px">⚡ FLASH SALE — 24 HOURS ONLY ⚡</div>
+    </div>
+    <div style="background:#FEF2F2;padding:32px;text-align:center;border-bottom:1px solid #fee2e2">
+      <div style="font-size:64px;font-weight:900;color:#DC2626;line-height:1">40%</div>
+      <div style="font-size:22px;font-weight:700;color:#111;margin-bottom:8px">OFF Everything</div>
+      <div style="font-size:14px;color:#666;margin-bottom:20px">Use code at checkout. Limited time offer.</div>
+      <div style="display:inline-block;background:#111;color:#fff;padding:10px 24px;border-radius:6px;font-size:20px;font-weight:800;letter-spacing:4px;margin-bottom:20px">SAVE40</div><br>
+      <a style="display:inline-block;background:#DC2626;color:#fff;text-decoration:none;padding:16px 40px;border-radius:8px;font-size:16px;font-weight:700">Shop Now →</a>
+    </div>
+    <div style="padding:24px 32px">
+      <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:14px">Featured Products</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px">
+        <div style="border:1px solid #eee;border-radius:8px;overflow:hidden;text-align:center"><div style="background:#FEF3C7;height:80px;display:flex;align-items:center;justify-content:center;font-size:32px">🍽️</div><div style="padding:8px;font-size:11px;color:#333;font-weight:500">Dinner Set</div></div>
+        <div style="border:1px solid #eee;border-radius:8px;overflow:hidden;text-align:center"><div style="background:#E0F2FE;height:80px;display:flex;align-items:center;justify-content:center;font-size:32px">🥂</div><div style="padding:8px;font-size:11px;color:#333;font-weight:500">Wine Bundle</div></div>
+        <div style="border:1px solid #eee;border-radius:8px;overflow:hidden;text-align:center"><div style="background:#F0FDF4;height:80px;display:flex;align-items:center;justify-content:center;font-size:32px">🎁</div><div style="padding:8px;font-size:11px;color:#333;font-weight:500">Gift Card</div></div>
+      </div>
+      <div style="font-size:11px;color:#aaa;text-align:center">Offer expires April 20, 2024. T&Cs apply. Unsubscribe</div>
+    </div>
+  </div>`,
+
+  l10: `<div style="background:#fff;max-width:560px">
+    <div style="background:#0F172A;padding:32px;text-align:center">
+      <div style="font-size:22px;font-weight:700;color:#fff;margin-bottom:6px">We value your feedback</div>
+      <div style="font-size:14px;color:#94A3B8">Help us improve your experience</div>
+    </div>
+    <div style="padding:32px">
+      <div style="font-size:15px;color:#333;line-height:1.7;margin-bottom:24px">Hi [Name], you recently interacted with our support team. How did it go?</div>
+      <div style="display:flex;gap:12px;margin-bottom:28px">
+        <div style="flex:1;border:2px solid #eee;border-radius:10px;padding:20px;text-align:center;cursor:pointer">
+          <div style="font-size:36px;margin-bottom:8px">👍</div>
+          <div style="font-size:14px;font-weight:500;color:#333">Great!</div>
+          <div style="font-size:12px;color:#888">It went well</div>
+        </div>
+        <div style="flex:1;border:2px solid #eee;border-radius:10px;padding:20px;text-align:center;cursor:pointer">
+          <div style="font-size:36px;margin-bottom:8px">😐</div>
+          <div style="font-size:14px;font-weight:500;color:#333">OK</div>
+          <div style="font-size:12px;color:#888">Could be better</div>
+        </div>
+        <div style="flex:1;border:2px solid #eee;border-radius:10px;padding:20px;text-align:center;cursor:pointer">
+          <div style="font-size:36px;margin-bottom:8px">👎</div>
+          <div style="font-size:14px;font-weight:500;color:#333">Not good</div>
+          <div style="font-size:12px;color:#888">Had issues</div>
+        </div>
+      </div>
+      <div style="background:#f8f9fb;border-radius:10px;padding:16px;margin-bottom:20px">
+        <div style="font-size:13px;color:#555;margin-bottom:8px">Any additional comments?</div>
+        <div style="border:1px solid #ddd;border-radius:6px;padding:10px;min-height:52px;background:#fff;font-size:13px;color:#bbb">Type here...</div>
+      </div>
+      <a style="display:block;background:#0F172A;color:#fff;text-decoration:none;padding:14px;border-radius:8px;font-size:14px;font-weight:500;text-align:center">Submit Feedback</a>
+    </div>
+  </div>`,
+
+  l11: `<div style="background:#fff;max-width:560px">
+    <div style="background:linear-gradient(160deg,#0EA5E9,#6366F1);padding:48px 32px;text-align:center">
+      <div style="display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px">NEW LAUNCH</div>
+      <div style="font-size:30px;font-weight:800;color:#fff;margin-bottom:12px;line-height:1.2">Introducing Our New Fettuccine Alfredo Pasta</div>
+      <div style="font-size:15px;color:rgba(255,255,255,0.85);margin-bottom:24px">Made with fresh hand-rolled pasta and house-made cream sauce</div>
+      <a style="display:inline-block;background:#fff;color:#6366F1;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700">Order Now →</a>
+    </div>
+    <div style="padding:28px 32px">
+      <div style="font-size:15px;font-weight:600;color:#111;margin-bottom:14px">What makes it special</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px">
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;background:#EEF2FF;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🌾</div><div><div style="font-size:14px;font-weight:500;color:#111">Hand-rolled fresh pasta</div><div style="font-size:12px;color:#777">Made daily in-house, never frozen</div></div></div>
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;background:#FEF3C7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🧀</div><div><div style="font-size:14px;font-weight:500;color:#111">Aged Parmigiano-Reggiano</div><div style="font-size:12px;color:#777">Premium Italian import</div></div></div>
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;background:#F0FDF4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🌿</div><div><div style="font-size:14px;font-weight:500;color:#111">Garden fresh herbs</div><div style="font-size:12px;color:#777">Sourced from local farms</div></div></div>
+      </div>
+      <div style="background:#EEF2FF;border-radius:10px;padding:16px;text-align:center;margin-bottom:16px">
+        <div style="font-size:13px;color:#6366F1;font-weight:500">Available for dine-in & delivery · $18.99</div>
+      </div>
+      <div style="font-size:11px;color:#aaa;text-align:center">Unsubscribe · Privacy Policy</div>
+    </div>
+  </div>`,
+
+  l12: `<div style="background:#fff;max-width:560px">
+    <div style="background:#F0FDF4;padding:40px 32px;text-align:center;border-bottom:3px solid #22C55E">
+      <div style="font-size:48px;margin-bottom:12px">🙏</div>
+      <div style="font-size:26px;font-weight:700;color:#14532D;margin-bottom:8px">Thank You So Much!</div>
+      <div style="font-size:15px;color:#16A34A">Your visit means the world to us</div>
+    </div>
+    <div style="padding:32px">
+      <div style="font-size:15px;color:#444;line-height:1.8;margin-bottom:24px">Dear [Customer Name],<br><br>We truly appreciate you choosing Olive Garden for your dining experience. It was our pleasure to serve you, and we hope every bite exceeded your expectations.</div>
+      <div style="background:#F0FDF4;border-left:4px solid #22C55E;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:24px">
+        <div style="font-size:14px;font-weight:500;color:#14532D;margin-bottom:4px">Your exclusive thank-you gift:</div>
+        <div style="font-size:22px;font-weight:800;color:#16A34A;letter-spacing:4px">10% OFF</div>
+        <div style="font-size:12px;color:#4B7F52">Your next visit · Code: THANKYOU10</div>
+      </div>
+      <div style="font-size:14px;color:#555;margin-bottom:20px">Enjoyed your experience? Leave us a quick review — it helps others discover us!</div>
+      <div style="display:flex;gap:10px;margin-bottom:24px">
+        <a style="flex:1;display:block;background:#22C55E;color:#fff;text-decoration:none;padding:13px;border-radius:8px;font-size:14px;font-weight:500;text-align:center">Leave a Review ⭐</a>
+        <a style="flex:1;display:block;background:#fff;color:#22C55E;text-decoration:none;padding:13px;border-radius:8px;font-size:14px;font-weight:500;text-align:center;border:1px solid #22C55E">Book Again →</a>
+      </div>
+      <div style="font-size:12px;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:16px">Warm regards, The Olive Garden Team · Unsubscribe</div>
+    </div>
+  </div>`
+};
+
   const LIB_TEMPLATES = [
-    { id:'l1',  name:'Review request 1',        by:'Birdeye', thumb:THUMB_REVIEW,   cat:'Reviews' },
-    { id:'l2',  name:'Review request 1',        by:'Birdeye', thumb:THUMB_REVIEW,   cat:'Reviews' },
-    { id:'l3',  name:'Welcome email',           by:'Birdeye', thumb:THUMB_WELCOME,  cat:'Reviews' },
-    { id:'l4',  name:'Major announcement email',by:'Birdeye', thumb:THUMB_ANNOUNCE, cat:'Reviews' },
-    { id:'l5',  name:'Review request 2',        by:'Birdeye', thumb:THUMB_REVIEW,   cat:'Reviews' },
-    { id:'l6',  name:'Review request 3',        by:'Birdeye', thumb:THUMB_REVIEW,   cat:'Reviews' },
-    { id:'l7',  name:'Customer survey',         by:'Birdeye', thumb:THUMB_SURVEY,   cat:'Surveys' },
-    { id:'l8',  name:'Referral invite',         by:'Birdeye', thumb:THUMB_REFERRAL, cat:'Referrals' },
-    { id:'l9',  name:'Promotional offer',       by:'Birdeye', thumb:THUMB_ANNOUNCE, cat:'Announcements' },
-    { id:'l10', name:'Feedback request',        by:'Birdeye', thumb:THUMB_CX,       cat:'Surveys' },
-    { id:'l11', name:'New launch email',        by:'Birdeye', thumb:THUMB_ANNOUNCE, cat:'Announcements' },
-    { id:'l12', name:'Thank you email',         by:'Birdeye', thumb:THUMB_WELCOME,  cat:'Reviews' },
+    { id:'l1',  name:'Review Request — Google & Facebook', by:'Birdeye', thumb:THUMB_REVIEW,   cat:'Reviews' },
+    { id:'l2',  name:'Star Rating Request',               by:'Birdeye', thumb:THUMB_REVIEW,   cat:'Reviews' },
+    { id:'l3',  name:'Welcome Email',                     by:'Birdeye', thumb:THUMB_WELCOME,  cat:'Announcements' },
+    { id:'l4',  name:'Major Announcement',                by:'Birdeye', thumb:THUMB_ANNOUNCE, cat:'Announcements' },
+    { id:'l5',  name:'Review Request — Alternate',        by:'Birdeye', thumb:THUMB_REVIEW,   cat:'Reviews' },
+    { id:'l6',  name:'Monthly Newsletter',                by:'Birdeye', thumb:THUMB_WELCOME,  cat:'Announcements' },
+    { id:'l7',  name:'Customer Survey — NPS',             by:'Birdeye', thumb:THUMB_SURVEY,   cat:'Surveys' },
+    { id:'l8',  name:'Referral Invite',                   by:'Birdeye', thumb:THUMB_REFERRAL, cat:'Referrals' },
+    { id:'l9',  name:'Promotional Offer — Flash Sale',    by:'Birdeye', thumb:THUMB_ANNOUNCE, cat:'Announcements' },
+    { id:'l10', name:'Feedback Request',                  by:'Birdeye', thumb:THUMB_CX,       cat:'Surveys' },
+    { id:'l11', name:'New Product Launch',                by:'Birdeye', thumb:THUMB_ANNOUNCE, cat:'Announcements' },
+    { id:'l12', name:'Thank You Email',                   by:'Birdeye', thumb:THUMB_WELCOME,  cat:'Reviews' },
   ];
 
   let tplTab = 'saved';
@@ -3478,6 +4621,22 @@
 
   function closeTplScreen() {
     document.getElementById('tpl-screen').classList.add('hidden');
+  }
+
+  // ── L2 Accordion ─────────────────────────
+  function toggleTplAcc(bodyId, hdrEl) {
+    const allBodies = document.querySelectorAll('#tpl-screen .tpl-acc-body');
+    const allHdrs = document.querySelectorAll('#tpl-screen .tpl-acc-hdr');
+    const body = document.getElementById(bodyId);
+    const isOpen = !hdrEl.classList.contains('closed');
+    // Close all
+    allBodies.forEach(b => b.classList.add('hidden'));
+    allHdrs.forEach(h => h.classList.add('closed'));
+    // Toggle clicked
+    if (!isOpen) {
+      body.classList.remove('hidden');
+      hdrEl.classList.remove('closed');
+    }
   }
 
   function switchTplTab(tab) {
@@ -3612,9 +4771,24 @@
         items.forEach(t => {
           const card = document.createElement('div');
           card.className = 'tpl-card';
+          const savedEmailHTML = `<div style="background:#fff;max-width:560px;font-family:Roboto,sans-serif">
+            <div style="padding:14px 20px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:10px">
+              <div style="width:28px;height:28px;background:#E3F2FD;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px">📧</div>
+              <div style="font-size:13px;font-weight:500;color:#111;flex:1">${t.name}</div>
+            </div>
+            <img src="${t.thumb}" style="width:100%;height:160px;object-fit:cover;display:block" alt="">
+            <div style="padding:16px 20px">
+              <div style="height:11px;background:#f0f0f0;border-radius:4px;margin-bottom:8px;width:85%"></div>
+              <div style="height:9px;background:#f0f0f0;border-radius:4px;margin-bottom:6px;width:65%"></div>
+              <div style="height:9px;background:#f0f0f0;border-radius:4px;margin-bottom:16px;width:75%"></div>
+              <div style="height:36px;background:#1976D2;border-radius:7px"></div>
+            </div>
+          </div>`;
           card.innerHTML = `
             <div class="tpl-card-thumb">
-              <img src="${t.thumb}" alt="${t.name}" loading="lazy">
+              <div class="tpl-thumb-preview">
+                <div class="tpl-thumb-email">${savedEmailHTML}</div>
+              </div>
               <div class="tpl-card-overlay">
                 <button class="tpl-card-use" onclick="useTemplate()">Use template</button>
                 <button class="tpl-card-preview" onclick="openTplPreview('${t.id}','saved')">Preview</button>
@@ -3642,9 +4816,12 @@
       items.forEach(t => {
         const card = document.createElement('div');
         card.className = 'tpl-card';
+        const emailHTML = TEMPLATE_HTML[t.id] || `<div style="padding:20px;font-size:14px;color:#888">Preview not available</div>`;
         card.innerHTML = `
           <div class="tpl-card-thumb">
-            <img src="${t.thumb}" alt="${t.name}" loading="lazy">
+            <div class="tpl-thumb-preview">
+              <div class="tpl-thumb-email">${emailHTML}</div>
+            </div>
             <div class="tpl-card-overlay">
               <button class="tpl-card-use" onclick="useTemplate()">Use template</button>
               <button class="tpl-card-preview" onclick="openTplPreview('${t.id}','library')">Preview</button>
@@ -3682,7 +4859,23 @@
     } else {
       metaEl.textContent = t.cat + ' · Created by ' + t.by;
     }
-    imgEl.src = t.thumb;
+    if (source === 'library' && TEMPLATE_HTML[t.id]) {
+      imgEl.style.display = 'none';
+      let contentEl = document.getElementById('tpl-preview-email-content');
+      if (!contentEl) {
+        contentEl = document.createElement('div');
+        contentEl.id = 'tpl-preview-email-content';
+        contentEl.style.cssText = 'max-width:600px;margin:0 auto;';
+        imgEl.parentNode.insertBefore(contentEl, imgEl.nextSibling);
+      }
+      contentEl.style.display = 'block';
+      contentEl.innerHTML = TEMPLATE_HTML[t.id];
+    } else {
+      imgEl.style.display = 'block';
+      imgEl.src = t.thumb;
+      const contentEl = document.getElementById('tpl-preview-email-content');
+      if (contentEl) contentEl.style.display = 'none';
+    }
     subjEl.textContent = 'Hi! Introducing: ' + t.name;
 
     // Reset device to desktop
@@ -3717,22 +4910,393 @@
     if (e.key === 'Escape') closeTplPreviewModal();
   });
 
+  // ── Screen navigation helpers ──────────────
+  function hideAllMainScreens() {
+    document.getElementById('tpl-screen').classList.add('hidden');
+    document.getElementById('dash-screen').classList.add('hidden');
+    document.getElementById('askai-screen').classList.add('hidden');
+  }
+
+  function showDashboard() {
+    hideAllMainScreens();
+    document.getElementById('dash-screen').classList.remove('hidden');
+  }
+
+  function showAskAI() {
+    hideAllMainScreens();
+    document.getElementById('askai-screen').classList.remove('hidden');
+  }
+
+  function showTemplates() {
+    hideAllMainScreens();
+    document.getElementById('tpl-screen').classList.remove('hidden');
+    renderTplList();
+  }
+
+  // ── Accordion helpers for dashboard/askai sidebars ──
+  function toggleDashAcc(bodyId, hdrEl) {
+    const allBodies = document.querySelectorAll('#dash-screen .tpl-acc-body');
+    const allHdrs = document.querySelectorAll('#dash-screen .tpl-acc-hdr');
+    const body = document.getElementById(bodyId);
+    const isOpen = !hdrEl.classList.contains('closed');
+    allBodies.forEach(b => b.classList.add('hidden'));
+    allHdrs.forEach(h => h.classList.add('closed'));
+    if (!isOpen) {
+      body.classList.remove('hidden');
+      hdrEl.classList.remove('closed');
+    }
+  }
+
+  function toggleAskAcc(bodyId, hdrEl) {
+    const allBodies = document.querySelectorAll('#askai-screen .tpl-acc-body');
+    const allHdrs = document.querySelectorAll('#askai-screen .tpl-acc-hdr');
+    const body = document.getElementById(bodyId);
+    const isOpen = !hdrEl.classList.contains('closed');
+    allBodies.forEach(b => b.classList.add('hidden'));
+    allHdrs.forEach(h => h.classList.add('closed'));
+    if (!isOpen) {
+      body.classList.remove('hidden');
+      hdrEl.classList.remove('closed');
+    }
+  }
+
+  // ── Ask Marketing AI — new chat logic ────────
+  let askaiApprovedCount = 0;
+  let askaiTotalAssets = 0;
+
+  function askaiSend(promptOverride) {
+    const input = document.getElementById('askai-chat-input');
+    const prompt = promptOverride || input.value.trim();
+    if (!prompt) { input.focus(); return; }
+    input.value = '';
+
+    const msgs = document.getElementById('askai-chat-msgs');
+    // Hide empty state
+    const empty = document.getElementById('askai-chat-empty');
+    if (empty) empty.style.display = 'none';
+
+    // Append user bubble
+    const userBubble = document.createElement('div');
+    userBubble.className = 'askai-bubble-user';
+    userBubble.textContent = prompt;
+    msgs.appendChild(userBubble);
+    msgs.scrollTop = msgs.scrollHeight;
+
+    // Typing indicator
+    const typing = document.createElement('div');
+    typing.className = 'askai-typing-row';
+    typing.innerHTML = `<div class="askai-agent-label">Marketing agent</div><div class="askai-dots"><span></span><span></span><span></span></div>`;
+    msgs.appendChild(typing);
+    msgs.scrollTop = msgs.scrollHeight;
+
+    setTimeout(() => {
+      typing.remove();
+      // First agent response
+      const r1 = document.createElement('div');
+      r1.className = 'askai-agent-msg';
+      r1.innerHTML = `<div class="askai-agent-label">Marketing agent</div>
+        <div class="askai-bubble-agent">
+          Got it. I've analyzed your contact data and found 847 customers inactive for 90+ days. Here's what I'll set up:
+          <ul>
+            <li>1 segment — Inactive 90 days</li>
+            <li>2 templates — Email + SMS</li>
+            <li>1 workflow — 2-step re-engagement</li>
+          </ul>
+        </div>`;
+      msgs.appendChild(r1);
+
+      // Short pause then second response
+      setTimeout(() => {
+        const r2 = document.createElement('div');
+        r2.className = 'askai-agent-msg';
+        r2.innerHTML = `<div class="askai-agent-label">Marketing agent</div>
+          <div class="askai-bubble-agent">Review everything on the right before activating. You can edit any piece before it goes live.</div>`;
+        msgs.appendChild(r2);
+        msgs.scrollTop = msgs.scrollHeight;
+
+        // Populate review pane
+        askaiApprovedCount = 0;
+        askaiTotalAssets = 4;
+        askaiPopulateReview(prompt);
+      }, 700);
+    }, 1600);
+  }
+
+  function askaiPopulateReview(prompt) {
+    const scroll = document.getElementById('askai-cards-scroll');
+    const footer = document.getElementById('askai-footer-status');
+    const contBtn = document.getElementById('askai-continue-btn');
+
+    scroll.innerHTML = `
+      <!-- Segment card -->
+      <div class="askai-asset-card" id="askai-card-segment">
+        <div class="askai-asset-card-top">
+          <span class="askai-asset-tag segment">Segment</span>
+        </div>
+        <div class="askai-asset-title">Inactive customers — 90 days</div>
+        <div class="askai-asset-meta">847 contacts · Last activity &gt; 90 days ago · Email opted-in</div>
+        <div class="askai-asset-actions">
+          <button class="askai-btn-approve" onclick="askaiApprove(this,'segment')">Approve</button>
+          <button class="askai-btn-edit">Edit</button>
+          <button class="askai-btn-skip" onclick="askaiSkip(this,'segment')">Skip</button>
+        </div>
+      </div>
+
+      <!-- Email template card -->
+      <div class="askai-asset-card" id="askai-card-email">
+        <div class="askai-asset-card-top">
+          <span class="askai-asset-tag email">Email template</span>
+          <span class="askai-asset-counter">1 of 2</span>
+        </div>
+        <div class="askai-asset-title">We miss you — here's 10% off your next visit</div>
+        <div class="askai-asset-meta">Subject: "It's been a while, [First name]" · Tone: Warm, conversational · CTA: Book now</div>
+        <div class="askai-asset-actions">
+          <button class="askai-btn-approve" onclick="askaiApprove(this,'email')">Approve</button>
+          <button class="askai-btn-edit" onclick="showTemplates()">Edit</button>
+          <button class="askai-btn-skip" onclick="askaiSkip(this,'email')">Skip</button>
+        </div>
+      </div>
+
+      <!-- SMS template card -->
+      <div class="askai-asset-card" id="askai-card-sms">
+        <div class="askai-asset-card-top">
+          <span class="askai-asset-tag sms">SMS template</span>
+          <span class="askai-asset-counter">2 of 2</span>
+        </div>
+        <div class="askai-asset-title">Hi [First name], we haven't seen you in a while...</div>
+        <div class="askai-asset-meta">160 chars · Includes opt-out · Follows up 3 days after email</div>
+        <div class="askai-asset-actions">
+          <button class="askai-btn-approve" onclick="askaiApprove(this,'sms')">Approve</button>
+          <button class="askai-btn-edit">Edit</button>
+          <button class="askai-btn-skip" onclick="askaiSkip(this,'sms')">Skip</button>
+        </div>
+      </div>
+
+      <!-- Workflow card — up next -->
+      <div class="askai-asset-card upnext" id="askai-card-workflow">
+        <div class="askai-asset-card-top">
+          <span class="askai-asset-tag upnext">Workflow — up next</span>
+        </div>
+        <div class="askai-asset-title">2-step re-engagement workflow</div>
+        <div class="askai-asset-meta">Trigger: Segment entry → Email day 1 → SMS day 4 · Audience: 847 contacts</div>
+      </div>`;
+
+    footer.textContent = '0 of 4 assets reviewed · 0 approved · 0 pending';
+    contBtn.style.opacity = '0.4';
+    contBtn.style.pointerEvents = 'none';
+  }
+
+  let askaiReviewed = 0;
+  function askaiApprove(btn, type) {
+    btn.textContent = '✓ Approved';
+    btn.classList.add('approved');
+    btn.disabled = true;
+    btn.nextElementSibling.disabled = true; // disable Edit
+    btn.nextElementSibling.nextElementSibling.disabled = true; // disable Skip
+    askaiApprovedCount++;
+    askaiReviewed++;
+    askaiUpdateFooter();
+    showToast(type.charAt(0).toUpperCase() + type.slice(1) + ' approved');
+  }
+
+  function askaiSkip(btn, type) {
+    btn.closest('.askai-asset-card').style.opacity = '0.45';
+    btn.closest('.askai-asset-card').querySelectorAll('button').forEach(b => b.disabled = true);
+    askaiReviewed++;
+    askaiUpdateFooter();
+  }
+
+  function askaiApproveAll() {
+    document.querySelectorAll('.askai-btn-approve:not([disabled])').forEach(btn => btn.click());
+  }
+
+  function switchAskaiTab(el, tab) {
+    document.querySelectorAll('.askai-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function askaiUpdateFooter() {
+    const status = document.getElementById('askai-footer-status');
+    const contBtn = document.getElementById('askai-continue-btn');
+    const pending = askaiReviewed - askaiApprovedCount;
+    status.textContent = `${askaiReviewed} of ${askaiTotalAssets} assets reviewed · ${askaiApprovedCount} approved · ${pending} skipped`;
+    if (askaiApprovedCount > 0) {
+      contBtn.style.opacity = '1';
+      contBtn.style.pointerEvents = 'auto';
+    }
+  }
+
+  // ── Theme (light / dark) ────────────────
+  function initTheme() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  }
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    }
+  }
+  initTheme();
+
   // ── Block selection ─────────────────────
   let selectedBlock = null;
   function selectBlock(e, el) {
     e.stopPropagation();
-    if (selectedBlock && selectedBlock !== el) {
-      selectedBlock.classList.remove('selected');
-    }
+    if (selectedBlock && selectedBlock !== el) selectedBlock.classList.remove('selected');
     el.classList.toggle('selected');
     selectedBlock = el.classList.contains('selected') ? el : null;
+    // Close review panel if non-review block selected
+    if (selectedBlock && !selectedBlock.classList.contains('review-quote-block')) {
+      closeReviewPanel();
+    }
   }
   document.addEventListener('click', function(e) {
-    if (selectedBlock && !e.target.closest('.email-block') && !e.target.closest('.img-props-panel')) {
+    if (selectedBlock && !e.target.closest('.email-block') && !e.target.closest('.img-props-panel') && !e.target.closest('.rq-panel')) {
       selectedBlock.classList.remove('selected');
       selectedBlock = null;
+      closeReviewPanel();
     }
   });
+
+  // ── Delete email block ───────────────────
+  function deleteBlock(el) {
+    if (el && el.parentNode) {
+      el.parentNode.removeChild(el);
+      closeReviewPanel();
+      closeImgPanel();
+      selectedBlock = null;
+    }
+  }
+
+  // ── Drag & Drop from pre-built panel ────
+  let _dragBlockType = null;
+  function pbDragStart(e, type) {
+    _dragBlockType = type;
+    e.dataTransfer.effectAllowed = 'copy';
+    e.dataTransfer.setData('text/plain', type);
+  }
+  function canvasDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    const canvas = document.getElementById('email-canvas');
+    const indicator = document.getElementById('canvas-drop-indicator');
+    const blocks = [...canvas.querySelectorAll('.email-block')];
+    const mouseY = e.clientY;
+    let insertBefore = null;
+    for (const b of blocks) {
+      const r = b.getBoundingClientRect();
+      if (mouseY < r.top + r.height / 2) { insertBefore = b; break; }
+    }
+    if (insertBefore) canvas.insertBefore(indicator, insertBefore);
+    else canvas.appendChild(indicator);
+    indicator.style.display = 'block';
+  }
+  function canvasDragLeave(e) {
+    const canvas = document.getElementById('email-canvas');
+    if (!canvas.contains(e.relatedTarget)) {
+      document.getElementById('canvas-drop-indicator').style.display = 'none';
+    }
+  }
+  function canvasDrop(e) {
+    e.preventDefault();
+    const type = (e.dataTransfer.getData('text/plain') || _dragBlockType || '').trim();
+    const indicator = document.getElementById('canvas-drop-indicator');
+    indicator.style.display = 'none';
+    _dragBlockType = null;
+    if (type !== 'review-quote') return;
+    const block = _buildReviewBlock();
+    const canvas = document.getElementById('email-canvas');
+    canvas.insertBefore(block, indicator.nextSibling || null);
+    openReviewPanel(block);
+    block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function _buildReviewBlock() {
+    const div = document.createElement('div');
+    div.className = 'email-block review-quote-block';
+    const upSvg = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 11V3M3 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const downSvg = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 3v8M3 7l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const dupSvg = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 10V2h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const delSvg = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3 4l.7 7.5h6.6L11 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    div.innerHTML = `
+      <div class="e-review-section">
+        <div class="e-review-section-title" id="rq-live-title">What our customer say</div>
+        <div class="e-review-stars">★★★★★</div>
+        <div class="e-review-body">I had a great experience at my last tooth cleaning appointment. Dr. Jason W was very professional and I highly recommend him.</div>
+        <div class="e-review-author">
+          <img src="https://i.pravatar.cc/40?img=8" class="e-review-av" alt="">
+          <div class="e-review-author-info">
+            <div class="e-review-name">Thomas M</div>
+            <div class="e-review-meta">Jan 12, 2025 · Georgia · Via Google</div>
+          </div>
+        </div>
+      </div>
+      <div class="email-block-btns">
+        <button class="eblk-btn" title="Move up">${upSvg}</button>
+        <button class="eblk-btn" title="Move down">${downSvg}</button>
+        <div class="eblk-sep"></div>
+        <button class="eblk-btn" title="Duplicate">${dupSvg}</button>
+        <div class="eblk-sep"></div>
+        <button class="eblk-btn del" title="Delete">${delSvg}</button>
+      </div>`;
+    // Wire up click to open panel
+    div.addEventListener('click', function(e) {
+      selectBlock(e, div);
+      if (div.classList.contains('selected')) openReviewPanel(div);
+    });
+    // Wire up delete button to actually remove
+    div.querySelector('.eblk-btn.del').addEventListener('click', function(e) {
+      e.stopPropagation();
+      deleteBlock(div);
+    });
+    // Move up/down
+    div.querySelectorAll('.eblk-btn')[0].addEventListener('click', function(e) {
+      e.stopPropagation();
+      const prev = div.previousElementSibling;
+      if (prev && prev.classList.contains('email-block')) div.parentNode.insertBefore(div, prev);
+    });
+    div.querySelectorAll('.eblk-btn')[1].addEventListener('click', function(e) {
+      e.stopPropagation();
+      const next = div.nextElementSibling;
+      if (next && next.classList.contains('email-block')) div.parentNode.insertBefore(next, div);
+    });
+    // Duplicate
+    div.querySelectorAll('.eblk-btn')[2].addEventListener('click', function(e) {
+      e.stopPropagation();
+      const clone = _buildReviewBlock();
+      div.parentNode.insertBefore(clone, div.nextSibling);
+      showToast('Block duplicated');
+    });
+    return div;
+  }
+
+  // ── Review Quote Panel ───────────────────
+  let _rqBlock = null;
+  function openReviewPanel(blockEl) {
+    closeImgPanel();
+    _rqBlock = blockEl;
+    document.getElementById('rq-panel').classList.add('open');
+    // Sync title input to current block title
+    const titleEl = blockEl.querySelector('.e-review-section-title');
+    if (titleEl) document.getElementById('rq-title-input').value = titleEl.textContent;
+  }
+  function closeReviewPanel() {
+    document.getElementById('rq-panel').classList.remove('open');
+    _rqBlock = null;
+  }
+  function updateReviewTitle(val) {
+    if (_rqBlock) {
+      const el = _rqBlock.querySelector('.e-review-section-title');
+      if (el) el.textContent = val;
+    }
+  }
 
   // ── Image Properties Panel ───────────────
   let imgPanelOpen = false;
@@ -3773,6 +5337,33 @@
   }
   function closePdfViewer() {
     document.getElementById('pdf-viewer-backdrop').classList.remove('open');
+  }
+
+  // ── Image Viewer ─────────────────────────
+  let imgViewerIndex = 0;
+  let imgViewerList = [];
+  function openImgViewer(startIdx) {
+    imgViewerList = Array.from(document.querySelectorAll('#prompt-attachments .img-thumb img')).map(img => ({ src: img.src, alt: img.alt }));
+    if (!imgViewerList.length) return;
+    imgViewerIndex = startIdx || 0;
+    updateImgViewer();
+    document.getElementById('img-viewer-backdrop').classList.add('open');
+  }
+  function closeImgViewer() {
+    document.getElementById('img-viewer-backdrop').classList.remove('open');
+  }
+  function navImgViewer(dir) {
+    imgViewerIndex = (imgViewerIndex + dir + imgViewerList.length) % imgViewerList.length;
+    updateImgViewer();
+  }
+  function updateImgViewer() {
+    const item = imgViewerList[imgViewerIndex];
+    document.getElementById('img-viewer-img').src = item.src;
+    document.getElementById('img-viewer-title').textContent = item.alt || ('Image ' + (imgViewerIndex + 1));
+    document.getElementById('img-viewer-count').textContent = (imgViewerIndex + 1) + ' of ' + imgViewerList.length;
+    const single = imgViewerList.length <= 1;
+    document.getElementById('img-viewer-prev').disabled = single;
+    document.getElementById('img-viewer-next').disabled = single;
   }
 
   // ── Init ─────────────────────────────────
@@ -3838,6 +5429,36 @@
   </div>
 </div>
 
+<!-- Image Viewer Modal -->
+<div class="img-viewer-backdrop" id="img-viewer-backdrop" onclick="closeImgViewer()">
+  <div class="img-viewer-modal" onclick="event.stopPropagation()">
+    <div class="pdf-viewer-header">
+      <div class="pdf-viewer-icon" style="background:#E3F2FD">
+        <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="10" rx="1.5" stroke="#1976D2" stroke-width="1.4"/><circle cx="7" cy="9" r="2" stroke="#1976D2" stroke-width="1.2"/><path d="M11 7h3M11 9h2M11 11h3" stroke="#1976D2" stroke-width="1.1" stroke-linecap="round"/></svg>
+      </div>
+      <div style="flex:1">
+        <div class="pdf-viewer-title" id="img-viewer-title">Image</div>
+        <div class="pdf-viewer-subtitle" id="img-viewer-subtitle">Attachment</div>
+      </div>
+      <button class="pdf-viewer-close" onclick="closeImgViewer()">✕</button>
+    </div>
+    <div class="img-viewer-body">
+      <button class="img-viewer-nav prev" id="img-viewer-prev" onclick="navImgViewer(-1)">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L6 8l4 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="img-viewer-img-wrap">
+        <img id="img-viewer-img" src="" alt="">
+      </div>
+      <button class="img-viewer-nav next" id="img-viewer-next" onclick="navImgViewer(1)">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l4 5-4 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="pdf-footer-bar">
+      <span class="pdf-page-label" id="img-viewer-count">1 of 2</span>
+    </div>
+  </div>
+</div>
+
 <!-- ── BRAND IDENTITY DROPDOWN ── -->
 <div class="brand-dropdown" id="brand-dropdown" onclick="event.stopPropagation()">
   <div class="brand-drop-hdr">Select a brand identity</div>
@@ -3885,6 +5506,372 @@
     </a>
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════
+     DASHBOARD SCREEN
+════════════════════════════════════════════════════ -->
+<div class="dash-screen hidden" id="dash-screen">
+
+  <!-- L2 Sidebar (same as tpl-screen) -->
+  <aside class="dash-sidebar tpl-sidebar">
+    <div class="tpl-product-title">Marketing Automation AI</div>
+    <button class="tpl-create-wf-btn" onclick="showAskAI()">
+      Ask Marketing AI
+      <div class="tpl-create-wf-icon" style="background:linear-gradient(135deg,#6D28D9,#4F46E5)">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.4 4.2H14l-3.5 2.5 1.3 4.1L8 10.5l-3.8 2.3 1.3-4.1L2 6.2h4.6L8 2z" fill="white"/></svg>
+      </div>
+    </button>
+    <div class="tpl-nav-standalone active" id="dash-nav-dashboard" onclick="showDashboard()">Dashboard</div>
+    <nav class="tpl-nav-scroll">
+      <div class="tpl-acc-hdr closed" onclick="toggleDashAcc('dacc-agents', this)">
+        Agents
+        <span class="tpl-acc-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 9l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+      <div class="tpl-acc-body hidden" id="dacc-agents">
+        <div class="tpl-acc-item">Workflow agents</div>
+        <div class="tpl-acc-item">Automations agents</div>
+        <div class="tpl-acc-item">Campaign agents</div>
+      </div>
+      <div class="tpl-acc-hdr closed" onclick="toggleDashAcc('dacc-templates', this)">
+        Templates AI
+        <span class="tpl-acc-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 9l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+      <div class="tpl-acc-body hidden" id="dacc-templates">
+        <div class="tpl-acc-item" onclick="showTemplates()">Email</div>
+        <div class="tpl-acc-item">Text</div>
+      </div>
+      <div class="tpl-acc-hdr closed" onclick="toggleDashAcc('dacc-settings', this)">
+        Settings
+        <span class="tpl-acc-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 9l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+      <div class="tpl-acc-body hidden" id="dacc-settings">
+        <div class="tpl-acc-item">Communication restriction</div>
+        <div class="tpl-acc-item">Text images</div>
+        <div class="tpl-acc-item">Manage tags</div>
+        <div class="tpl-acc-item">Opt-in configuration</div>
+        <div class="tpl-acc-item">Email settings</div>
+      </div>
+      <div class="tpl-reports-row">
+        Reports
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 2h2v2M12 2L7 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 3H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="dash-main">
+
+    <!-- Top nav (same as templates list view) -->
+    <nav class="top-nav">
+      <span class="top-nav-title"></span>
+      <div class="top-nav-right">
+        <button class="nav-icon" title="Help"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#777" stroke-width="1.5"/><path d="M7.5 7.5C7.5 6.1 8.6 5 10 5s2.5 1.1 2.5 2.5c0 1.5-2.5 2.5-2.5 4" stroke="#777" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="15" r="0.75" fill="#777"/></svg></button>
+        <div class="nav-avatar"><img src="https://i.pravatar.cc/40?img=12" alt="avatar"></div>
+      </div>
+    </nav>
+
+
+    <!-- Body -->
+    <div class="dash-body">
+
+      <!-- Performance overview -->
+      <div class="dash-section-label">Performance overview</div>
+      <div class="dash-stats">
+        <div class="dash-stat-card">
+          <div class="dash-stat-label">Active workflows</div>
+          <div class="dash-stat-value">14</div>
+          <div class="dash-stat-delta">+3 this week</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-label">Messages sent</div>
+          <div class="dash-stat-value">2,840</div>
+          <div class="dash-stat-delta">+12% vs last week</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-label">Open rate</div>
+          <div class="dash-stat-value">38%</div>
+          <div class="dash-stat-delta">Above avg</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-label">Click-through rate</div>
+          <div class="dash-stat-value">6.2%</div>
+          <div class="dash-stat-delta">+0.8% vs last month</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-label">Contacts reached</div>
+          <div class="dash-stat-value">18,430</div>
+          <div class="dash-stat-delta">+540 new this week</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-label">AI-created assets</div>
+          <div class="dash-stat-value">6</div>
+          <div class="dash-stat-delta neutral">Pending review</div>
+        </div>
+      </div>
+
+      <!-- Start with AI -->
+      <div class="dash-section-label">Start with AI</div>
+      <div class="dash-ai-cards">
+        <div class="dash-ai-card" onclick="showAskAI()">
+          <div class="dash-ai-card-icon" style="background:#EDE9FE">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#7C3AED" stroke-width="1.5"/><path d="M10 6v8M6 10h8" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="dash-ai-card-title">Analyze my website</div>
+          <div class="dash-ai-card-desc">Enter your URL and get 10–15 templates plus recommended workflows</div>
+          <div class="dash-ai-card-link">Get started <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="dash-ai-card" onclick="showAskAI()">
+          <div class="dash-ai-card-icon" style="background:#CCFBF1">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="12" rx="2" stroke="#0D9488" stroke-width="1.5"/><path d="M7 8h6M7 12h4" stroke="#0D9488" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+          <div class="dash-ai-card-title">Describe your goal</div>
+          <div class="dash-ai-card-desc">Tell the agent what you want to achieve — it builds segments, templates, and workflows</div>
+          <div class="dash-ai-card-link">Type a prompt <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="dash-ai-card" onclick="showAskAI()">
+          <div class="dash-ai-card-icon" style="background:#FEF3C7">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3l2 5.5H17l-4 3 1.5 5L10 13l-4.5 3.5L7 11.5l-4-3h5L10 3z" stroke="#D97706" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="dash-ai-card-title">View AI recommendations</div>
+          <div class="dash-ai-card-desc">5 segments and 3 workflows ready to review based on your contact data</div>
+          <div class="dash-ai-card-link">See suggestions <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Active campaigns table -->
+      <div class="dash-section-label">Active campaigns</div>
+      <div class="dash-full-card">
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th>Campaign name</th>
+              <th>Type</th>
+              <th>Audience</th>
+              <th>Sent</th>
+              <th>Open rate</th>
+              <th>CTR</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="name">Welcome journey — new customers</td><td>Email</td><td>New signups</td><td>1,240</td><td><div style="display:flex;align-items:center;gap:7px">42%<div class="dash-tbl-bar"><div class="dash-tbl-bar-fill" style="width:42%"></div></div></div></td><td class="dash-tbl-sparkline">7.1%</td><td><span class="dash-status-pill active">Active</span></td></tr>
+            <tr><td class="name">Re-engagement — 90 day inactive</td><td>Email + SMS</td><td>Lapsed customers</td><td>3,870</td><td><div style="display:flex;align-items:center;gap:7px">29%<div class="dash-tbl-bar"><div class="dash-tbl-bar-fill" style="width:29%"></div></div></div></td><td class="dash-tbl-sparkline">4.3%</td><td><span class="dash-status-pill active">Active</span></td></tr>
+            <tr><td class="name">Spring promo — seasonal offer</td><td>Email</td><td>All contacts</td><td>8,120</td><td><div style="display:flex;align-items:center;gap:7px">35%<div class="dash-tbl-bar"><div class="dash-tbl-bar-fill" style="width:35%"></div></div></div></td><td class="dash-tbl-sparkline">5.8%</td><td><span class="dash-status-pill active">Active</span></td></tr>
+            <tr><td class="name">Post-visit review request</td><td>SMS</td><td>Recent visitors</td><td>620</td><td><div style="display:flex;align-items:center;gap:7px">51%<div class="dash-tbl-bar"><div class="dash-tbl-bar-fill" style="width:51%"></div></div></div></td><td class="dash-tbl-sparkline">9.2%</td><td><span class="dash-status-pill active">Active</span></td></tr>
+            <tr><td class="name">VIP flash sale — April</td><td>Email</td><td>VIP segment</td><td>410</td><td><div style="display:flex;align-items:center;gap:7px">47%<div class="dash-tbl-bar"><div class="dash-tbl-bar-fill" style="width:47%"></div></div></div></td><td class="dash-tbl-sparkline">8.6%</td><td><span class="dash-status-pill draft">Draft</span></td></tr>
+            <tr><td class="name">Abandoned lead follow-up</td><td>Email</td><td>Unconverted leads</td><td>2,050</td><td><div style="display:flex;align-items:center;gap:7px">33%<div class="dash-tbl-bar"><div class="dash-tbl-bar-fill" style="width:33%"></div></div></div></td><td class="dash-tbl-sparkline">5.1%</td><td><span class="dash-status-pill paused">Paused</span></td></tr>
+            <tr><td class="name">Birthday reward campaign</td><td>Email + SMS</td><td>Birthday segment</td><td>780</td><td><div style="display:flex;align-items:center;gap:7px">58%<div class="dash-tbl-bar"><div class="dash-tbl-bar-fill" style="width:58%"></div></div></div></td><td class="dash-tbl-sparkline">11.4%</td><td><span class="dash-status-pill active">Active</span></td></tr>
+            <tr><td class="name">High-intent leads — 7 day nurture</td><td>Email</td><td>Hot leads</td><td>930</td><td><div style="display:flex;align-items:center;gap:7px">44%<div class="dash-tbl-bar"><div class="dash-tbl-bar-fill" style="width:44%"></div></div></div></td><td class="dash-tbl-sparkline">8.0%</td><td><span class="dash-status-pill active">Active</span></td></tr>
+            <tr><td class="name">Repeat customer loyalty flow</td><td>Email</td><td>3+ purchases</td><td>1,560</td><td><div style="display:flex;align-items:center;gap:7px">39%<div class="dash-tbl-bar"><div class="dash-tbl-bar-fill" style="width:39%"></div></div></div></td><td class="dash-tbl-sparkline">6.7%</td><td><span class="dash-status-pill active">Active</span></td></tr>
+            <tr><td class="name">Seasonal promo — summer preview</td><td>Email</td><td>All contacts</td><td>0</td><td><div style="display:flex;align-items:center;gap:7px">—<div class="dash-tbl-bar"><div class="dash-tbl-bar-fill" style="width:0%"></div></div></div></td><td>—</td><td><span class="dash-status-pill review">In review</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Bottom two columns -->
+      <div class="dash-bottom-cols">
+
+        <!-- Recent AI-created assets -->
+        <div class="dash-card">
+          <div class="dash-card-hdr">
+            <span class="dash-card-title">Recent AI-created assets</span>
+            <span class="dash-card-link">View all</span>
+          </div>
+          <div class="dash-asset-list">
+            <div class="dash-asset-item"><span>Welcome journey — new customers</span><div class="dash-asset-item-meta"><span class="dash-asset-type">Email</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>Re-engagement — 90 day inactive</span><div class="dash-asset-item-meta"><span class="dash-asset-type">Email</span><span class="dash-status-pill draft">Draft</span></div></div>
+            <div class="dash-asset-item"><span>Spring promo — seasonal offer</span><div class="dash-asset-item-meta"><span class="dash-asset-type">Email</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>Post-visit review request</span><div class="dash-asset-item-meta"><span class="dash-asset-type">SMS</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>VIP flash sale — April</span><div class="dash-asset-item-meta"><span class="dash-asset-type">Email</span><span class="dash-status-pill draft">Draft</span></div></div>
+            <div class="dash-asset-item"><span>Birthday reward segment</span><div class="dash-asset-item-meta"><span class="dash-asset-type">Segment</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>Abandoned cart recovery</span><div class="dash-asset-item-meta"><span class="dash-asset-type">Workflow</span><span class="dash-status-pill paused">Paused</span></div></div>
+            <div class="dash-asset-item"><span>Loyalty tier upgrade email</span><div class="dash-asset-item-meta"><span class="dash-asset-type">Email</span><span class="dash-status-pill review">In review</span></div></div>
+            <div class="dash-asset-item"><span>Win-back — 180 day lapsed</span><div class="dash-asset-item-meta"><span class="dash-asset-type">Email</span><span class="dash-status-pill draft">Draft</span></div></div>
+            <div class="dash-asset-item"><span>New product launch announcement</span><div class="dash-asset-item-meta"><span class="dash-asset-type">Email</span><span class="dash-status-pill review">In review</span></div></div>
+          </div>
+        </div>
+
+        <!-- Recommended for you -->
+        <div class="dash-card">
+          <div class="dash-card-hdr">
+            <span class="dash-card-title">Recommended for you</span>
+            <span class="dash-card-link" onclick="showAskAI()">See all</span>
+          </div>
+          <div class="dash-asset-list">
+            <div class="dash-rec-item" onclick="showAskAI()"><div class="dash-rec-item-left"><span>Abandoned lead follow-up</span><span class="dash-rec-item-sub">Based on 340 unconverted leads</span></div><span class="dash-ai-rec-pill">AI rec</span></div>
+            <div class="dash-rec-item" onclick="showAskAI()"><div class="dash-rec-item-left"><span>High-intent leads — 7 day nurture</span><span class="dash-rec-item-sub">120 leads scored 80+</span></div><span class="dash-ai-rec-pill">AI rec</span></div>
+            <div class="dash-rec-item" onclick="showAskAI()"><div class="dash-rec-item-left"><span>Seasonal promo — summer</span><span class="dash-rec-item-sub">Trend match: summer spending</span></div><span class="dash-ai-rec-pill">AI rec</span></div>
+            <div class="dash-rec-item" onclick="showAskAI()"><div class="dash-rec-item-left"><span>Repeat customer loyalty flow</span><span class="dash-rec-item-sub">1,200 contacts qualify</span></div><span class="dash-ai-rec-pill">AI rec</span></div>
+            <div class="dash-rec-item" onclick="showAskAI()"><div class="dash-rec-item-left"><span>Birthday reward campaign</span><span class="dash-rec-item-sub">48 birthdays next 7 days</span></div><span class="dash-ai-rec-pill">AI rec</span></div>
+            <div class="dash-rec-item" onclick="showAskAI()"><div class="dash-rec-item-left"><span>Post-purchase upsell sequence</span><span class="dash-rec-item-sub">650 eligible recent buyers</span></div><span class="dash-ai-rec-pill">AI rec</span></div>
+            <div class="dash-rec-item" onclick="showAskAI()"><div class="dash-rec-item-left"><span>Referral program relaunch</span><span class="dash-rec-item-sub">Low referral activity detected</span></div><span class="dash-ai-rec-pill">AI rec</span></div>
+            <div class="dash-rec-item" onclick="showAskAI()"><div class="dash-rec-item-left"><span>Weekend flash sale blast</span><span class="dash-rec-item-sub">High engagement window detected</span></div><span class="dash-ai-rec-pill">AI rec</span></div>
+            <div class="dash-rec-item" onclick="showAskAI()"><div class="dash-rec-item-left"><span>Cart abandonment recovery</span><span class="dash-rec-item-sub">210 open carts in last 48 hrs</span></div><span class="dash-ai-rec-pill">AI rec</span></div>
+            <div class="dash-rec-item" onclick="showAskAI()"><div class="dash-rec-item-left"><span>Review request — recent visitors</span><span class="dash-rec-item-sub">380 unasked recent visitors</span></div><span class="dash-ai-rec-pill">AI rec</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Audience segments + Workflow activity -->
+      <div class="dash-three-cols">
+
+        <!-- Audience segments -->
+        <div class="dash-card">
+          <div class="dash-card-hdr">
+            <span class="dash-card-title">Audience segments</span>
+            <span class="dash-card-link">Manage</span>
+          </div>
+          <div class="dash-asset-list">
+            <div class="dash-seg-item"><span>All contacts</span><div style="display:flex;gap:10px;align-items:center"><span class="dash-seg-count">18,430</span><span class="dash-seg-delta">+540</span></div></div>
+            <div class="dash-seg-item"><span>New signups (30d)</span><div style="display:flex;gap:10px;align-items:center"><span class="dash-seg-count">1,240</span><span class="dash-seg-delta">+88</span></div></div>
+            <div class="dash-seg-item"><span>VIP customers</span><div style="display:flex;gap:10px;align-items:center"><span class="dash-seg-count">410</span><span class="dash-seg-delta">+12</span></div></div>
+            <div class="dash-seg-item"><span>Lapsed (90d)</span><div style="display:flex;gap:10px;align-items:center"><span class="dash-seg-count">3,870</span><span class="dash-seg-delta neg">−230</span></div></div>
+            <div class="dash-seg-item"><span>Hot leads</span><div style="display:flex;gap:10px;align-items:center"><span class="dash-seg-count">930</span><span class="dash-seg-delta">+60</span></div></div>
+            <div class="dash-seg-item"><span>3+ purchases</span><div style="display:flex;gap:10px;align-items:center"><span class="dash-seg-count">1,560</span><span class="dash-seg-delta">+34</span></div></div>
+            <div class="dash-seg-item"><span>Birthday (next 30d)</span><div style="display:flex;gap:10px;align-items:center"><span class="dash-seg-count">182</span><span class="dash-seg-delta">+18</span></div></div>
+            <div class="dash-seg-item"><span>Recent visitors (7d)</span><div style="display:flex;gap:10px;align-items:center"><span class="dash-seg-count">620</span><span class="dash-seg-delta">+95</span></div></div>
+            <div class="dash-seg-item"><span>Unsubscribed</span><div style="display:flex;gap:10px;align-items:center"><span class="dash-seg-count">347</span><span class="dash-seg-delta neg">+14</span></div></div>
+            <div class="dash-seg-item"><span>Open cart (48h)</span><div style="display:flex;gap:10px;align-items:center"><span class="dash-seg-count">210</span><span class="dash-seg-delta">+41</span></div></div>
+          </div>
+        </div>
+
+        <!-- Workflow activity -->
+        <div class="dash-card">
+          <div class="dash-card-hdr">
+            <span class="dash-card-title">Workflow activity</span>
+            <span class="dash-card-link">View all</span>
+          </div>
+          <div class="dash-asset-list">
+            <div class="dash-workflow-item"><div class="dash-workflow-meta"><span>Welcome journey</span><span class="dash-workflow-sub">Triggered 88 times today</span></div><span class="dash-workflow-rate">42% open</span></div>
+            <div class="dash-workflow-item"><div class="dash-workflow-meta"><span>Review request</span><span class="dash-workflow-sub">Triggered 34 times today</span></div><span class="dash-workflow-rate">51% open</span></div>
+            <div class="dash-workflow-item"><div class="dash-workflow-meta"><span>Re-engagement flow</span><span class="dash-workflow-sub">Running — 3,870 enrolled</span></div><span class="dash-workflow-rate">29% open</span></div>
+            <div class="dash-workflow-item"><div class="dash-workflow-meta"><span>Birthday reward</span><span class="dash-workflow-sub">12 triggered this week</span></div><span class="dash-workflow-rate">58% open</span></div>
+            <div class="dash-workflow-item"><div class="dash-workflow-meta"><span>Loyalty tier upgrade</span><span class="dash-workflow-sub">Pending approval</span></div><span class="dash-workflow-rate">—</span></div>
+            <div class="dash-workflow-item"><div class="dash-workflow-meta"><span>Lead nurture — 7 day</span><span class="dash-workflow-sub">120 contacts in sequence</span></div><span class="dash-workflow-rate">44% open</span></div>
+            <div class="dash-workflow-item"><div class="dash-workflow-meta"><span>Abandoned cart recovery</span><span class="dash-workflow-sub">Paused — awaiting edit</span></div><span class="dash-workflow-rate">33% open</span></div>
+            <div class="dash-workflow-item"><div class="dash-workflow-meta"><span>Post-purchase upsell</span><span class="dash-workflow-sub">Draft — not yet live</span></div><span class="dash-workflow-rate">—</span></div>
+            <div class="dash-workflow-item"><div class="dash-workflow-meta"><span>Win-back — 180 day</span><span class="dash-workflow-sub">Scheduled for May 1</span></div><span class="dash-workflow-rate">—</span></div>
+            <div class="dash-workflow-item"><div class="dash-workflow-meta"><span>Referral program</span><span class="dash-workflow-sub">Triggered 5 times this month</span></div><span class="dash-workflow-rate">38% open</span></div>
+          </div>
+        </div>
+
+        <!-- Top templates -->
+        <div class="dash-card">
+          <div class="dash-card-hdr">
+            <span class="dash-card-title">Top performing templates</span>
+            <span class="dash-card-link" onclick="showTemplates()">View all</span>
+          </div>
+          <div class="dash-asset-list">
+            <div class="dash-asset-item"><span>Birthday discount email</span><div class="dash-asset-item-meta"><span class="dash-asset-type">58% open</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>Welcome series — day 1</span><div class="dash-asset-item-meta"><span class="dash-asset-type">54% open</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>Review request SMS</span><div class="dash-asset-item-meta"><span class="dash-asset-type">51% open</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>VIP early access offer</span><div class="dash-asset-item-meta"><span class="dash-asset-type">47% open</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>Welcome journey — day 3</span><div class="dash-asset-item-meta"><span class="dash-asset-type">44% open</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>Lead nurture — intro</span><div class="dash-asset-item-meta"><span class="dash-asset-type">44% open</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>Spring promo blast</span><div class="dash-asset-item-meta"><span class="dash-asset-type">42% open</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>Loyalty points reminder</span><div class="dash-asset-item-meta"><span class="dash-asset-type">40% open</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>Re-engagement — soft touch</span><div class="dash-asset-item-meta"><span class="dash-asset-type">39% open</span><span class="dash-status-pill active">Active</span></div></div>
+            <div class="dash-asset-item"><span>Referral invite email</span><div class="dash-asset-item-meta"><span class="dash-asset-type">38% open</span><span class="dash-status-pill draft">Draft</span></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════
+     ASK MARKETING AI SCREEN  (full-page, no L2 sidebar)
+════════════════════════════════════════════════════ -->
+<div class="askai-screen hidden" id="askai-screen">
+
+  <!-- ── Left: Chat pane ── -->
+  <div class="askai-chat-pane">
+
+    <div class="askai-chat-hdr">
+      <div class="askai-chat-hdr-text">
+        <div class="askai-chat-hdr-title">Marketing AI</div>
+        <div class="askai-chat-hdr-sub">Describe what you want to achieve</div>
+      </div>
+      <button class="askai-cancel-btn" onclick="showTemplates()">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Cancel
+      </button>
+    </div>
+
+    <!-- Messages -->
+    <div class="askai-chat-msgs" id="askai-chat-msgs">
+
+      <!-- Initial empty state -->
+      <div class="askai-chat-empty" id="askai-chat-empty">
+        <div class="askai-chat-empty-icon">✨</div>
+        <div class="askai-chat-empty-title">Ask Marketing AI anything</div>
+        <div class="askai-chat-empty-sub">Tell the agent your goal and it will build segments, templates, and workflows for you to review.</div>
+        <div class="askai-starter-prompts">
+          <button class="askai-starter-btn" onclick="askaiSend(this.textContent)">Re-engage my inactive customers — haven't heard from them in 90+ days</button>
+          <button class="askai-starter-btn" onclick="askaiSend(this.textContent)">Create a post-visit review request workflow for new customers</button>
+          <button class="askai-starter-btn" onclick="askaiSend(this.textContent)">Build a loyalty campaign for VIP customers with a flash sale offer</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Input bar -->
+    <div class="askai-input-bar">
+      <input class="askai-chat-input" id="askai-chat-input" type="text" placeholder="Ask a follow-up or refine..."
+        onkeydown="if(event.key==='Enter')askaiSend()">
+      <button class="askai-send-btn" onclick="askaiSend()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Right: Review pane ── -->
+  <div class="askai-review-pane">
+
+    <div class="askai-review-hdr">
+      <div class="askai-review-hdr-row">
+        <div>
+          <div class="askai-review-title">Review AI-generated setup</div>
+          <div class="askai-review-sub">Approve, edit, or skip each asset before saving</div>
+        </div>
+        <button class="askai-approve-all" onclick="askaiApproveAll()">Approve all →</button>
+      </div>
+      <!-- Tabs -->
+      <div class="askai-tabs" id="askai-tabs">
+        <div class="askai-tab active" onclick="switchAskaiTab(this,'segment')">Segment</div>
+        <div class="askai-tab" onclick="switchAskaiTab(this,'templates')">Templates</div>
+        <div class="askai-tab" onclick="switchAskaiTab(this,'workflow')">Workflow</div>
+        <div class="askai-tab" onclick="switchAskaiTab(this,'review')">Review</div>
+      </div>
+    </div>
+
+    <!-- Cards scroll -->
+    <div class="askai-cards-scroll" id="askai-cards-scroll">
+
+      <!-- Initial empty / waiting state -->
+      <div class="askai-review-empty" id="askai-review-empty">
+        <div style="font-size:32px;margin-bottom:4px">📋</div>
+        <div style="font-size:14px;color:var(--text-2)">No assets yet</div>
+        <div class="askai-review-empty-sub">Ask Marketing AI something on the left and your generated assets will appear here for review.</div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="askai-review-footer" id="askai-review-footer">
+      <div class="askai-footer-status" id="askai-footer-status">Start a conversation to generate assets</div>
+      <button class="askai-continue-btn" id="askai-continue-btn" onclick="showTemplates()" style="opacity:.4;pointer-events:none">
+        Continue to workflow
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+  </div>
+</div>
+
 
 <!-- ── EDIT BLOCK MODAL ── -->
 <div class="edit-block-backdrop" id="edit-block-backdrop" onclick="closeEditBlock()">
