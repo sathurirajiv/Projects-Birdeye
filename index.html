@@ -2440,7 +2440,6 @@
   }
   .birdai-fp-input-area {
     padding: 10px 40px 28px; display: flex; justify-content: center; flex-shrink: 0;
-    border-top: 1px solid var(--border);
   }
   .birdai-fp-input-box {
     width: 100%; max-width: 740px; border: 1px solid #E0E0E0; border-radius: 14px;
@@ -2495,15 +2494,41 @@
     font-family: 'Roboto', sans-serif; white-space: nowrap; display: flex; align-items: center; gap: 5px;
   }
   .birdai-fp-chip:hover { background: #f5f2ff; border-color: #c4b5fd; color: #6D28D9; }
-  .birdai-fp-goal-grid { display: flex; flex-wrap: wrap; gap: 8px; max-width: 700px; }
-  .birdai-fp-goal-chip {
-    display: flex; align-items: center; gap: 7px;
-    border: 1px solid #E0E0E0; border-radius: 8px; padding: 8px 14px;
-    cursor: pointer; font-size: 13px; color: var(--text-1);
-    background: #fff; transition: border-color 0.12s, background 0.12s; user-select: none;
+  /* "or" separator between the two initial AI bubbles */
+  .birdai-fp-or-sep { display: flex; align-items: center; gap: 12px; padding: 4px 0 4px 40px; max-width: 700px; }
+  .birdai-fp-or-sep::before, .birdai-fp-or-sep::after { content: ''; flex: 1; height: 1px; background: #EBEBEB; }
+  .birdai-fp-or-sep span { font-size: 12px; color: var(--text-3); flex-shrink: 0; }
+  /* Goal cards grid */
+  .birdai-fp-goal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 660px; }
+  .birdai-fp-goal-card {
+    position: relative; display: flex; flex-direction: column; gap: 10px;
+    border: 1.5px solid #E8E8E8; border-radius: 12px; padding: 14px 14px 12px;
+    cursor: pointer; background: #fff; user-select: none;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
   }
-  .birdai-fp-goal-chip.selected { border-color: var(--blue); background: #EEF5FF; color: var(--blue); }
-  .birdai-fp-goal-chip input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--blue); flex-shrink: 0; }
+  .birdai-fp-goal-card:hover { border-color: #C8D8F8; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+  .birdai-fp-goal-card.selected { border-color: var(--blue); background: #F0F6FF; }
+  .birdai-fp-goal-card-icon {
+    width: 32px; height: 32px; border-radius: 8px; background: #F3F4F6;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; color: #6B7280; transition: background 0.15s, color 0.15s;
+  }
+  .birdai-fp-goal-card.selected .birdai-fp-goal-card-icon { background: #DBEAFE; color: var(--blue); }
+  .birdai-fp-goal-card-name {
+    font-size: 12.5px; font-weight: 400; color: var(--text-1); line-height: 1.45;
+    padding-right: 18px; /* room for checkbox */
+  }
+  .birdai-fp-goal-card-chk {
+    position: absolute; top: 12px; right: 12px;
+    width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid #D0D0D0;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .birdai-fp-goal-card.selected .birdai-fp-goal-card-chk { background: var(--blue); border-color: var(--blue); }
+  .birdai-fp-goal-card-chk svg { display: none; }
+  .birdai-fp-goal-card.selected .birdai-fp-goal-card-chk svg { display: block; }
+  /* Show more spans full width below the grid */
+  .birdai-fp-goal-show-more-row { grid-column: 1 / -1; display: flex; align-items: center; padding-top: 2px; }
   .birdai-fp-show-more {
     font-size: 13px; color: var(--blue); background: none; border: none; cursor: pointer;
     padding: 0; font-family: 'Roboto', sans-serif;
@@ -2567,6 +2592,15 @@
   .birdai-fp-review-sub { font-size: 12px; color: var(--text-3); line-height: 1.55; }
   .birdai-fp-review-detail-btn { font-size: 12.5px; color: var(--blue); background: none; border: none; cursor: pointer; font-family: 'Roboto', sans-serif; padding: 4px 0 0; display: block; }
   .birdai-fp-review-detail-btn:hover { text-decoration: underline; }
+  /* Template expand/collapse */
+  .birdai-fp-template-details { overflow: hidden; max-height: 0; transition: max-height 0.38s ease; }
+  .birdai-fp-template-details.open { max-height: 900px; }
+  .birdai-fp-template-row { padding: 18px 0 14px; border-top: 1px solid #F0F0F0; }
+  .birdai-fp-template-row-hdr { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 3px; }
+  .birdai-fp-template-row-title { font-size: 13.5px; font-weight: 400; color: var(--text-1); }
+  .birdai-fp-template-row-sub { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+  .birdai-fp-badge.email-tpl { background: #DCFCE7; color: #16A34A; }
+  .birdai-fp-badge.text-tpl { background: #DCFCE7; color: #16A34A; }
   .birdai-fp-badge { display: inline-flex; align-items: center; font-size: 11.5px; padding: 3px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
   .birdai-fp-badge.segment { background: #FEF3C7; color: #D97706; }
   .birdai-fp-badge.templates { background: #DCFCE7; color: #16A34A; }
@@ -6572,13 +6606,42 @@
     });
   }
 
+  // Scroll so a user message sits at the top of the chat area (ChatGPT-style)
+  function birdaiFpScrollToMsg(el) {
+    const wrap = document.querySelector('.birdai-fp-body-wrap');
+    if (!wrap || !el) return;
+    requestAnimationFrame(() => {
+      const wrapRect = wrap.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      const delta = elRect.top - wrapRect.top - 24; // 24px breathing room
+      wrap.scrollTo({ top: wrap.scrollTop + delta, behavior: 'smooth' });
+    });
+  }
+
   function birdaiFpRender() {
     const body = document.getElementById('birdai-fp-body');
     body.innerHTML = '';
 
-    if (_birdaiFpStep === 0) {
-      // Initial greeting + chips
+    // ── Step 0 & history: always render the merged opening two-bubble view ──
+    {
+      const _goalIcons = {
+        'Re-engage my inactive customers': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8A5 5 0 1 1 8 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 1v4l3-2-3-2Z" fill="currentColor"/></svg>',
+        'Abandoned lead follow-up': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6h4M6 9h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+        'Promote my new service': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 9.5V6.5L12 4v8L3 9.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M3 8H1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3 9.5L2.5 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+        'Setup a welcome journey': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 14c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+        'Seasonal promotions': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 4V2M11 4V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 7h12" stroke="currentColor" stroke-width="1.3"/></svg>',
+        'Build a loyalty campaign for VIP customers with a flash sale offer': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3.1 3.5.5-2.5 2.4.6 3.4L8 10l-3.1 1.4.6-3.4L3 5.6l3.5-.5L8 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>'
+      };
+      const _goalList = Object.keys(_goalIcons);
+      const _goalCardsHTML = _goalList.map(g => `
+        <label class="birdai-fp-goal-card${_birdaiFpSelectedGoals.has(g) ? ' selected' : ''}" onclick="birdaiFpToggleGoal(this,'${g.replace(/'/g,"\\'")}')">
+          <div class="birdai-fp-goal-card-icon">${_goalIcons[g]}</div>
+          <div class="birdai-fp-goal-card-name">${g}</div>
+          <div class="birdai-fp-goal-card-chk"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </label>`).join('');
+
       body.innerHTML = `
+        <!-- Bubble 1: quick-action chips -->
         <div class="birdai-fp-msg-ai birdai-fp-anim">
           <div class="birdai-fp-ai-avatar">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0.5L7.2 4H11L8 6.2l1.1 3.4L6 7.7 2.9 9.6 4 6.2 1 4h3.8L6 0.5Z" fill="white"/></svg>
@@ -6589,42 +6652,23 @@
               <button class="birdai-fp-chip" onclick="birdaiFpChip('Create a campaign')">Create a campaign</button>
               <button class="birdai-fp-chip" onclick="birdaiFpChip('Create a workflow')">Create a workflow</button>
               <button class="birdai-fp-chip" onclick="birdaiFpChip('Create a template')">Create a template</button>
-              <button class="birdai-fp-chip" onclick="birdaiFpChip('Show me goals')">Show me goals
-                <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3 3.5-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
             </div>
           </div>
-        </div>`;
-    }
-
-    if (_birdaiFpStep >= 1) {
-      // User: "Show me goals" + AI: goal checkboxes
-      body.innerHTML += `
-        <div class="birdai-fp-msg-user">
-          <div class="birdai-fp-user-avatar">AB</div>
-          <div class="birdai-fp-user-bubble">Show me goals</div>
         </div>
+        <!-- "or" separator -->
+        <div class="birdai-fp-or-sep"><span>or</span></div>
+        <!-- Bubble 2: goal cards -->
         <div class="birdai-fp-msg-ai">
           <div class="birdai-fp-ai-avatar">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0.5L7.2 4H11L8 6.2l1.1 3.4L6 7.7 2.9 9.6 4 6.2 1 4h3.8L6 0.5Z" fill="white"/></svg>
           </div>
           <div class="birdai-fp-ai-content">
-            <div class="birdai-fp-ai-text">Tell the agent your goals and it will build segments, templates, and workflows for you to review:</div>
+            <div class="birdai-fp-ai-text">Select a goal to proceed:</div>
             <div class="birdai-fp-goal-grid" id="fp-goal-grid">
-              ${[
-                'Re-engage my inactive customers',
-                'Abandoned lead follow-up',
-                'Promote my new service',
-                'Setup a welcome journey',
-                'Seasonal promotions',
-                'Build a loyalty campaign for VIP customers with a flash sale offer'
-              ].map(g => `
-                <label class="birdai-fp-goal-chip${_birdaiFpSelectedGoals.has(g) ? ' selected' : ''}" onclick="birdaiFpToggleGoal(this,'${g.replace(/'/g,"\\'")}')">
-                  <input type="checkbox" ${_birdaiFpSelectedGoals.has(g) ? 'checked' : ''} onclick="event.stopPropagation()"> ${g}
-                </label>`).join('')}
-              <button class="birdai-fp-show-more">Show more</button>
+              ${_goalCardsHTML}
+              <div class="birdai-fp-goal-show-more-row"><button class="birdai-fp-show-more">Show more</button></div>
             </div>
-            ${_birdaiFpStep === 1 ? `<button class="birdai-fp-proceed-btn" onclick="birdaiFpProceed()">Proceed</button>` : ''}
+            ${_birdaiFpStep === 0 ? `<button class="birdai-fp-proceed-btn" onclick="birdaiFpProceed()" style="margin-top:14px">Proceed</button>` : ''}
           </div>
         </div>`;
     }
@@ -6694,42 +6738,43 @@
         </div>`;
     }
 
-    birdaiFpScrollBottom();
+    // After each render, pin the latest user message to the top (ChatGPT-style)
+    requestAnimationFrame(() => {
+      const allUserMsgs = body.querySelectorAll('.birdai-fp-msg-user');
+      if (allUserMsgs.length > 0) {
+        birdaiFpScrollToMsg(allUserMsgs[allUserMsgs.length - 1]);
+      } else {
+        const wrap = document.querySelector('.birdai-fp-body-wrap');
+        if (wrap) wrap.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
   }
 
   function birdaiFpToggleGoal(el, goal) {
     if (_birdaiFpSelectedGoals.has(goal)) {
       _birdaiFpSelectedGoals.delete(goal);
       el.classList.remove('selected');
-      el.querySelector('input').checked = false;
     } else {
       _birdaiFpSelectedGoals.add(goal);
       el.classList.add('selected');
-      el.querySelector('input').checked = true;
     }
   }
 
   function birdaiFpChip(text) {
-    if (text === 'Show me goals') {
-      _birdaiFpStep = 1;
-      birdaiFpRender();
-    } else {
-      // basic response for other chips
-      _birdaiFpStep = 0;
-      const body = document.getElementById('birdai-fp-body');
-      body.innerHTML += `
-        <div class="birdai-fp-msg-user">
-          <div class="birdai-fp-user-avatar">AB</div>
-          <div class="birdai-fp-user-bubble">${text}</div>
+    const body = document.getElementById('birdai-fp-body');
+    body.innerHTML += `
+      <div class="birdai-fp-msg-user">
+        <div class="birdai-fp-user-avatar">AB</div>
+        <div class="birdai-fp-user-bubble">${text}</div>
+      </div>
+      <div class="birdai-fp-msg-ai">
+        <div class="birdai-fp-ai-avatar"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0.5L7.2 4H11L8 6.2l1.1 3.4L6 7.7 2.9 9.6 4 6.2 1 4h3.8L6 0.5Z" fill="white"/></svg></div>
+        <div class="birdai-fp-ai-content">
+          <div class="birdai-fp-ai-text">Sure! Let's get started. Tell me more about what you have in mind.</div>
         </div>
-        <div class="birdai-fp-msg-ai">
-          <div class="birdai-fp-ai-avatar"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0.5L7.2 4H11L8 6.2l1.1 3.4L6 7.7 2.9 9.6 4 6.2 1 4h3.8L6 0.5Z" fill="white"/></svg></div>
-          <div class="birdai-fp-ai-content">
-            <div class="birdai-fp-ai-text">Sure! Let's get started. Tell me more about what you have in mind.</div>
-          </div>
-        </div>`;
-      birdaiFpScrollBottom();
-    }
+      </div>`;
+    const chipUserMsgs = body.querySelectorAll('.birdai-fp-msg-user');
+    birdaiFpScrollToMsg(chipUserMsgs[chipUserMsgs.length - 1]);
   }
 
   function birdaiFpProceed() {
@@ -6742,7 +6787,7 @@
 
   function birdaiFpConfirmWebsite() {
     _birdaiFpPublishedShown = false;
-    _birdaiFpCards = { segment: { approved: false }, templates: { approved: false }, workflow: { approved: false } };
+    _birdaiFpCards = { segment: { approved: false }, templates: { approved: false, email: false, text: false }, workflow: { approved: false } };
     _birdaiFpStep = 3;
     birdaiFpRender();
     setTimeout(() => {
@@ -6770,7 +6815,8 @@
           <div class="birdai-fp-ai-text">I'm working on that for you. Could you share a bit more context so I can tailor the recommendation?</div>
         </div>
       </div>`;
-    birdaiFpScrollBottom();
+    const sendUserMsgs = body.querySelectorAll('.birdai-fp-msg-user');
+    birdaiFpScrollToMsg(sendUserMsgs[sendUserMsgs.length - 1]);
   }
 
   // ── Review cards: append after agents shimmer ──
@@ -6802,11 +6848,49 @@
               <div style="flex:1;min-width:0">
                 <div class="birdai-fp-review-sub"><span style="color:var(--text-1)">Email:</span> We miss you — here's 10% off your next visit</div>
                 <div class="birdai-fp-review-sub" style="margin-top:3px"><span style="color:var(--text-1)">Text:</span> Hi [First name], we haven't seen you in a while…</div>
-                <button class="birdai-fp-review-detail-btn">Show details</button>
+                <button class="birdai-fp-review-detail-btn" id="fp-tpl-toggle-btn" onclick="birdaiFpToggleTemplateDetails()">Show details</button>
               </div>
               <span class="birdai-fp-badge templates">Templates</span>
             </div>
-            ${_fpActionBtns('templates', true, false)}
+            <!-- Expandable per-template rows -->
+            <div class="birdai-fp-template-details" id="fp-template-details">
+              <!-- Email template row -->
+              <div class="birdai-fp-template-row">
+                <div class="birdai-fp-template-row-hdr">
+                  <div>
+                    <div class="birdai-fp-template-row-title">We miss you — here's 10% off your next visit</div>
+                    <div class="birdai-fp-template-row-sub">"It's been a while, [First name]" · Tone: Warm, conversational · CTA: Book now</div>
+                  </div>
+                  <span class="birdai-fp-badge email-tpl">Email template</span>
+                </div>
+                <div class="birdai-fp-card-actions" id="fp-actions-tpl-email">
+                  <button class="birdai-fp-approve-btn" onclick="birdaiFpApproveTemplate('email')">Approve</button>
+                  <button class="birdai-fp-icon-action-btn" title="Preview" onclick="birdaiFpPreview('templates')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><ellipse cx="7" cy="7" rx="5.5" ry="3.5" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg></button>
+                  <button class="birdai-fp-icon-action-btn" title="Edit"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9.5 1.5l2 2L4 11H2v-2L9.5 1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                  <button class="birdai-fp-skip-btn" onclick="birdaiFpSkipTemplate('email')">Skip</button>
+                </div>
+              </div>
+              <!-- Text template row -->
+              <div class="birdai-fp-template-row">
+                <div class="birdai-fp-template-row-hdr">
+                  <div>
+                    <div class="birdai-fp-template-row-title">Hi [First name], we haven't seen you in a while…</div>
+                    <div class="birdai-fp-template-row-sub">160 chars · Includes opt-out · Follows up 3 days after email</div>
+                  </div>
+                  <span class="birdai-fp-badge text-tpl">Text template</span>
+                </div>
+                <div class="birdai-fp-card-actions" id="fp-actions-tpl-text">
+                  <button class="birdai-fp-approve-btn" onclick="birdaiFpApproveTemplate('text')">Approve</button>
+                  <button class="birdai-fp-icon-action-btn" title="Preview"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><ellipse cx="7" cy="7" rx="5.5" ry="3.5" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg></button>
+                  <button class="birdai-fp-icon-action-btn" title="Edit"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9.5 1.5l2 2L4 11H2v-2L9.5 1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                  <button class="birdai-fp-skip-btn" onclick="birdaiFpSkipTemplate('text')">Skip</button>
+                </div>
+              </div>
+            </div>
+            <!-- Outer compact actions (hidden when details open) -->
+            <div id="fp-actions-templates-outer">
+              ${_fpActionBtns('templates', true, false)}
+            </div>
           </div>
           <div class="birdai-fp-review-card" id="fp-card-workflow">
             <div class="birdai-fp-review-hdr">
@@ -6844,19 +6928,38 @@
     }
   }
 
+  // ── Approved-state helper (shared) ──
+  function _fpSetApprovedUI(actionsId, hasPreview, previewType) {
+    const el = document.getElementById(actionsId);
+    if (el) el.outerHTML = `<div class="birdai-fp-approved-row" id="${actionsId}">
+      <div class="birdai-fp-approved-check">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#16A34A"/><path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Approved
+      </div>
+      ${hasPreview ? `<button class="birdai-fp-icon-action-btn" title="Preview" onclick="birdaiFpPreview('${previewType}')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><ellipse cx="7" cy="7" rx="5.5" ry="3.5" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg></button>` : ''}
+    </div>`;
+  }
+
   function birdaiFpApprove(type) {
     if (!_birdaiFpCards[type]) return;
     _birdaiFpCards[type].approved = true;
-    const actions = document.getElementById('fp-actions-' + type);
-    if (actions) {
-      const hasPreview = type !== 'segment';
-      actions.outerHTML = `<div class="birdai-fp-approved-row" id="fp-actions-${type}">
+    if (type === 'templates') {
+      // Approve both sub-templates and update outer wrapper
+      _birdaiFpCards.templates.email = true;
+      _birdaiFpCards.templates.text = true;
+      _fpSetApprovedUI('fp-actions-tpl-email', true, 'templates');
+      _fpSetApprovedUI('fp-actions-tpl-text', false, '');
+      // Replace outer actions wrapper with approved state
+      const outer = document.getElementById('fp-actions-templates-outer');
+      if (outer) outer.outerHTML = `<div id="fp-actions-templates-outer"><div class="birdai-fp-approved-row" id="fp-actions-templates">
         <div class="birdai-fp-approved-check">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#16A34A"/><path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Approved
         </div>
-        ${hasPreview ? `<button class="birdai-fp-icon-action-btn" title="Preview" onclick="birdaiFpPreview('${type}')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><ellipse cx="7" cy="7" rx="5.5" ry="3.5" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg></button>` : ''}
-      </div>`;
+        <button class="birdai-fp-icon-action-btn" title="Preview" onclick="birdaiFpPreview('templates')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><ellipse cx="7" cy="7" rx="5.5" ry="3.5" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg></button>
+      </div></div>`;
+    } else {
+      _fpSetApprovedUI('fp-actions-' + type, type !== 'segment', type);
     }
     birdaiFpCheckAllApproved();
   }
@@ -6869,6 +6972,49 @@
       actions.outerHTML = `<div id="fp-actions-${type}" style="margin-top:10px;font-size:13px;color:var(--text-3)">Skipped</div>`;
     }
     birdaiFpCheckAllApproved();
+  }
+
+  // ── Per-template (email / text) approve & skip ──
+  function birdaiFpApproveTemplate(tplType) {
+    if (!_birdaiFpCards.templates) return;
+    _birdaiFpCards.templates[tplType] = true;
+    _fpSetApprovedUI('fp-actions-tpl-' + tplType, tplType === 'email', 'templates');
+    // If both templates done → mark outer as approved
+    if (_birdaiFpCards.templates.email && _birdaiFpCards.templates.text) {
+      _birdaiFpCards.templates.approved = true;
+      const outer = document.getElementById('fp-actions-templates-outer');
+      if (outer) outer.outerHTML = `<div id="fp-actions-templates-outer"><div class="birdai-fp-approved-row" id="fp-actions-templates">
+        <div class="birdai-fp-approved-check">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="#16A34A"/><path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Approved
+        </div>
+        <button class="birdai-fp-icon-action-btn" title="Preview" onclick="birdaiFpPreview('templates')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><ellipse cx="7" cy="7" rx="5.5" ry="3.5" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg></button>
+      </div></div>`;
+      birdaiFpCheckAllApproved();
+    }
+  }
+
+  function birdaiFpSkipTemplate(tplType) {
+    if (!_birdaiFpCards.templates) return;
+    _birdaiFpCards.templates[tplType] = true;
+    const el = document.getElementById('fp-actions-tpl-' + tplType);
+    if (el) el.outerHTML = `<div id="fp-actions-tpl-${tplType}" style="margin-top:10px;font-size:13px;color:var(--text-3)">Skipped</div>`;
+    if (_birdaiFpCards.templates.email && _birdaiFpCards.templates.text) {
+      _birdaiFpCards.templates.approved = true;
+      birdaiFpCheckAllApproved();
+    }
+  }
+
+  // ── Toggle Show/Hide details on templates card ──
+  function birdaiFpToggleTemplateDetails() {
+    const det = document.getElementById('fp-template-details');
+    const btn = document.getElementById('fp-tpl-toggle-btn');
+    const outer = document.getElementById('fp-actions-templates-outer');
+    if (!det) return;
+    const isOpen = det.classList.toggle('open');
+    if (btn) btn.textContent = isOpen ? 'Hide details' : 'Show details';
+    // Hide outer compact actions when expanded, show when collapsed
+    if (outer) outer.style.display = isOpen ? 'none' : '';
   }
 
   function birdaiFpApproveAll() {
@@ -6928,11 +7074,25 @@
       <div class="birdai-fp-ai-content">
         <div class="birdai-fp-ai-text">What else you want to build? Tell the agent your goals and it will build segments, templates, and workflows for you to review:</div>
         <div class="birdai-fp-goal-grid">
-          ${remaining.map(g => `<label class="birdai-fp-goal-chip" onclick="birdaiFpToggleLoopGoal(this,'${g.replace(/'/g,"\\'")}')">\
-<input type="checkbox" onclick="event.stopPropagation()"> ${g}</label>`).join('')}
-          <button class="birdai-fp-show-more">Show more</button>
+          ${remaining.map(g => {
+            const icons = {
+              'Re-engage my inactive customers': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8A5 5 0 1 1 8 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 1v4l3-2-3-2Z" fill="currentColor"/></svg>',
+              'Abandoned lead follow-up': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6h4M6 9h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+              'Promote my new service': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 9.5V6.5L12 4v8L3 9.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M3 8H1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3 9.5L2.5 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+              'Setup a welcome journey': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 14c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+              'Seasonal promotions': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 4V2M11 4V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 7h12" stroke="currentColor" stroke-width="1.3"/></svg>',
+              'Build a loyalty campaign for VIP customers with a flash sale offer': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3.1 3.5.5-2.5 2.4.6 3.4L8 10l-3.1 1.4.6-3.4L3 5.6l3.5-.5L8 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>'
+            };
+            const icon = icons[g] || '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/></svg>';
+            return `<label class="birdai-fp-goal-card" onclick="birdaiFpToggleLoopGoal(this,'${g.replace(/'/g,"\\'")}')")>
+              <div class="birdai-fp-goal-card-icon">${icon}</div>
+              <div class="birdai-fp-goal-card-name">${g}</div>
+              <div class="birdai-fp-goal-card-chk"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </label>`;
+          }).join('')}
+          <div class="birdai-fp-goal-show-more-row"><button class="birdai-fp-show-more">Show more</button></div>
         </div>
-        <button class="birdai-fp-proceed-btn" onclick="birdaiFpProceedLoop()">Proceed</button>
+        <button class="birdai-fp-proceed-btn" onclick="birdaiFpProceedLoop()" style="margin-top:14px">Proceed</button>
       </div>`;
     body.appendChild(block);
     birdaiFpScrollBottom();
@@ -6942,11 +7102,9 @@
     if (_birdaiFpLoopGoals.has(goal)) {
       _birdaiFpLoopGoals.delete(goal);
       el.classList.remove('selected');
-      el.querySelector('input').checked = false;
     } else {
       _birdaiFpLoopGoals.add(goal);
       el.classList.add('selected');
-      el.querySelector('input').checked = true;
     }
   }
 
@@ -6957,14 +7115,14 @@
     _birdaiFpLoopGoals.forEach(g => _birdaiFpSelectedGoals.add(g));
     _birdaiFpLoopGoals = new Set();
     _birdaiFpPublishedShown = false;
-    _birdaiFpCards = { segment: { approved: false }, templates: { approved: false }, workflow: { approved: false } };
+    _birdaiFpCards = { segment: { approved: false }, templates: { approved: false, email: false, text: false }, workflow: { approved: false } };
 
     // User bubble
     const userMsg = document.createElement('div');
     userMsg.className = 'birdai-fp-msg-user birdai-fp-anim';
     userMsg.innerHTML = `<div class="birdai-fp-user-avatar">AB</div><div class="birdai-fp-user-bubble">${goalText}</div>`;
     body.appendChild(userMsg);
-    birdaiFpScrollBottom();
+    birdaiFpScrollToMsg(userMsg);
 
     // Agents working
     setTimeout(() => {
