@@ -982,9 +982,10 @@
     ═══════════════════════════════════════ */
     .tpl-screen {
       position: fixed; top: 0; right: 0; bottom: 0; left: 56px; z-index: 500;
-      background: #fff; display: flex; flex-direction: row;
+      background: #fff; display: flex; flex-direction: column;
     }
     .tpl-screen.hidden { display: none !important; }
+    .tpl-body { flex: 1; display: flex; flex-direction: row; overflow: hidden; min-height: 0; }
     .tpl-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 
     /* ─── L2 SIDEBAR ─── */
@@ -993,7 +994,10 @@
       border-right: 1px solid var(--border); background: #fff; overflow: hidden;
     }
     .tpl-sidebar-logo { display: none; }
-    .tpl-product-title { display: none; }
+    .tpl-product-title {
+      padding: 14px 18px 8px; font-size: 13px; font-weight: 400;
+      color: var(--text-1); flex-shrink: 0;
+    }
     .tpl-create-wf-btn {
       margin: 0; display: flex; align-items: center;
       height: 40px; padding: 0 18px;
@@ -2391,14 +2395,15 @@
   /* ── DASHBOARD SCREEN ── */
   .dash-screen {
     position: fixed; top: 0; right: 0; bottom: 0; left: 56px; z-index: 500;
-    background: #fff; display: flex; flex-direction: row;
+    background: #fff; display: flex; flex-direction: column;
   }
   .dash-screen.hidden { display: none; }
+  .dash-layout { flex: 1; display: flex; flex-direction: row; overflow: hidden; min-height: 0; }
 
   /* ── Dashboard sidebar ── */
   .dash-sidebar {
     width: 248px; flex-shrink: 0; display: flex; flex-direction: column;
-    border-right: 1px solid var(--border); background: #f8f9fb; overflow: hidden;
+    border-right: 1px solid var(--border); background: #fff; overflow: hidden;
   }
 
   /* ── Dashboard main ── */
@@ -4036,6 +4041,21 @@
 ═══════════════════════════════════════ -->
 <div class="tpl-screen hidden" id="tpl-screen">
 
+  <!-- Full-width top nav -->
+  <nav class="top-nav">
+    <div class="top-nav-right">
+      <button class="ask-birdai-btn" id="tpl-birdai-btn" onclick="toggleBirdAI('tpl')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L8.3 4.7H12.2L9 7l1.3 3.9L7 8.4l-3.3 2.5L5 7 1.8 4.7H5.7L7 1Z" fill="white"/></svg>
+        Ask BirdAI
+      </button>
+      <button class="nav-icon" title="Help"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#777" stroke-width="1.5"/><path d="M7.5 7.5C7.5 6.1 8.6 5 10 5s2.5 1.1 2.5 2.5c0 1.5-2.5 2.5-2.5 4" stroke="#777" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="15" r="0.75" fill="#777"/></svg></button>
+      <div class="nav-avatar"><img src="https://i.pravatar.cc/40?img=12" alt="avatar"></div>
+    </div>
+  </nav>
+
+  <!-- Body: sidebar + main + panel -->
+  <div class="tpl-body">
+
   <!-- L2 Sidebar -->
   <aside class="tpl-sidebar">
 
@@ -4092,26 +4112,6 @@
 
   <!-- Main column -->
   <div class="tpl-main">
-
-    <!-- Top nav -->
-    <nav class="top-nav">
-      <div class="top-nav-logo">
-        <div class="top-nav-logo-circle">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3C12 3 6 6.5 6 12C6 15.3 7.95 18.15 10.8 19.65L9.75 23H14.25L13.2 19.65C16.05 18.15 18 15.3 18 12C18 6.5 12 3 12 3Z" fill="white"/><path d="M12 3C12 3 14.5 6.5 14.5 10C14.5 11.6 13.95 13.1 13 14.2L12 3Z" fill="rgba(255,255,255,0.5)"/><circle cx="14.5" cy="8" r="1" fill="white" opacity="0.9"/></svg>
-        </div>
-        <span class="top-nav-logo-name">BirdEye</span>
-      </div>
-      <div class="top-nav-divider"></div>
-      <span class="top-nav-title">Marketing Automation AI</span>
-      <div class="top-nav-right">
-        <button class="ask-birdai-btn" id="tpl-birdai-btn" onclick="toggleBirdAI('tpl')">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L8.3 4.7H12.2L9 7l1.3 3.9L7 8.4l-3.3 2.5L5 7 1.8 4.7H5.7L7 1Z" fill="white"/></svg>
-          Ask BirdAI
-        </button>
-        <button class="nav-icon" title="Help"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#777" stroke-width="1.5"/><path d="M7.5 7.5C7.5 6.1 8.6 5 10 5s2.5 1.1 2.5 2.5c0 1.5-2.5 2.5-2.5 4" stroke="#777" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="15" r="0.75" fill="#777"/></svg></button>
-        <div class="nav-avatar"><img src="https://i.pravatar.cc/40?img=12" alt="avatar"></div>
-      </div>
-    </nav>
 
     <!-- Page header -->
     <div class="tpl-header">
@@ -4223,6 +4223,7 @@
     </div>
   </div>
 
+  </div><!-- end tpl-body -->
 </div><!-- end tpl-screen -->
 
 <!-- ═══════════════════════════════════════════════════
@@ -6999,6 +7000,17 @@
 ════════════════════════════════════════════════════ -->
 <div class="dash-screen hidden" id="dash-screen">
 
+  <!-- Full-width top nav -->
+  <nav class="top-nav">
+    <div class="top-nav-right">
+      <button class="nav-icon" title="Help"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#777" stroke-width="1.5"/><path d="M7.5 7.5C7.5 6.1 8.6 5 10 5s2.5 1.1 2.5 2.5c0 1.5-2.5 2.5-2.5 4" stroke="#777" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="15" r="0.75" fill="#777"/></svg></button>
+      <div class="nav-avatar"><img src="https://i.pravatar.cc/40?img=12" alt="avatar"></div>
+    </div>
+  </nav>
+
+  <!-- Body: sidebar + main -->
+  <div class="dash-layout">
+
   <!-- L2 Sidebar (same as tpl-screen) -->
   <aside class="dash-sidebar tpl-sidebar">
     <div class="tpl-product-title">Marketing Automation AI</div>
@@ -7041,23 +7053,6 @@
 
   <!-- Main -->
   <div class="dash-main">
-
-    <!-- Top nav (same as templates list view) -->
-    <nav class="top-nav">
-      <div class="top-nav-logo">
-        <div class="top-nav-logo-circle">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3C12 3 6 6.5 6 12C6 15.3 7.95 18.15 10.8 19.65L9.75 23H14.25L13.2 19.65C16.05 18.15 18 15.3 18 12C18 6.5 12 3 12 3Z" fill="white"/><path d="M12 3C12 3 14.5 6.5 14.5 10C14.5 11.6 13.95 13.1 13 14.2L12 3Z" fill="rgba(255,255,255,0.5)"/><circle cx="14.5" cy="8" r="1" fill="white" opacity="0.9"/></svg>
-        </div>
-        <span class="top-nav-logo-name">BirdEye</span>
-      </div>
-      <div class="top-nav-divider"></div>
-      <span class="top-nav-title">Marketing Automation AI</span>
-      <div class="top-nav-right">
-        <button class="nav-icon" title="Help"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#777" stroke-width="1.5"/><path d="M7.5 7.5C7.5 6.1 8.6 5 10 5s2.5 1.1 2.5 2.5c0 1.5-2.5 2.5-2.5 4" stroke="#777" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="15" r="0.75" fill="#777"/></svg></button>
-        <div class="nav-avatar"><img src="https://i.pravatar.cc/40?img=12" alt="avatar"></div>
-      </div>
-    </nav>
-
 
     <!-- Body -->
     <div class="dash-body">
@@ -7267,6 +7262,7 @@
       </div>
     </div>
   </div>
+  </div><!-- end dash-layout -->
 </div>
 
 
