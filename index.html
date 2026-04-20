@@ -7327,10 +7327,17 @@
     const el = document.getElementById('fp-tpl-content');
     if (el) {
       el.innerHTML = `<div class="birdai-fp-published-bar" style="padding-left:0">
-        ✅ ${totalCount} template${totalCount!==1?'s':''} saved to your library. <button class="birdai-fp-published-link" onclick="closeBirdAIFull()">View templates →</button>
+        ✅ ${totalCount} template${totalCount!==1?'s':''} saved to your library. <button class="birdai-fp-published-link" onclick="birdaiFpViewTemplates()">View templates →</button>
       </div>`;
     }
     setTimeout(() => birdaiFpShowNextGoals(), 1200);
+  }
+
+  function birdaiFpViewTemplates() {
+    closeBirdAIFull();
+    showTemplates();
+    // Land on the Saved tab so newly approved templates are visible
+    switchTplTab('saved');
   }
 
   // ── Campaign flow ──
