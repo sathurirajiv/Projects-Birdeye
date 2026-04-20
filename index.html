@@ -554,12 +554,17 @@
     .email-panel { flex: 1; display: flex; flex-direction: row; overflow: hidden; background: var(--bg-page); }
     .email-content-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 
-    /* Toolbar */
+    /* ── Editor header card: toolbar + subject/preview as one unit ── */
+    .editor-header-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 10px;
+      flex-shrink: 0; margin: 8px 8px 6px; overflow: hidden;
+    }
+
+    /* Toolbar row (top half of card) */
     .preview-toolbar {
-      height: 48px; background: #fff; border: 1px solid var(--border); border-radius: 10px;
+      height: 46px; background: #fff;
       display: flex; align-items: center; justify-content: flex-end;
-      padding: 0 12px; gap: 6px; flex-shrink: 0;
-      margin: 8px 8px 4px;
+      padding: 0 12px; gap: 6px;
     }
     .tb-toggle {
       display: flex; align-items: center;
@@ -578,12 +583,19 @@
       border: 1px solid var(--border); background: #fff; transition: background 0.15s;
     }
     .tb-btn:hover { background: var(--bg-hover); }
+    #undo-btn, #redo-btn { opacity: 0.35; transition: opacity 0.15s, background 0.15s; }
 
-    /* Subject bar */
-    .email-meta-bar { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; flex-shrink: 0; margin: 0 8px 6px; }
-    .meta-row { display: flex; align-items: baseline; gap: 8px; padding: 2px 0; }
-    .meta-label { font-size: 11.5px; color: var(--text-3); min-width: 90px; }
-    .meta-val { font-size: 13px; color: var(--text-1); }
+    /* Subject / Preview — bottom half of card, separated by divider */
+    .email-meta-bar {
+      border-top: 1px solid var(--border);
+      padding: 8px 14px 9px;
+    }
+    .meta-line {
+      display: flex; align-items: baseline; gap: 0;
+      line-height: 1.55; white-space: nowrap; overflow: hidden;
+    }
+    .meta-label { font-size: 11.5px; color: var(--text-3); flex-shrink: 0; margin-right: 5px; }
+    .meta-val { font-size: 13px; color: var(--text-1); overflow: hidden; text-overflow: ellipsis; }
 
     /* Email scroll */
     .email-scroll { flex: 1; overflow-y: auto; padding: 24px; display: flex; justify-content: center; align-items: flex-start; }
@@ -819,19 +831,15 @@
     }
     .rq-panel-hdr {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 16px 12px; flex-shrink: 0; border-bottom: 1px solid var(--border);
+      padding: 14px 16px 12px; flex-shrink: 0;
     }
     .rq-panel-title { font-size: 14px; color: var(--text-1); }
     .rq-panel-scroll { flex: 1; overflow-y: auto; padding-bottom: 16px; }
     .rq-panel-scroll::-webkit-scrollbar { width: 3px; }
     .rq-panel-scroll::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
-    .rq-row {
-      padding: 12px 16px; border-bottom: 1px solid var(--border);
-    }
-    .rq-row:last-child { border-bottom: none; }
+    .rq-row { padding: 8px 16px; }
     .rq-toggle-row {
-      display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; padding: 8px 16px;
     }
     .rq-label { font-size: 13px; color: var(--text-1); display: flex; align-items: center; gap: 5px; }
     .rq-label-hint { font-size: 11px; color: var(--text-3); margin-top: 2px; }
@@ -855,7 +863,7 @@
       border: 4px solid transparent; border-top-color: var(--text-3); margin-top: 2px;
       pointer-events: none;
     }
-    .rq-filter-sec { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .rq-filter-sec { padding: 8px 16px; }
     .rq-filter-title { font-size: 12px; color: var(--text-3); margin-bottom: 8px; }
     .rq-filter-selects { display: flex; flex-direction: column; gap: 7px; }
     .rq-showall { font-size: 12px; color: var(--blue); cursor: pointer; margin-top: 8px; display: inline-block; }
@@ -878,19 +886,45 @@
     .overlay.show { display: block; }
 
     /* Toast */
+    /* ── Toast — top-center, slide down in ── */
+    @keyframes toastIn {
+      from { transform: translateX(-50%) translateY(-16px); opacity: 0; }
+      to   { transform: translateX(-50%) translateY(0);     opacity: 1; }
+    }
+    @keyframes toastOut {
+      from { transform: translateX(-50%) translateY(0);     opacity: 1; }
+      to   { transform: translateX(-50%) translateY(-16px); opacity: 0; }
+    }
     .toast {
-      position: fixed; bottom: 24px; left: 50%;
-      transform: translateX(-50%) translateY(60px);
-      background: #323232; color: #fff; padding: 10px 20px; border-radius: 4px;
-      font-size: 13px; z-index: 999; transition: transform 0.3s ease; white-space: nowrap;
-      display: flex; align-items: center; gap: 8px;
+      position: fixed; top: 18px; left: 50%;
+      transform: translateX(-50%) translateY(-16px);
+      background: #fff; color: var(--text-1);
+      padding: 0 16px 0 14px; border-radius: 8px;
+      font-size: 13.5px; z-index: 9999;
+      display: flex; align-items: center; gap: 10px;
+      height: 44px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
+      opacity: 0; pointer-events: none;
+      white-space: nowrap;
     }
-    .toast.show { transform: translateX(-50%) translateY(0); }
-    .toast-success { background: #2e7d32; }
+    .toast.show {
+      animation: toastIn 0.26s cubic-bezier(0.4,0,0.2,1) forwards;
+      pointer-events: auto;
+    }
+    .toast.hide {
+      animation: toastOut 0.22s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    .toast-check {
+      width: 18px; height: 18px; flex-shrink: 0;
+    }
+    .toast-success .toast-check { display: flex; }
     .toast-close {
-      background: transparent; border: none; color: rgba(255,255,255,0.7);
-      cursor: pointer; font-size: 14px; padding: 0; margin-left: 4px; line-height: 1;
+      background: transparent; border: none; color: var(--text-3);
+      cursor: pointer; font-size: 16px; padding: 0; margin-left: 6px;
+      line-height: 1; display: flex; align-items: center;
+      transition: color 0.15s;
     }
+    .toast-close:hover { color: var(--text-1); }
 
     .hidden { display: none !important; }
 
@@ -962,17 +996,13 @@
     }
     .tpl-create-wf-btn {
       margin: 0; display: flex; align-items: center;
-      justify-content: space-between; height: 40px; padding: 0 18px;
+      height: 40px; padding: 0 18px;
       border: none; border-radius: 0; width: 100%;
       font-size: 13px; color: var(--text-1); background: transparent;
       cursor: pointer; font-family: 'Roboto', sans-serif; font-weight: 400;
       transition: background 0.12s;
     }
     .tpl-create-wf-btn:hover { background: #eef0f4; }
-    .tpl-create-wf-icon {
-      width: 24px; height: 24px; border-radius: 50%; background: var(--blue);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
     .tpl-nav-scroll { flex: 1; overflow-y: auto; padding: 2px 0 16px; }
 
     /* Accordion */
@@ -1316,7 +1346,7 @@
     ═══════════════════════════════════════ */
     .opt-screen {
       position: fixed; top: 0; right: 0; bottom: 0; left: 56px; z-index: 500;
-      background: #fff; display: flex; flex-direction: row;
+      background: var(--bg-page); display: flex; flex-direction: row;
     }
     .opt-screen.hidden { display: none !important; }
     .opt-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -1360,23 +1390,109 @@
 
     /* Optimize body layout */
     .opt-body {
-      flex: 1; display: flex; overflow: hidden; background: var(--bg-page);
+      flex: 1; display: flex; overflow: hidden; background: var(--bg-page); position: relative;
     }
 
-    /* Email preview side */
-    .opt-preview-pane {
-      flex: 1; display: flex; flex-direction: column; overflow: hidden;
+    /* Optimize page: preview pane */
+    .opt-preview-pane { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+    /* Toolbar + meta as one floating island */
+    .opt-header-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 10px;
+      margin: 12px 16px 0; flex-shrink: 0; overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
     }
-    .opt-meta-bar {
-      background: #fff; border-bottom: 1px solid var(--border); padding: 8px 20px; flex-shrink: 0;
+    .opt-meta-bar { border-top: 1px solid var(--border); padding: 8px 16px 9px; }
+    /* Opt body bottom spacing */
+    .opt-email-scroll { padding-bottom: 32px; }
+
+    /* Editor Preview Modal */
+    .ep-backdrop {
+      position: fixed; inset: 0; z-index: 900;
+      background: rgba(0,0,0,0.55); display: flex;
+      align-items: center; justify-content: center;
     }
-    .opt-toolbar {
-      height: 46px; background: #fff; border-bottom: 1px solid var(--border);
+    .ep-backdrop.hidden { display: none !important; }
+    .ep-modal {
+      position: relative; z-index: 10;
+      width: calc(100vw - 120px); max-width: 1100px; height: calc(100vh - 80px);
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden; display: flex; flex-direction: column;
+    }
+    .ep-head {
+      height: 56px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 20px;
+      border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 12px;
+    }
+    .ep-head-left { display: flex; align-items: center; gap: 10px; }
+    .ep-title { font-size: 14px; color: var(--text-1); }
+    .ep-loc-wrap { position: relative; }
+    .ep-loc-select {
+      height: 32px; padding: 0 28px 0 10px; border: 1px solid var(--border);
+      border-radius: 6px; background: #fff; font-size: 13px; color: var(--text-1);
+      font-family: 'Roboto', sans-serif; cursor: pointer; appearance: none;
+      -webkit-appearance: none; outline: none; min-width: 180px;
+    }
+    .ep-loc-select:focus { border-color: var(--blue); }
+    .ep-loc-arrow {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      pointer-events: none; color: var(--text-3);
+    }
+    .ep-head-right { display: flex; align-items: center; gap: 8px; }
+    .ep-dev-toggle {
+      display: flex; align-items: center;
+      background: #f0f1f5; border-radius: 8px; padding: 3px; gap: 2px;
+    }
+    .ep-dev-btn {
+      width: 30px; height: 26px; border-radius: 6px;
       display: flex; align-items: center; justify-content: center;
-      padding: 0 16px; gap: 6px; flex-shrink: 0;
+      border: none; background: transparent; cursor: pointer;
+      color: #888; transition: all 0.15s;
+    }
+    .ep-dev-btn.active { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.12); color: var(--text-1); }
+    .ep-close-btn {
+      width: 30px; height: 30px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: transparent; cursor: pointer;
+      color: var(--text-2); transition: background 0.15s;
+    }
+    .ep-close-btn:hover { background: #f0f1f5; }
+    .ep-body {
+      flex: 1; overflow: hidden; background: #f4f5f7;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 24px; overflow-y: auto;
+    }
+    .ep-frame {
+      background: #fff; border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow: hidden; transition: width 0.3s; flex-shrink: 0;
+    }
+    .ep-frame.desktop { width: 100%; max-width: 680px; }
+    .ep-frame.mobile { width: 375px; }
+    .ep-annot {
+      padding: 10px 20px 9px; border-bottom: 1px solid #f0f1f5;
+      display: flex; align-items: center;
+    }
+    .ep-annot-left { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+    .ep-annot-subject { font-size: 13px; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ep-annot-from { font-size: 11.5px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ep-annot-sep { width: 1px; background: var(--border); flex-shrink: 0; align-self: stretch; margin: 0 16px; }
+    .ep-annot-preview { font-size: 12px; color: var(--text-3); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* Email content inside preview frame — strip block selection chrome */
+    #ep-email-body .email-block { cursor: default !important; outline: none !important; }
+    #ep-email-body .email-block-btns { display: none !important; }
+    #ep-email-body .canvas-drop-indicator { display: none !important; }
+    .ep-frame.mobile #ep-email-body .e-hero { width: 100%; }
+    .ep-frame.mobile #ep-email-body .email-canvas { width: 375px; }
+    .opt-toolbar {
+      height: 46px; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 16px; gap: 6px;
     }
     .opt-email-scroll {
-      flex: 1; overflow-y: auto; padding: 24px; display: flex; justify-content: center; align-items: flex-start;
+      flex: 1; overflow-y: auto; padding: 16px 16px 28px;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
     }
     .opt-email-scroll::-webkit-scrollbar { width: 6px; }
     .opt-email-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
@@ -1393,82 +1509,221 @@
     .skel-line { height: 14px; margin-bottom: 10px; border-radius: 4px; }
     .skel-rect { border-radius: 6px; margin-bottom: 16px; }
 
-    /* Checklist panel */
+    /* ── Optimize checklist: sliding island panel ── */
     .opt-checklist-panel {
-      width: 310px; background: #fff; border-left: 1px solid var(--border);
-      display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden;
+      width: 0; flex-shrink: 0; overflow: hidden;
+      box-sizing: border-box;
+      transition: width 0.38s cubic-bezier(0.4, 0, 0.2, 1);
     }
+    .opt-checklist-panel.open { width: 364px; padding: 12px 12px 12px 0; }
+
+    .checklist-island {
+      width: 100%; height: 100%;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.09), 0 1px 4px rgba(0,0,0,0.05);
+      display: flex; flex-direction: column; overflow: hidden;
+      opacity: 0; transform: translateX(20px);
+      transition: opacity 0.3s ease 0.18s, transform 0.3s ease 0.18s;
+    }
+    .opt-checklist-panel.open .checklist-island {
+      opacity: 1; transform: translateX(0);
+    }
+
     .checklist-header {
-      padding: 14px 16px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+      padding: 14px 14px 12px; flex-shrink: 0;
     }
     .checklist-title-row {
       display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
     }
-    .checklist-title { font-size: 14px; color: var(--text-1); }
-    .checklist-filter-row { display: flex; align-items: center; gap: 8px; }
-    .checklist-filter {
-      border: 1px solid var(--border); border-radius: 4px; background: #fff;
-      padding: 5px 8px; font-size: 13px; color: var(--text-1); outline: none; cursor: pointer;
-      font-family: 'Roboto', sans-serif;
+    .checklist-title { font-size: 13.5px; color: var(--text-1); }
+
+    /* Opt page entrance animation */
+    @keyframes optContentEnter {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-    .checklist-search {
-      flex: 1; display: flex; align-items: center; gap: 6px;
-      border: 1px solid var(--border); border-radius: 4px; background: #fff; padding: 5px 10px;
+    .opt-preview-pane.entering {
+      animation: optContentEnter 0.32s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
-    .checklist-search input {
-      flex: 1; border: none; outline: none; font-size: 13px;
+
+    /* ── Merged filter+search bar ── */
+    .checklist-filter-row { display: flex; align-items: center; }
+    .chk-filterbar {
+      display: flex; align-items: center; width: 100%;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: #fff; overflow: hidden; height: 34px;
+    }
+    .chk-filterbar-select {
+      border: none; outline: none; background: transparent;
+      font-size: 12.5px; color: var(--text-1); font-family: 'Roboto', sans-serif;
+      padding: 0 8px 0 10px; height: 100%; cursor: pointer;
+      appearance: none; -webkit-appearance: none;
+      flex-shrink: 0;
+    }
+    .chk-filterbar-sep { width: 1px; background: var(--border); height: 18px; flex-shrink: 0; }
+    .chk-filterbar-search {
+      flex: 1; display: flex; align-items: center; gap: 6px; padding: 0 10px;
+    }
+    .chk-filterbar-search input {
+      flex: 1; border: none; outline: none; font-size: 12.5px;
       color: var(--text-1); font-family: 'Roboto', sans-serif; background: transparent;
     }
-    .checklist-search input::placeholder { color: var(--text-4); }
+    .chk-filterbar-search input::placeholder { color: var(--text-4); }
 
     /* Checklist scroll */
-    .checklist-scroll { flex: 1; overflow-y: auto; }
+    .checklist-scroll { flex: 1; overflow-y: auto; padding: 8px 0 16px; }
     .checklist-scroll::-webkit-scrollbar { width: 4px; }
     .checklist-scroll::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
 
-    /* Accordion item */
-    .chk-item {
-      border-bottom: 1px solid var(--border); cursor: pointer; user-select: none;
-    }
+    /* Accordion item — no dividers */
+    .chk-item { cursor: pointer; user-select: none; }
+
     .chk-item-header {
       display: flex; align-items: center; gap: 10px;
-      padding: 11px 16px; transition: background 0.15s;
+      padding: 11px 16px 11px 14px; border-radius: 6px;
+      margin: 2px 6px; transition: background 0.15s;
     }
     .chk-item-header:hover { background: var(--bg-hover); }
     .chk-icon { width: 18px; height: 18px; flex-shrink: 0; }
-    .chk-label { flex: 1; font-size: 13.5px; color: var(--text-1); line-height: 1.3; }
-    .chk-chevron { color: var(--text-3); flex-shrink: 0; transition: transform 0.2s; }
+    .chk-label { flex: 1; font-size: 13px; color: var(--text-1); line-height: 1.3; }
+    .chk-chevron { color: var(--text-3); flex-shrink: 0; transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); }
     .chk-item.open .chk-chevron { transform: rotate(180deg); }
-    .chk-item.resolved .chk-label { color: var(--text-2); }
+    .chk-item.resolved .chk-label { color: var(--text-1); text-decoration: none; }
 
-    /* Accordion body */
+    /* Accordion body — smooth max-height animation */
     .chk-body {
-      display: none; padding: 0 16px 14px; background: #FAFAFA; border-top: 1px solid var(--border);
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1),
+                  opacity 0.28s ease;
+      opacity: 0;
     }
-    .chk-item.open .chk-body { display: block; }
-    .chk-field { margin-top: 12px; }
-    .chk-field-label { font-size: 11.5px; color: var(--text-3); margin-bottom: 3px; }
-    .chk-field-val { font-size: 13px; color: var(--text-1); line-height: 1.5; }
+    .chk-item.open .chk-body {
+      max-height: 600px;
+      opacity: 1;
+    }
+    /* inner padding wrapper so animation doesn't clip */
+    .chk-body-pad {
+      /* icon width (18) + gap (10) = 28px left indent to align with title text */
+      padding: 2px 14px 14px calc(14px + 18px + 10px);
+    }
+
+    /* Outlined indent box */
+    .chk-body-inner {
+      border: 1px solid var(--border); border-radius: 8px;
+      background: #fafbfc; padding: 14px 14px 12px;
+    }
+    .chk-field { margin-top: 14px; }
+    .chk-field:first-child { margin-top: 0; }
+    .chk-field-label {
+      font-size: 11px; color: var(--text-3); margin-bottom: 4px;
+      letter-spacing: 0.3px; text-transform: uppercase; font-weight: 400;
+    }
+    .chk-field-val { font-size: 12.5px; color: var(--text-1); line-height: 1.6; }
     .chk-impact-badge {
-      display: inline-flex; align-items: center; padding: 2px 10px;
-      border-radius: 10px; font-size: 12px; margin-top: 4px;
+      display: inline-flex; align-items: center; padding: 2px 9px;
+      border-radius: 4px; font-size: 12px; margin-top: 4px;
     }
     .chk-impact-badge.high { background: #FFF3E0; color: #E65100; }
-    .chk-impact-badge.medium { background: #FFF8E1; color: #F57F17; }
+    .chk-impact-badge.medium { background: #FFF8E1; color: #B45309; }
     .chk-impact-badge.low { background: #F3F4F6; color: #6B7280; }
-    .chk-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .chk-expected-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .chk-expected-chip {
+      font-size: 12px; color: var(--text-2); background: #f0f1f5;
+      border-radius: 4px; padding: 3px 8px;
+    }
+    /* Actions sit outside box, same left indent */
+    .chk-actions { display: flex; gap: 8px; margin-top: 10px; }
     .chk-review-btn {
-      flex: 1; padding: 7px; border: 1px solid var(--border); background: #fff;
-      border-radius: 4px; font-size: 13px; color: var(--text-1);
+      flex: 1; padding: 7px 10px; border: 1px solid var(--border); background: #fff;
+      border-radius: 6px; font-size: 13px; color: var(--text-1);
       font-family: 'Roboto', sans-serif; cursor: pointer; transition: background 0.15s;
     }
     .chk-review-btn:hover { background: var(--bg-hover); }
     .chk-autofix-btn {
-      flex: 1; padding: 7px; border: 1.5px solid var(--blue); background: #fff;
-      border-radius: 4px; font-size: 13px; color: var(--blue);
+      flex: 1; padding: 7px 10px; border: 1.5px solid var(--blue); background: #fff;
+      border-radius: 6px; font-size: 13px; color: var(--blue);
       font-family: 'Roboto', sans-serif; cursor: pointer; transition: all 0.15s;
     }
     .chk-autofix-btn:hover { background: var(--blue-light); }
+
+    /* ── Review Change Drawer ── */
+    .rc-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.48);
+      z-index: 700;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .rc-backdrop.open { opacity: 1; pointer-events: auto; }
+
+    .rc-drawer {
+      position: absolute; top: 0; right: 0; bottom: 0;
+      width: 600px; background: #fff;
+      box-shadow: -4px 0 40px rgba(0,0,0,0.16);
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.36s cubic-bezier(0.4,0,0.2,1);
+      z-index: 701;
+      position: fixed; top: 0; right: 0; bottom: 0;
+    }
+    .rc-drawer.open { transform: translateX(0); }
+
+    .rc-drawer-head {
+      height: 56px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 20px;
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .rc-drawer-back {
+      display: flex; align-items: center; gap: 8px;
+      background: none; border: none; cursor: pointer;
+      font-size: 15px; color: var(--text-1);
+      font-family: 'Roboto', sans-serif; padding: 4px 6px;
+      border-radius: 4px; transition: background 0.15s;
+    }
+    .rc-drawer-back:hover { background: var(--bg-hover); }
+    .rc-apply-btn {
+      display: flex; align-items: center; gap: 7px;
+      background: #6B21A8; color: #fff; border: none;
+      border-radius: 6px; padding: 8px 16px;
+      font-size: 13.5px; font-family: 'Roboto', sans-serif;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .rc-apply-btn:hover { background: #581C87; }
+
+    .rc-drawer-body { flex: 1; overflow-y: auto; padding: 24px 24px 32px; }
+
+    .rc-box {
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 16px 18px; margin-bottom: 12px;
+    }
+    .rc-box.current { border-color: #FECACA; background: #FFF8F8; }
+    .rc-box.recommendation { border-color: #BBF7D0; background: #F0FDF4; }
+    .rc-box-label {
+      font-size: 11px; color: var(--text-3); text-transform: uppercase;
+      letter-spacing: 0.3px; margin-bottom: 8px;
+    }
+    .rc-box-val { font-size: 14px; color: var(--text-1); line-height: 1.6; }
+    .rc-box-note { font-size: 12.5px; color: var(--text-2); line-height: 1.6; margin-top: 10px; }
+
+    .rc-more-btn {
+      display: flex; align-items: center; gap: 5px;
+      background: none; border: none; cursor: pointer;
+      color: var(--blue); font-size: 13.5px;
+      font-family: 'Roboto', sans-serif; padding: 4px 0;
+      transition: opacity 0.15s; margin-top: 4px;
+    }
+    .rc-more-btn:hover { opacity: 0.75; }
+    .rc-alt-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .rc-alt-item {
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px 16px; cursor: pointer;
+      font-size: 13.5px; color: var(--text-1); line-height: 1.5;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .rc-alt-item:hover { border-color: var(--blue); background: var(--blue-light); }
+    .rc-alt-item.selected { border-color: var(--blue); background: #EBF3FC; }
 
     /* ── EQUAL-WIDTH TABS ── */
     .ai-tabs { padding: 0; }
@@ -1546,8 +1801,8 @@
     .sv-list { padding: 8px 12px; display: flex; flex-direction: column; gap: 10px; }
     .sv-card { border: 1px solid var(--border); border-radius: 10px; overflow: visible; background: #fff; cursor: pointer; position: relative; }
     .sv-card:hover { border-color: #bbb; }
-    .sv-top { display: flex; align-items: center; justify-content: space-between; padding: 7px 8px 0 8px; }
-    .sv-drag { color: #ccc; display: flex; align-items: center; }
+    .sv-top { display: flex; align-items: center; justify-content: flex-end; padding: 7px 8px 0 8px; }
+    .sv-drag { color: #ccc; display: flex; align-items: center; position: absolute; top: 6px; left: 50%; transform: translateX(-50%); }
     .sv-more-btn { width: 24px; height: 24px; border-radius: 4px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-3); opacity: 0; transition: opacity 0.15s, background 0.15s; }
     .sv-card:hover .sv-more-btn { opacity: 1; }
     .sv-more-btn:hover { background: var(--bg-hover); color: var(--text-1); }
@@ -1998,16 +2253,17 @@
   .dash-asset-list { display: flex; flex-direction: column; }
   .dash-asset-item {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 18px; border-bottom: 1px solid #f3f4f6;
-    font-size: 13px; color: var(--text-2);
+    padding: 0 16px; border-bottom: 1px solid #f0f1f5;
+    font-size: 13px; color: var(--text-2); height: 44px;
+    transition: background 0.12s;
   }
   .dash-asset-item:last-child { border-bottom: none; }
   .dash-asset-item:hover { background: #fafafa; }
   .dash-asset-item-meta { display: flex; align-items: center; gap: 10px; }
-  .dash-asset-type { font-size: 11px; color: var(--text-3); }
+  .dash-asset-type { font-size: 12px; color: var(--text-3); }
   .dash-status-pill {
-    display: inline-flex; align-items: center; font-size: 11px; padding: 3px 9px;
-    border-radius: 20px; font-weight: 400; flex-shrink: 0;
+    display: inline-flex; align-items: center; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; font-weight: 400; flex-shrink: 0;
   }
   .dash-status-pill.draft { background: #FEF3C7; color: #92400E; }
   .dash-status-pill.active { background: #DCFCE7; color: #15803D; }
@@ -2015,60 +2271,65 @@
   .dash-status-pill.review { background: #EDE9FE; color: #6D28D9; }
   .dash-rec-item {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 18px; border-bottom: 1px solid #f3f4f6;
-    font-size: 13px; color: var(--text-2);
+    padding: 0 16px; border-bottom: 1px solid #f0f1f5;
+    font-size: 13px; color: var(--text-2); height: 48px;
+    transition: background 0.12s;
   }
   .dash-rec-item:last-child { border-bottom: none; }
-  .dash-rec-item:hover { background: #fafafa; cursor: pointer; }
+  .dash-rec-item:hover { background: #fafafa; cursor: default; }
   .dash-rec-item-left { display: flex; flex-direction: column; gap: 2px; }
-  .dash-rec-item-sub { font-size: 11px; color: var(--text-3); }
+  .dash-rec-item-sub { font-size: 12px; color: var(--text-3); }
   .dash-ai-rec-pill {
     font-size: 10px; background: #EDE9FE; color: #6D28D9;
     border-radius: 10px; padding: 2px 8px; flex-shrink: 0;
   }
 
   /* Active campaigns table */
+  /* Active campaigns table — matches email templates table */
   .dash-full-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
   .dash-table { width: 100%; border-collapse: collapse; }
+  .dash-table thead { position: sticky; top: 0; background: #fff; z-index: 10; }
   .dash-table th {
-    font-size: 11px; font-weight: 500; color: var(--text-3); text-transform: uppercase;
-    letter-spacing: 0.5px; padding: 10px 14px; text-align: left;
-    border-bottom: 1px solid var(--border); background: #fafbfc;
+    padding: 10px 16px; text-align: left;
+    border-bottom: 1px solid var(--border); font-weight: 400;
   }
+  .dash-th-label { font-size: 12px; color: var(--text-2); font-weight: 400; }
   .dash-table td {
-    padding: 11px 14px; font-size: 13px; color: var(--text-2);
-    border-bottom: 1px solid #f3f4f6;
+    padding: 0 16px; font-size: 13px; color: var(--text-2);
+    border-bottom: 1px solid #f0f1f5; vertical-align: middle; height: 48px;
   }
+  .dash-table tbody tr { transition: background 0.12s; cursor: default; }
   .dash-table tr:last-child td { border-bottom: none; }
   .dash-table tr:hover td { background: #fafafa; }
-  .dash-table td.name { color: var(--text-1); }
+  .dash-table tr:hover td.name { color: var(--blue); }
+  .dash-table td.name { color: var(--text-1); font-size: 13px; transition: color 0.12s; }
   .dash-tbl-bar { background: #E8F0FE; border-radius: 4px; height: 5px; width: 100%; min-width: 60px; }
   .dash-tbl-bar-fill { height: 5px; background: var(--blue); border-radius: 4px; }
-  .dash-tbl-sparkline { color: #16A34A; font-size: 12px; }
+  .dash-tbl-sparkline { color: #16A34A; font-size: 13px; }
   .dash-tbl-sparkline.down { color: #DC2626; }
 
-  /* Audience segments */
+  /* Widget lists — consistent with table row style */
   .dash-three-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
   .dash-seg-item {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 18px; border-bottom: 1px solid #f3f4f6;
-    font-size: 13px; color: var(--text-2);
+    padding: 0 16px; border-bottom: 1px solid #f0f1f5;
+    font-size: 13px; color: var(--text-2); height: 44px;
   }
   .dash-seg-item:last-child { border-bottom: none; }
   .dash-seg-item:hover { background: #fafafa; }
-  .dash-seg-count { font-size: 12px; color: var(--text-3); }
-  .dash-seg-delta { font-size: 11px; color: #16A34A; }
+  .dash-seg-count { font-size: 13px; color: var(--text-2); }
+  .dash-seg-delta { font-size: 12px; color: #16A34A; }
   .dash-seg-delta.neg { color: #DC2626; }
   .dash-workflow-item {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 18px; border-bottom: 1px solid #f3f4f6;
-    font-size: 13px; color: var(--text-2);
+    padding: 0 16px; border-bottom: 1px solid #f0f1f5;
+    font-size: 13px; color: var(--text-2); height: 52px;
   }
   .dash-workflow-item:last-child { border-bottom: none; }
-  .dash-workflow-item:hover { background: #fafafa; }
+  .dash-workflow-item:hover { background: #fafafa; cursor: default; }
   .dash-workflow-meta { display: flex; flex-direction: column; gap: 2px; }
-  .dash-workflow-sub { font-size: 11px; color: var(--text-3); }
-  .dash-workflow-rate { font-size: 12px; color: var(--text-1); font-weight: 400; }
+  .dash-workflow-sub { font-size: 12px; color: var(--text-3); }
+  .dash-workflow-rate { font-size: 13px; color: var(--text-1); }
 
   /* ── ASK MARKETING AI SCREEN ── */
   .askai-screen {
@@ -2881,6 +3142,9 @@
     <div class="email-panel">
     <div class="email-content-area">
 
+      <!-- ── Editor header card: toolbar + subject/preview ── -->
+      <div class="editor-header-card">
+
       <!-- Toolbar -->
       <div class="preview-toolbar">
         <div class="tb-toggle">
@@ -2892,17 +3156,17 @@
           </button>
         </div>
         <div class="tb-divider"></div>
-        <button class="tb-btn" title="Undo" onclick="showToast('Undo')">
+        <button class="tb-btn" id="undo-btn" title="Undo (Ctrl+Z)" onclick="editorUndo()">
           <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M4 7H10a4.5 4.5 0 0 1 0 9H6" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 4L3 7l3 3" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button class="tb-btn" title="Redo" onclick="showToast('Redo')">
+        <button class="tb-btn" id="redo-btn" title="Redo (Ctrl+Y)" onclick="editorRedo()">
           <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M14 7H8a4.5 4.5 0 0 0 0 9h4" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 4l3 3-3 3" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <div class="tb-divider"></div>
-        <button class="tb-btn" title="Preview" onclick="showToast('Preview mode')">
+        <button class="tb-btn" title="Preview" onclick="openEditorPreview()">
           <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M2 9s2.8-5.5 7-5.5S16 9 16 9s-2.8 5.5-7 5.5S2 9 2 9Z" stroke="#444" stroke-width="1.5"/><circle cx="9" cy="9" r="2.2" stroke="#444" stroke-width="1.4"/></svg>
         </button>
-        <button class="tb-btn" title="Send test" onclick="showToast('Test email sent! ✓')">
+        <button class="tb-btn" title="Send test" onclick="showToast('Test email sent!', true)">
           <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M15 9L2 3l3 6-3 6 13-6Z" stroke="#444" stroke-width="1.5" stroke-linejoin="round"/></svg>
         </button>
         <!-- Brand identity -->
@@ -2927,15 +3191,17 @@
 
       <!-- Subject / preview text -->
       <div class="email-meta-bar">
-        <div class="meta-row">
-          <span class="meta-label">Subject</span>
+        <div class="meta-line">
+          <span class="meta-label">Subject:</span>
           <span class="meta-val">🌿 Introducing Our New Delight: Fettuccine Alfredo at Olive Garden!</span>
         </div>
-        <div class="meta-row">
-          <span class="meta-label">Preview text</span>
-          <span class="meta-val">Hi [Customer name] ,We're thrilled to announce a mouthwatering addition to our menu…</span>
+        <div class="meta-line">
+          <span class="meta-label">Preview text:</span>
+          <span class="meta-val">Hi [Customer name], We're thrilled to announce a mouthwatering addition to our menu…</span>
         </div>
       </div>
+
+      </div><!-- end editor-header-card -->
 
       <!-- Email canvas scroll -->
       <div class="email-scroll">
@@ -3099,10 +3365,7 @@
                   <svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M1 1l8 8M9 1L1 9" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
                 </button>
               </div>
-              <button class="img-props-replace">
-                Replace image
-                <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
+              <button class="img-props-replace">Replace image</button>
             </div>
             <!-- Size section -->
             <div class="img-props-sec">
@@ -3283,7 +3546,16 @@
 <input type="file" id="file-input" style="display:none;" multiple accept="image/*,.pdf" onchange="handleFileSelect(event)">
 
 <!-- Toast -->
-<div class="toast" id="toast"><span id="toast-text"></span><button class="toast-close hidden" id="toast-close-btn" onclick="closeToast()">✕</button></div>
+<div class="toast" id="toast">
+  <svg class="toast-check" id="toast-check-icon" viewBox="0 0 18 18" fill="none" style="display:none">
+    <circle cx="9" cy="9" r="7.5" stroke="#2e7d32" stroke-width="1.5"/>
+    <path d="M5.5 9l2.8 2.8 4.2-4.2" stroke="#2e7d32" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span id="toast-text"></span>
+  <button class="toast-close hidden" id="toast-close-btn" onclick="closeToast()">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+  </button>
+</div>
 
 <!-- ═══════════════════════════════════════
      OPTIMIZE EMAIL SCREEN
@@ -3364,17 +3636,8 @@
     <!-- Left: email preview -->
     <div class="opt-preview-pane">
 
-      <!-- Subject / preview meta -->
-      <div class="opt-meta-bar" id="opt-meta-bar">
-        <div class="meta-row">
-          <span class="meta-label">Subject</span>
-          <span class="meta-val">🌿 Introducing Our New Delight: Fettuccine Alfredo at Olive Garden!</span>
-        </div>
-        <div class="meta-row">
-          <span class="meta-label">Preview text</span>
-          <span class="meta-val">Hi [Customer name], We're thrilled to announce a mouthwatering addition to our menu…</span>
-        </div>
-      </div>
+      <!-- ── Opt header card: toolbar + subject/preview ── -->
+      <div class="opt-header-card">
 
       <!-- Toolbar -->
       <div class="opt-toolbar">
@@ -3390,6 +3653,20 @@
         <button class="tb-btn" onclick="showToast('Undo')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 6H9a4 4 0 0 1 0 8H5" stroke="#555" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 3L2 6l3 3" stroke="#555" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button class="tb-btn" onclick="showToast('Redo')"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M13 6H7a4 4 0 0 0 0 8h4" stroke="#555" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 3l3 3-3 3" stroke="#555" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
+
+      <!-- Subject / preview meta -->
+      <div class="opt-meta-bar" id="opt-meta-bar">
+        <div class="meta-line">
+          <span class="meta-label">Subject:</span>
+          <span class="meta-val">🌿 Introducing Our New Delight: Fettuccine Alfredo at Olive Garden!</span>
+        </div>
+        <div class="meta-line">
+          <span class="meta-label">Preview text:</span>
+          <span class="meta-val">Hi [Customer name], We're thrilled to announce a mouthwatering addition to our menu…</span>
+        </div>
+      </div>
+
+      </div><!-- end opt-header-card -->
 
       <!-- Email scroll -->
       <div class="opt-email-scroll">
@@ -3467,34 +3744,60 @@
       </div><!-- end opt-email-scroll -->
     </div><!-- end opt-preview-pane -->
 
-    <!-- Right: checklist panel -->
-    <div class="opt-checklist-panel">
+    <!-- Right: checklist island -->
+    <div class="opt-checklist-panel" id="opt-checklist-panel">
+      <div class="checklist-island">
       <div class="checklist-header">
         <div class="checklist-title-row">
           <span class="checklist-title">Email optimization checklist</span>
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none" style="color:#999;flex-shrink:0;"><circle cx="8" cy="8" r="7" stroke="#999" stroke-width="1.4"/><path d="M8 7v5" stroke="#999" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="4.5" r="0.75" fill="#999"/></svg>
         </div>
         <div class="checklist-filter-row">
-          <select class="checklist-filter" id="chk-filter" onchange="filterChecklist()">
-            <option value="all">All</option>
-            <option value="issue">Issues</option>
-            <option value="warning">Warnings</option>
-            <option value="resolved">Resolved</option>
-          </select>
-          <div class="checklist-search">
-            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#aaa" stroke-width="1.3"/><path d="M10 10l2.5 2.5" stroke="#aaa" stroke-width="1.3" stroke-linecap="round"/></svg>
-            <input type="text" placeholder="Search" id="chk-search" oninput="filterChecklist()">
+          <div class="chk-filterbar">
+            <select class="chk-filterbar-select" id="chk-filter" onchange="filterChecklist()">
+              <option value="all">All</option>
+              <option value="issue">Issues</option>
+              <option value="warning">Warnings</option>
+              <option value="resolved">Resolved</option>
+            </select>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="margin-right:6px;flex-shrink:0;"><path d="M2 4l3 3 3-3" stroke="#aaa" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="chk-filterbar-sep"></div>
+            <div class="chk-filterbar-search">
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#bbb" stroke-width="1.3"/><path d="M10 10l2.5 2.5" stroke="#bbb" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input type="text" placeholder="Search" id="chk-search" oninput="filterChecklist()">
+            </div>
           </div>
         </div>
       </div>
       <div class="checklist-scroll" id="checklist-scroll">
         <!-- Items rendered by JS -->
       </div>
+      </div><!-- end checklist-island -->
     </div><!-- end checklist panel -->
 
   </div><!-- end opt-body -->
   </div><!-- end opt-main -->
+
+
 </div><!-- end opt-screen -->
+
+<!-- ── Review Change Backdrop + Drawer (outside opt-screen for correct z-index layering) ── -->
+<div class="rc-backdrop" id="rc-backdrop" onclick="closeReviewDrawer()"></div>
+<div class="rc-drawer" id="rc-drawer">
+  <div class="rc-drawer-head">
+    <button class="rc-drawer-back" onclick="closeReviewDrawer()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Review change
+    </button>
+    <button class="rc-apply-btn" onclick="applyReviewChange()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L8.2 4.5H12L9.2 6.6L10.2 10.1L7 8.2L3.8 10.1L4.8 6.6L2 4.5H5.8L7 1Z" fill="white"/></svg>
+      Apply change
+    </button>
+  </div>
+  <div class="rc-drawer-body" id="rc-drawer-body">
+    <!-- populated by JS -->
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════
      EMAIL TEMPLATES SCREEN
@@ -3510,9 +3813,6 @@
     <!-- Create workflow -->
     <button class="tpl-create-wf-btn" onclick="showAskAI()">
       Ask Marketing AI
-      <div class="tpl-create-wf-icon" style="background:linear-gradient(135deg,#6D28D9,#4F46E5)">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.4 4.2H14l-3.5 2.5 1.3 4.1L8 10.5l-3.8 2.3 1.3-4.1L2 6.2h4.6L8 2z" fill="white"/></svg>
-      </div>
     </button>
 
     <!-- Dashboard & Ask AI nav items -->
@@ -3612,7 +3912,6 @@
         </div>
         <!-- Create template -->
         <button class="tpl-create-btn" onclick="closeTplScreen()">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
           Create template
         </button>
       </div>
@@ -3676,6 +3975,67 @@
         <img class="tpl-preview-img" id="tpl-preview-img" src="" alt="Email preview">
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     EDITOR PREVIEW MODAL
+═══════════════════════════════════════ -->
+<div class="ep-backdrop hidden" id="ep-backdrop" onclick="closeEditorPreview(event)">
+  <div class="ep-modal" onclick="event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="ep-head">
+      <div class="ep-head-left">
+        <span class="ep-title">Preview</span>
+        <div class="ep-loc-wrap">
+          <select class="ep-loc-select" id="ep-loc-select" onchange="epSwitchLocation(this.value)">
+            <option value="la">Olive Garden — Los Angeles, CA</option>
+            <option value="nyc">Olive Garden — New York, NY</option>
+            <option value="chi">Olive Garden — Chicago, IL</option>
+            <option value="mia">Olive Garden — Miami, FL</option>
+            <option value="dal">Olive Garden — Dallas, TX</option>
+          </select>
+          <svg class="ep-loc-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="ep-head-right">
+        <div class="ep-dev-toggle">
+          <button class="ep-dev-btn active" id="ep-btn-desktop" title="Desktop" onclick="setEpDevice('desktop')">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 17h6M10 14v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <button class="ep-dev-btn" id="ep-btn-mobile" title="Mobile" onclick="setEpDevice('mobile')">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="5" y="1" width="10" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="16" r="1" fill="currentColor"/></svg>
+          </button>
+        </div>
+        <button class="ep-close-btn" onclick="closeEditorPreviewDirect()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="ep-body">
+      <div class="ep-frame desktop" id="ep-frame">
+
+        <!-- Annotation: Subject | Preview text unified bar -->
+        <div class="ep-annot">
+          <div class="ep-annot-left">
+            <span class="ep-annot-subject" id="ep-annot-subject">🌿 Introducing Our New Delight: Fettuccine Alfredo at Olive Garden!</span>
+            <span class="ep-annot-from" id="ep-annot-from">From: Olive Garden &lt;reply-to-LosAngeles.LA@olivegarden.com&gt;</span>
+          </div>
+          <div class="ep-annot-sep"></div>
+          <span class="ep-annot-preview" id="ep-annot-preview">Hi [Customer name], We're thrilled to announce a mouthwatering addition to our menu…</span>
+        </div>
+
+        <!-- Email body cloned from canvas -->
+        <div id="ep-email-body">
+          <!-- Injected by JS -->
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -4004,16 +4364,33 @@
     const t = document.getElementById('toast');
     const txt = document.getElementById('toast-text');
     const closeBtn = document.getElementById('toast-close-btn');
+    const checkIcon = document.getElementById('toast-check-icon');
+
     txt.textContent = msg;
     t.classList.toggle('toast-success', !!isSuccess);
+    checkIcon.style.display = isSuccess ? 'flex' : 'none';
     closeBtn.classList.toggle('hidden', !persistent);
+
+    // Reset animation
+    t.classList.remove('show', 'hide');
+    void t.offsetWidth; // force reflow
     t.classList.add('show');
+
     clearTimeout(toastTimer);
-    if (!persistent) toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+    if (!persistent) {
+      toastTimer = setTimeout(() => {
+        t.classList.remove('show');
+        t.classList.add('hide');
+        setTimeout(() => t.classList.remove('hide'), 250);
+      }, 2800);
+    }
   }
   function closeToast() {
-    document.getElementById('toast').classList.remove('show');
+    const t = document.getElementById('toast');
     clearTimeout(toastTimer);
+    t.classList.remove('show');
+    t.classList.add('hide');
+    setTimeout(() => t.classList.remove('hide'), 250);
   }
 
   // ── Optimize screen ──────────────────────
@@ -4109,8 +4486,20 @@
   let optimizeLoaded = false;
 
   function openOptimizeScreen() {
-    document.getElementById('opt-screen').classList.remove('hidden');
+    const screen = document.getElementById('opt-screen');
+    screen.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+
+    // Entrance animation on the preview pane
+    const pane = screen.querySelector('.opt-preview-pane');
+    pane.classList.add('entering');
+    setTimeout(() => pane.classList.remove('entering'), 380);
+
+    // Slide checklist island in after brief delay
+    setTimeout(() => {
+      document.getElementById('opt-checklist-panel').classList.add('open');
+    }, 160);
+
     if (!optimizeLoaded) {
       startOptimizeLoad();
     }
@@ -4118,13 +4507,14 @@
 
   function closeOptimizeScreen() {
     document.getElementById('opt-screen').classList.add('hidden');
+    document.getElementById('opt-checklist-panel').classList.remove('open');
     document.body.style.overflow = '';
   }
 
   function startOptimizeLoad() {
     // Show skeleton, hide canvas
     document.getElementById('opt-skeleton').classList.remove('hidden');
-    document.getElementById('opt-email-canvas').style.visibility = 'hidden';
+    document.getElementById('opt-email-canvas').style.display = 'none';
     document.getElementById('opt-meta-bar').style.visibility = 'hidden';
     // Disable auto-optimize during load
     document.getElementById('opt-auto-btn').disabled = true;
@@ -4135,7 +4525,7 @@
 
     setTimeout(() => {
       document.getElementById('opt-skeleton').classList.add('hidden');
-      document.getElementById('opt-email-canvas').style.visibility = 'visible';
+      document.getElementById('opt-email-canvas').style.display = 'block';
       document.getElementById('opt-meta-bar').style.visibility = 'visible';
       document.getElementById('opt-auto-btn').disabled = false;
       document.getElementById('opt-score-val').textContent = '40/100';
@@ -4166,7 +4556,33 @@
     });
   }
 
+  // Expected improvement data per item
+  const CHK_EXPECTED = {
+    'personalization-subject':  ['+8 email score', '+12% open rate'],
+    'review-content':           ['+5 email score', '+3% CTR'],
+    'personalization-content':  ['+7 email score', '+6× transactions'],
+    'broken-links':             ['+6 email score', '+2% CTR'],
+    'unsubscribe':              ['+5 email score', 'legal compliance'],
+    'mailing-address':          ['+4 email score', 'legal compliance'],
+    'subject-line':             ['+5 email score', '+8% open rate'],
+    'preview-text':             ['+4 email score', '+5% open rate'],
+    'email-size':               ['+3 email score', 'less clipping'],
+    'visual-hierarchy':         ['+4 email score', '+9% CTR'],
+    'text-image-ratio':         ['+6 email score', '+4.5% deliverability'],
+    'alt-text':                 ['+3 email score', '+accessibility'],
+    'image-size':               ['+2 email score', 'faster load'],
+    'cta-position':             ['+5 email score', '+11% CTR'],
+    'cta-label':                ['+3 email score', '+7% CTR'],
+    'utm-tracking':             ['+2 email score', 'analytics'],
+    'spam-words':               ['+4 email score', '+3% deliverability'],
+  };
+
   function buildChkItem(item, loading, resolved) {
+    // ── Icons ──
+    // Issue: filled red circle with solid ! line
+    // Warning: filled yellow triangle with !
+    // Resolved: filled green circle with checkmark
+    // Loading: spinning ring
     let iconSvg;
     if (loading) {
       iconSvg = `<svg class="chk-icon" viewBox="0 0 18 18" fill="none">
@@ -4177,42 +4593,56 @@
         </circle>
       </svg>`;
     } else if (resolved) {
-      iconSvg = `<svg class="chk-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" fill="#2e7d32"/><path d="M5.5 9l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      iconSvg = `<svg class="chk-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8.5" fill="#2e7d32"/><path d="M5 9l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     } else if (item.type === 'issue') {
-      iconSvg = `<svg class="chk-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" fill="#C62828"/><path d="M9 5.5v4" stroke="white" stroke-width="1.6" stroke-linecap="round"/><circle cx="9" cy="12.5" r="0.8" fill="white"/></svg>`;
+      // Outline red circle with ! line + dot
+      iconSvg = `<svg class="chk-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7.5" stroke="#D32F2F" stroke-width="1.5"/><line x1="9" y1="5" x2="9" y2="10.2" stroke="#D32F2F" stroke-width="1.7" stroke-linecap="round"/><circle cx="9" cy="12.6" r="1" fill="#D32F2F"/></svg>`;
     } else {
-      iconSvg = `<svg class="chk-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2L10.5 7H16L11.5 10L13 15L9 12L5 15L6.5 10L2 7H7.5L9 2Z" stroke="#E65100" stroke-width="1.3" fill="none"/><path d="M9 5v4M9 11v1" stroke="#E65100" stroke-width="1.3" stroke-linecap="round"/></svg>`;
+      // Outline amber triangle with ! line + dot
+      iconSvg = `<svg class="chk-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2.5L16.2 15H1.8L9 2.5Z" stroke="#D97706" stroke-width="1.5" stroke-linejoin="round"/><line x1="9" y1="7.5" x2="9" y2="11.5" stroke="#D97706" stroke-width="1.6" stroke-linecap="round"/><circle cx="9" cy="13.2" r="0.9" fill="#D97706"/></svg>`;
     }
+
+    const expected = CHK_EXPECTED[item.id] || [];
+    const expectedHtml = expected.length ? `
+      <div class="chk-field">
+        <div class="chk-field-label">Expected improvement</div>
+        <div class="chk-expected-chips">${expected.map(e => `<span class="chk-expected-chip">${escHtml(e)}</span>`).join('')}</div>
+      </div>` : '';
 
     const bodyHtml = loading ? '' : `
       <div class="chk-body">
-        <div class="chk-field">
-          <div class="chk-field-label">Current</div>
-          <div class="chk-field-val">${escHtml(item.current)}</div>
+        <div class="chk-body-pad">
+          <div class="chk-body-inner">
+            <div class="chk-field">
+              <div class="chk-field-label">Current</div>
+              <div class="chk-field-val">${escHtml(item.current)}</div>
+            </div>
+            <div class="chk-field">
+              <div class="chk-field-label">Recommendation</div>
+              <div class="chk-field-val">${escHtml(item.recommendation)}</div>
+            </div>
+            <div class="chk-field">
+              <div class="chk-field-label">Why this matters</div>
+              <div class="chk-field-val">${escHtml(item.why)}</div>
+            </div>
+            <div class="chk-field">
+              <div class="chk-field-label">Impact</div>
+              <div class="chk-impact-badge ${item.impact}" style="margin-top:4px;">${item.impact.charAt(0).toUpperCase() + item.impact.slice(1)}</div>
+            </div>
+            ${expectedHtml}
+          </div>
+          ${!resolved ? `<div class="chk-actions">
+            <button class="chk-review-btn" onclick="event.stopPropagation();openReviewDrawer('${item.id}')">Review change</button>
+            <button class="chk-autofix-btn" onclick="event.stopPropagation();autoFixItem('${item.id}')">Auto-fix</button>
+          </div>` : ''}
         </div>
-        <div class="chk-field">
-          <div class="chk-field-label">Recommendation</div>
-          <div class="chk-field-val">${escHtml(item.recommendation)}</div>
-        </div>
-        <div class="chk-field">
-          <div class="chk-field-label">Why this matters</div>
-          <div class="chk-field-val">${escHtml(item.why)}</div>
-        </div>
-        <div class="chk-field">
-          <div class="chk-field-label">Impact</div>
-          <div class="chk-impact-badge ${item.impact}">${item.impact.charAt(0).toUpperCase() + item.impact.slice(1)}</div>
-        </div>
-        ${!resolved ? `<div class="chk-actions">
-          <button class="chk-review-btn" onclick="event.stopPropagation();showToast('Review change mode coming soon')">Review change</button>
-          <button class="chk-autofix-btn" onclick="event.stopPropagation();autoFixItem('${item.id}')">Auto-fix</button>
-        </div>` : ''}
       </div>`;
 
     return `
       <div class="chk-item-header">
         ${iconSvg}
         <span class="chk-label">${escHtml(item.label)}</span>
-        <svg class="chk-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="#999" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="chk-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="#bbb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       ${bodyHtml}`;
   }
@@ -4226,11 +4656,145 @@
     if (!wasOpen) el.classList.add('open');
   }
 
+  // ── Review Change Drawer ─────────────────────────────
+  const RC_SUGGESTIONS = {
+    'personalization-subject': {
+      current:        '"🌿 Introducing Our New Delight: Fettuccine Alfredo at Olive Garden!"',
+      recommendation: '"[Customer name]\'s Exclusive: New Fettuccine Alfredo at Olive Garden!"',
+      note:           'Dynamic [Customer name] builds a personal connection and has been shown to lift open rates by up to 26% versus generic greetings.',
+      alts: [
+        '[First name], a new dish is waiting for you 🍝',
+        'Your table is ready — try our new Fettuccine Alfredo',
+        'Hi [First name]! Something delicious just landed at Olive Garden',
+      ]
+    },
+    'subject-line': {
+      current:        '"🌿 Introducing Our New Delight: Fettuccine Alfredo at Olive Garden!" — 62 chars',
+      recommendation: '"🍝 New: Fettuccine Alfredo is here!"',
+      note:           'Shorter subject lines (under 50 chars) display fully on mobile and consistently achieve higher open rates.',
+      alts: [
+        'New dish alert: Fettuccine Alfredo 🍝',
+        'Try our new Fettuccine Alfredo today',
+        'Fresh from our kitchen: Fettuccine Alfredo',
+      ]
+    },
+    'preview-text': {
+      current:        '"Hi [Customer name], We\'re thrilled to announce a mouthwatering addition…"',
+      recommendation: '"Fresh fettuccine, creamy Alfredo sauce — reserve your table before it fills up."',
+      note:           'Preview text should complement the subject, not repeat it. Urgency and sensory language drive higher open rates.',
+      alts: [
+        'Hand-made pasta, Parmigiano-Reggiano, creamy sauce. Book now.',
+        'Our chefs made something special — and it\'s only at Olive Garden.',
+        'Available from April 10th — don\'t miss your spot.',
+      ]
+    },
+    'cta-label': {
+      current:        '"Book a table" — functional but generic',
+      recommendation: '"Reserve my table now"',
+      note:           'First-person CTAs ("my") and urgency words ("now") consistently outperform generic action labels by 7–15%.',
+      alts: [
+        'Claim your spot tonight',
+        'Yes, I want to try it!',
+        'Get my table →',
+      ]
+    },
+    'cta-position': {
+      current:        'CTA "Book a table" appears below 3 paragraphs of body text',
+      recommendation: 'Move the CTA immediately below the hero image, above the body copy',
+      note:           'Most recipients don\'t scroll past the fold. A CTA in the first visible screen dramatically increases click-through.',
+      alts: [
+        'Place CTA directly under the headline',
+        'Add a second CTA at the bottom as well',
+        'Use a floating sticky CTA for mobile',
+      ]
+    },
+  };
+
+  let _rcCurrentId = null;
+  let _rcShowingAlts = false;
+
+  function _rcDefaultContent(id) {
+    const item = CHECKLIST_ITEMS.find(i => i.id === id);
+    if (!item) return { current: item?.current || '', recommendation: item?.recommendation || '', note: item?.why || '', alts: [] };
+    return {
+      current: item.current,
+      recommendation: item.recommendation,
+      note: item.why,
+      alts: []
+    };
+  }
+
+  function openReviewDrawer(id) {
+    _rcCurrentId = id;
+    _rcShowingAlts = false;
+    const data = RC_SUGGESTIONS[id] || _rcDefaultContent(id);
+    _renderReviewDrawer(data);
+    document.getElementById('rc-drawer').classList.add('open');
+    document.getElementById('rc-backdrop').classList.add('open');
+  }
+
+  function closeReviewDrawer() {
+    document.getElementById('rc-drawer').classList.remove('open');
+    document.getElementById('rc-backdrop').classList.remove('open');
+    _rcCurrentId = null;
+  }
+
+  function applyReviewChange() {
+    const id = _rcCurrentId;
+    closeReviewDrawer();
+    setTimeout(() => {
+      autoFixItem(id);
+    }, 280); // wait for drawer close animation
+  }
+
+  function _renderReviewDrawer(data) {
+    const altsHtml = data.alts && data.alts.length ? `
+      <button class="rc-more-btn" id="rc-more-btn" onclick="toggleRcAlts()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 4 5-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Generate more options
+      </button>
+      <div class="rc-alt-list" id="rc-alt-list" style="display:none">
+        ${data.alts.map((a, i) => `<div class="rc-alt-item" onclick="selectRcAlt(this, ${i})">${escHtml(a)}</div>`).join('')}
+      </div>` : '';
+
+    document.getElementById('rc-drawer-body').innerHTML = `
+      <div class="rc-box current">
+        <div class="rc-box-label">Current</div>
+        <div class="rc-box-val">${escHtml(data.current)}</div>
+      </div>
+      <div class="rc-box recommendation">
+        <div class="rc-box-label">Recommendation</div>
+        <div class="rc-box-val" id="rc-rec-val">${escHtml(data.recommendation)}</div>
+        <div class="rc-box-note">${escHtml(data.note)}</div>
+      </div>
+      ${altsHtml}
+    `;
+  }
+
+  function toggleRcAlts() {
+    _rcShowingAlts = !_rcShowingAlts;
+    const list = document.getElementById('rc-alt-list');
+    const btn  = document.getElementById('rc-more-btn');
+    if (!list || !btn) return;
+    list.style.display = _rcShowingAlts ? 'flex' : 'none';
+    btn.innerHTML = _rcShowingAlts
+      ? `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 9l5-4 5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Hide options`
+      : `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 4 5-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Generate more options`;
+  }
+
+  function selectRcAlt(el, idx) {
+    document.querySelectorAll('.rc-alt-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    // Update the recommendation box to show the selected alternative
+    const recVal = document.getElementById('rc-rec-val');
+    if (recVal) recVal.textContent = el.textContent;
+  }
+
   function autoFixItem(id) {
     resolvedItems.add(id);
     updateScore();
     renderChecklist(false);
-    showToast('Issue fixed by AI ✓', true);
+    showToast('Issue fixed by AI', true);
   }
 
   function runAutoOptimize() {
@@ -4276,7 +4840,7 @@
       autoBtn.outerHTML = '<button class="opt-go-back-btn" id="opt-go-back-btn" onclick="closeOptimizeScreen()">Go back to editor</button>';
     }
     // Show success toast
-    showToast('✓ All issues auto-fixed by AI', true, true);
+    showToast('All issues auto-fixed by AI', true, true);
   }
 
   function updateScore() {
@@ -4712,12 +5276,12 @@
         const table = document.createElement('table');
         table.className = 'tpl-table';
         table.innerHTML = `<thead><tr>
-          <th style="padding-left:24px;width:36%"><button class="tpl-th-sort">Name <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></th>
+          <th style="padding-left:24px;width:36%"><button class="tpl-th-sort">Name</button></th>
           <th style="width:12%"><span class="tpl-th-label">Type</span></th>
-          <th style="width:9%"><button class="tpl-th-sort">Usage <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg> <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#aaa" stroke-width="1.2"/><path d="M6 5v3M6 4.5v.1" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/></svg></button></th>
-          <th style="width:10%"><button class="tpl-th-sort">Open rate <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></th>
-          <th style="width:11%"><button class="tpl-th-sort">Created by <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></th>
-          <th style="width:11%"><button class="tpl-th-sort">Locations <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></th>
+          <th style="width:9%"><button class="tpl-th-sort">Usage</button></th>
+          <th style="width:10%"><button class="tpl-th-sort">Open rate</button></th>
+          <th style="width:11%"><button class="tpl-th-sort">Created by</button></th>
+          <th style="width:11%"><button class="tpl-th-sort">Locations</button></th>
           <th style="width:44px"></th>
         </tr></thead><tbody id="tpl-tbody"></tbody>`;
         content.appendChild(table);
@@ -4905,10 +5469,66 @@
     document.getElementById('tpl-dev-mobile').classList.toggle('active', device === 'mobile');
   }
 
-  // Close preview on Escape
+  // Close tpl preview on Escape
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeTplPreviewModal();
+    if (e.key === 'Escape') {
+      closeTplPreviewModal();
+      closeEditorPreviewDirect();
+    }
   });
+
+  // ── Editor Preview Modal ──────────────────────
+  const EP_LOCATIONS = {
+    la:  { label: 'Olive Garden, Los Angeles', email: 'reply-to-LosAngeles.LA@olivegarden.com' },
+    nyc: { label: 'Olive Garden, New York',    email: 'reply-to-NewYork.NY@olivegarden.com' },
+    chi: { label: 'Olive Garden, Chicago',     email: 'reply-to-Chicago.IL@olivegarden.com' },
+    mia: { label: 'Olive Garden, Miami',       email: 'reply-to-Miami.FL@olivegarden.com' },
+    dal: { label: 'Olive Garden, Dallas',      email: 'reply-to-Dallas.TX@olivegarden.com' }
+  };
+
+  function openEditorPreview() {
+    // Clone canvas content into preview body
+    const canvas = document.getElementById('email-canvas');
+    const body   = document.getElementById('ep-email-body');
+    if (canvas && body) {
+      body.innerHTML = canvas.innerHTML;
+      // Strip interactive controls from cloned content
+      body.querySelectorAll('.email-block-btns, .canvas-drop-indicator').forEach(el => el.remove());
+      body.querySelectorAll('.email-block').forEach(el => {
+        el.style.cursor = 'default';
+        el.removeAttribute('onclick');
+        el.classList.remove('selected');
+      });
+    }
+    // Reset to default location & desktop mode
+    epSwitchLocation('la');
+    document.getElementById('ep-loc-select').value = 'la';
+    setEpDevice('desktop');
+    document.getElementById('ep-backdrop').classList.remove('hidden');
+  }
+
+  function closeEditorPreview(event) {
+    if (event && event.target !== document.getElementById('ep-backdrop')) return;
+    closeEditorPreviewDirect();
+  }
+
+  function closeEditorPreviewDirect() {
+    document.getElementById('ep-backdrop').classList.add('hidden');
+  }
+
+  function setEpDevice(device) {
+    const frame = document.getElementById('ep-frame');
+    frame.classList.toggle('desktop', device === 'desktop');
+    frame.classList.toggle('mobile', device === 'mobile');
+    document.getElementById('ep-btn-desktop').classList.toggle('active', device === 'desktop');
+    document.getElementById('ep-btn-mobile').classList.toggle('active', device === 'mobile');
+  }
+
+  function epSwitchLocation(key) {
+    const loc = EP_LOCATIONS[key];
+    if (!loc) return;
+    document.getElementById('ep-annot-from').textContent = 'From: ' + loc.label + ' <' + loc.email + '>';
+  }
 
   // ── Screen navigation helpers ──────────────
   function hideAllMainScreens() {
@@ -5144,6 +5764,104 @@
     }
   }
   initTheme();
+  // Initialize undo/redo after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _initUndoObserver);
+  } else {
+    _initUndoObserver();
+  }
+
+  // ── Undo / Redo ─────────────────────────
+  const UNDO_STACK = [];
+  const REDO_STACK = [];
+  const MAX_HISTORY = 60;
+  let _undoObserver = null;
+  let _undoPaused = false;
+
+  function _canvasEl() { return document.getElementById('email-canvas'); }
+
+  function _snapshot() {
+    const c = _canvasEl();
+    return c ? c.innerHTML : '';
+  }
+
+  function _pushUndo(snap) {
+    if (UNDO_STACK.length && UNDO_STACK[UNDO_STACK.length - 1] === snap) return;
+    UNDO_STACK.push(snap);
+    if (UNDO_STACK.length > MAX_HISTORY) UNDO_STACK.shift();
+    REDO_STACK.length = 0;
+    _updateUndoButtons();
+  }
+
+  function _updateUndoButtons() {
+    const u = document.getElementById('undo-btn');
+    const r = document.getElementById('redo-btn');
+    if (u) u.style.opacity = UNDO_STACK.length > 1 ? '1' : '0.35';
+    if (r) r.style.opacity = REDO_STACK.length ? '1' : '0.35';
+  }
+
+  function _restoreSnapshot(html) {
+    _undoPaused = true;
+    const c = _canvasEl();
+    if (c) {
+      c.innerHTML = html;
+      // Re-wire delete buttons on review blocks that were restored
+      c.querySelectorAll('.review-quote-block').forEach(blk => {
+        blk.onclick = function(e) { selectBlock(e, blk); if (blk.classList.contains('selected')) openReviewPanel(blk); };
+        const delBtn = blk.querySelector('.eblk-btn.del');
+        if (delBtn) delBtn.onclick = function(e) { e.stopPropagation(); saveUndoSnapshot(); deleteBlock(blk); };
+      });
+    }
+    closeImgPanel && closeImgPanel();
+    closeReviewPanel && closeReviewPanel();
+    if (selectedBlock) { selectedBlock.classList.remove('selected'); selectedBlock = null; }
+    _undoPaused = false;
+    _updateUndoButtons();
+  }
+
+  function saveUndoSnapshot() {
+    _pushUndo(_snapshot());
+  }
+
+  function editorUndo() {
+    if (UNDO_STACK.length <= 1) return;
+    REDO_STACK.push(UNDO_STACK.pop());
+    _restoreSnapshot(UNDO_STACK[UNDO_STACK.length - 1]);
+    showToast('Undone');
+  }
+
+  function editorRedo() {
+    if (!REDO_STACK.length) return;
+    const snap = REDO_STACK.pop();
+    UNDO_STACK.push(snap);
+    _restoreSnapshot(snap);
+    showToast('Redone');
+  }
+
+  function _initUndoObserver() {
+    const c = _canvasEl();
+    if (!c) return;
+    // Push initial snapshot
+    _pushUndo(_snapshot());
+    _updateUndoButtons();
+
+    _undoObserver = new MutationObserver(function(mutations) {
+      if (_undoPaused) return;
+      // Debounce — only snapshot after 300ms of quiet
+      clearTimeout(_undoTimer);
+      _undoTimer = setTimeout(function() {
+        if (!_undoPaused) saveUndoSnapshot();
+      }, 300);
+    });
+    _undoObserver.observe(c, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  let _undoTimer = null;
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); editorUndo(); }
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); editorRedo(); }
+  });
 
   // ── Block selection ─────────────────────
   let selectedBlock = null;
@@ -5168,6 +5886,7 @@
   // ── Delete email block ───────────────────
   function deleteBlock(el) {
     if (el && el.parentNode) {
+      saveUndoSnapshot();
       el.parentNode.removeChild(el);
       closeReviewPanel();
       closeImgPanel();
@@ -5211,6 +5930,7 @@
     indicator.style.display = 'none';
     _dragBlockType = null;
     if (type !== 'review-quote') return;
+    saveUndoSnapshot();
     const block = _buildReviewBlock();
     const canvas = document.getElementById('email-canvas');
     canvas.insertBefore(block, indicator.nextSibling || null);
@@ -5280,10 +6000,11 @@
   // ── Review Quote Panel ───────────────────
   let _rqBlock = null;
   function openReviewPanel(blockEl) {
-    closeImgPanel();
+    // Hide img panel visually without touching selectedBlock
+    document.getElementById('img-props-panel').classList.remove('open');
+    imgPanelOpen = false;
     _rqBlock = blockEl;
     document.getElementById('rq-panel').classList.add('open');
-    // Sync title input to current block title
     const titleEl = blockEl.querySelector('.e-review-section-title');
     if (titleEl) document.getElementById('rq-title-input').value = titleEl.textContent;
   }
@@ -5517,9 +6238,6 @@
     <div class="tpl-product-title">Marketing Automation AI</div>
     <button class="tpl-create-wf-btn" onclick="showAskAI()">
       Ask Marketing AI
-      <div class="tpl-create-wf-icon" style="background:linear-gradient(135deg,#6D28D9,#4F46E5)">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.4 4.2H14l-3.5 2.5 1.3 4.1L8 10.5l-3.8 2.3 1.3-4.1L2 6.2h4.6L8 2z" fill="white"/></svg>
-      </div>
     </button>
     <div class="tpl-nav-standalone active" id="dash-nav-dashboard" onclick="showDashboard()">Dashboard</div>
     <nav class="tpl-nav-scroll">
@@ -5618,7 +6336,7 @@
           </div>
           <div class="dash-ai-card-title">Analyze my website</div>
           <div class="dash-ai-card-desc">Enter your URL and get 10–15 templates plus recommended workflows</div>
-          <div class="dash-ai-card-link">Get started <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="dash-ai-card-link">Get started</div>
         </div>
         <div class="dash-ai-card" onclick="showAskAI()">
           <div class="dash-ai-card-icon" style="background:#CCFBF1">
@@ -5626,7 +6344,7 @@
           </div>
           <div class="dash-ai-card-title">Describe your goal</div>
           <div class="dash-ai-card-desc">Tell the agent what you want to achieve — it builds segments, templates, and workflows</div>
-          <div class="dash-ai-card-link">Type a prompt <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="dash-ai-card-link">Type a prompt</div>
         </div>
         <div class="dash-ai-card" onclick="showAskAI()">
           <div class="dash-ai-card-icon" style="background:#FEF3C7">
@@ -5634,7 +6352,7 @@
           </div>
           <div class="dash-ai-card-title">View AI recommendations</div>
           <div class="dash-ai-card-desc">5 segments and 3 workflows ready to review based on your contact data</div>
-          <div class="dash-ai-card-link">See suggestions <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="dash-ai-card-link">See suggestions</div>
         </div>
       </div>
 
@@ -5644,13 +6362,13 @@
         <table class="dash-table">
           <thead>
             <tr>
-              <th>Campaign name</th>
-              <th>Type</th>
-              <th>Audience</th>
-              <th>Sent</th>
-              <th>Open rate</th>
-              <th>CTR</th>
-              <th>Status</th>
+              <th><span class="dash-th-label">Campaign name</span></th>
+              <th><span class="dash-th-label">Type</span></th>
+              <th><span class="dash-th-label">Audience</span></th>
+              <th><span class="dash-th-label">Sent</span></th>
+              <th><span class="dash-th-label">Open rate</span></th>
+              <th><span class="dash-th-label">CTR</span></th>
+              <th><span class="dash-th-label">Status</span></th>
             </tr>
           </thead>
           <tbody>
@@ -5795,10 +6513,7 @@
         <div class="askai-chat-hdr-title">Marketing AI</div>
         <div class="askai-chat-hdr-sub">Describe what you want to achieve</div>
       </div>
-      <button class="askai-cancel-btn" onclick="showTemplates()">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        Cancel
-      </button>
+      <button class="askai-cancel-btn" onclick="showTemplates()">Cancel</button>
     </div>
 
     <!-- Messages -->
@@ -5837,7 +6552,7 @@
           <div class="askai-review-title">Review AI-generated setup</div>
           <div class="askai-review-sub">Approve, edit, or skip each asset before saving</div>
         </div>
-        <button class="askai-approve-all" onclick="askaiApproveAll()">Approve all →</button>
+        <button class="askai-approve-all" onclick="askaiApproveAll()">Approve all</button>
       </div>
       <!-- Tabs -->
       <div class="askai-tabs" id="askai-tabs">
@@ -5863,10 +6578,7 @@
     <!-- Footer -->
     <div class="askai-review-footer" id="askai-review-footer">
       <div class="askai-footer-status" id="askai-footer-status">Start a conversation to generate assets</div>
-      <button class="askai-continue-btn" id="askai-continue-btn" onclick="showTemplates()" style="opacity:.4;pointer-events:none">
-        Continue to workflow
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+      <button class="askai-continue-btn" id="askai-continue-btn" onclick="showTemplates()" style="opacity:.4;pointer-events:none">Continue to workflow</button>
     </div>
 
   </div>
