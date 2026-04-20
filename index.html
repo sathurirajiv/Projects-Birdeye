@@ -2494,10 +2494,21 @@
     font-family: 'Roboto', sans-serif; white-space: nowrap; display: flex; align-items: center; gap: 5px;
   }
   .birdai-fp-chip:hover { background: #f5f2ff; border-color: #c4b5fd; color: #6D28D9; }
-  /* "or" separator between the two initial AI bubbles */
-  .birdai-fp-or-sep { display: flex; align-items: center; gap: 12px; padding: 4px 0 4px 40px; max-width: 700px; }
-  .birdai-fp-or-sep::before, .birdai-fp-or-sep::after { content: ''; flex: 1; height: 1px; background: #EBEBEB; }
-  .birdai-fp-or-sep span { font-size: 12px; color: var(--text-3); flex-shrink: 0; }
+  /* "or" divider — inside a single AI bubble content area */
+  .birdai-fp-or-inner { display: flex; align-items: center; gap: 12px; max-width: 660px; margin: 16px 0; }
+  .birdai-fp-or-inner::before, .birdai-fp-or-inner::after { content: ''; flex: 1; height: 1px; background: #EBEBEB; }
+  .birdai-fp-or-inner span { font-size: 12px; color: var(--text-3); flex-shrink: 0; }
+  /* Action cards (Create campaign / workflow / template) — no checkbox, colored icon */
+  .birdai-fp-action-card {
+    display: flex; flex-direction: column; gap: 10px;
+    border: 1.5px solid #E8E8E8; border-radius: 12px; padding: 14px 14px 12px;
+    cursor: pointer; background: #fff; user-select: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .birdai-fp-action-card:hover { border-color: #C8D8F8; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+  .birdai-fp-action-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .birdai-fp-action-name { font-size: 12.5px; font-weight: 400; color: var(--text-1); line-height: 1.45; }
+  .birdai-fp-goal-section-label { font-size: 13px; color: var(--text-2); margin-bottom: 10px; }
   /* Goal cards grid */
   .birdai-fp-goal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 660px; }
   .birdai-fp-goal-card {
@@ -2732,7 +2743,9 @@
   .dash-stat-delta.neutral { color: var(--text-3); }
 
   /* Start with AI cards */
-  .dash-ai-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .dash-ai-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; transition: grid-template-columns 0.3s ease; }
+  /* Stack to 1 column when the BirdAI side panel is open */
+  .dash-layout:has(#dash-birdai-panel.open) .dash-ai-cards { grid-template-columns: 1fr; }
   .dash-ai-card {
     background: #fff; border: 1px solid var(--border); border-radius: 12px;
     padding: 20px; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s;
@@ -2747,6 +2760,170 @@
   .dash-ai-card-title { font-size: 14px; font-weight: 400; color: var(--text-1); margin-bottom: 6px; }
   .dash-ai-card-desc { font-size: 12px; color: var(--text-3); line-height: 1.6; flex: 1; }
   .dash-ai-card-link { font-size: 12px; color: var(--blue); margin-top: 14px; display: flex; align-items: center; gap: 4px; }
+
+  /* ── Campaign recommendation cards ── */
+  .birdai-fp-camp-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; max-width: 660px; }
+  .birdai-fp-camp-card {
+    display: flex; align-items: center; gap: 12px;
+    border: 1px solid #E8E8E8; border-radius: 10px; padding: 14px 16px;
+    background: #fff; cursor: pointer; transition: border-color 0.12s;
+    user-select: none;
+  }
+  .birdai-fp-camp-card:hover { border-color: #C8D8F8; }
+  .birdai-fp-camp-chk {
+    width: 20px; height: 20px; border-radius: 4px; flex-shrink: 0;
+    background: var(--blue); display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s, border 0.12s;
+  }
+  .birdai-fp-camp-chk.off { background: #fff; border: 1.5px solid #D0D0D0; }
+  .birdai-fp-camp-info { flex: 1; min-width: 0; }
+  .birdai-fp-camp-name { font-size: 13.5px; font-weight: 400; color: var(--text-1); }
+  .birdai-fp-camp-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+  .birdai-fp-camp-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  /* Impact badges */
+  .birdai-fp-camp-badge {
+    font-size: 12px; padding: 3px 10px; border-radius: 20px; font-weight: 400;
+    position: relative; cursor: default; white-space: nowrap;
+  }
+  .birdai-fp-camp-badge.high   { background: #FEF2F2; color: #DC2626; }
+  .birdai-fp-camp-badge.medium { background: #FEF3C7; color: #D97706; }
+  .birdai-fp-camp-badge.low    { background: #F0FDF4; color: #16A34A; }
+  /* Tooltip on impact badge */
+  .birdai-fp-camp-badge::after {
+    content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); right: 0;
+    background: #1F2937; color: #fff; font-size: 11.5px; line-height: 1.55;
+    padding: 8px 11px; border-radius: 7px; white-space: normal; width: 230px;
+    opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 300; text-align: left;
+    font-weight: 400;
+  }
+  .birdai-fp-camp-badge:hover::after { opacity: 1; }
+  /* Skeleton loader for campaign cards */
+  .birdai-fp-camp-skel { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; max-width: 660px; }
+  .birdai-fp-camp-skel-card { display: flex; align-items: center; gap: 12px; border: 1px solid #E8E8E8; border-radius: 10px; padding: 14px 16px; }
+  .birdai-fp-camp-skel-chk { width: 20px; height: 20px; border-radius: 4px; background: #EBEBEB; flex-shrink: 0; overflow: hidden; position: relative; }
+  .birdai-fp-camp-skel-chk::after, .birdai-fp-camp-skel-badge::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent); animation: fpSkelShimmer 1.6s ease-in-out infinite; }
+  .birdai-fp-camp-skel-lines { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .birdai-fp-camp-skel-badge { width: 52px; height: 22px; border-radius: 20px; background: #EBEBEB; flex-shrink: 0; position: relative; overflow: hidden; }
+
+  /* ── Goal impact badge (on goal cards) ── */
+  .birdai-fp-goal-impact {
+    display: inline-flex; align-items: center; font-size: 10.5px; padding: 2px 7px;
+    border-radius: 10px; font-weight: 400; position: absolute; bottom: 10px; right: 10px;
+    cursor: default; line-height: 1.3; z-index: 1;
+  }
+  .birdai-fp-goal-impact.high   { background: #FEF2F2; color: #DC2626; }
+  .birdai-fp-goal-impact.medium { background: #FEF3C7; color: #D97706; }
+  .birdai-fp-goal-impact.low    { background: #F0FDF4; color: #16A34A; }
+  .birdai-fp-goal-impact::after {
+    content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); right: 0;
+    background: #1F2937; color: #fff; font-size: 11px; line-height: 1.5;
+    padding: 7px 10px; border-radius: 6px; white-space: normal; width: 200px;
+    opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 300; text-align: left;
+  }
+  .birdai-fp-goal-impact:hover::after { opacity: 1; }
+  /* Extra bottom padding on goal card when impact badge is shown */
+  .birdai-fp-goal-card.has-impact { padding-bottom: 32px; }
+
+  /* ── Template flow — tabs ── */
+  .birdai-fp-tpl-tabs {
+    display: flex; gap: 0; border-bottom: 1.5px solid #E8E8E8; margin-bottom: 14px; max-width: 660px;
+  }
+  .birdai-fp-tpl-tab {
+    font-size: 13px; color: var(--text-3); padding: 7px 16px 8px; cursor: pointer;
+    border-bottom: 2px solid transparent; margin-bottom: -1.5px;
+    transition: color 0.12s; font-family: 'Roboto', sans-serif; background: none; border-top: none; border-left: none; border-right: none;
+  }
+  .birdai-fp-tpl-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+  /* ── Email template carousel ── */
+  .birdai-fp-email-carousel { max-width: 660px; }
+  .birdai-fp-email-carousel-track { overflow: hidden; }
+  .birdai-fp-email-carousel-inner {
+    display: flex; gap: 12px; transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+  }
+  .birdai-fp-email-tpl-card {
+    flex: 0 0 calc(33.333% - 8px); min-width: 0;
+    border: 1.5px solid #E8E8E8; border-radius: 10px; overflow: hidden;
+    cursor: pointer; transition: border-color 0.12s; position: relative; background: #fff;
+    user-select: none;
+  }
+  .birdai-fp-email-tpl-card:hover { border-color: #C8D8F8; }
+  .birdai-fp-email-tpl-card.selected { border-color: var(--blue); }
+  .birdai-fp-email-tpl-chk {
+    position: absolute; top: 8px; right: 8px; z-index: 2;
+    width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid #D0D0D0;
+    background: #fff; display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .birdai-fp-email-tpl-card.selected .birdai-fp-email-tpl-chk { background: var(--blue); border-color: var(--blue); }
+  .birdai-fp-email-tpl-chk svg { display: none; }
+  .birdai-fp-email-tpl-card.selected .birdai-fp-email-tpl-chk svg { display: block; }
+  /* Mini email preview thumbnail */
+  .birdai-fp-email-mini { height: 110px; overflow: hidden; position: relative; }
+  .birdai-fp-email-mini-banner {
+    height: 38px; display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: #fff; letter-spacing: 0.4px;
+  }
+  .birdai-fp-email-mini-body { padding: 7px 9px; background: #fff; }
+  .birdai-fp-email-mini-line { height: 5px; border-radius: 3px; background: #EBEBEB; margin-bottom: 5px; }
+  .birdai-fp-email-mini-btn { height: 14px; border-radius: 3px; width: 50px; margin-top: 4px; }
+  .birdai-fp-email-tpl-info { padding: 9px 11px 11px; border-top: 1px solid #F0F0F0; }
+  .birdai-fp-email-tpl-name { font-size: 12px; color: var(--text-1); line-height: 1.4; }
+  .birdai-fp-email-tpl-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  /* Carousel nav */
+  .birdai-fp-carousel-nav { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+  .birdai-fp-carousel-btn {
+    width: 28px; height: 28px; border: 1px solid #E0E0E0; border-radius: 6px;
+    background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text-2); transition: background 0.12s, border-color 0.12s;
+  }
+  .birdai-fp-carousel-btn:hover:not(:disabled) { background: #F5F5F5; border-color: #C0C0C0; }
+  .birdai-fp-carousel-btn:disabled { opacity: 0.35; cursor: default; }
+  .birdai-fp-carousel-dots { display: flex; gap: 5px; align-items: center; }
+  .birdai-fp-carousel-dot { width: 6px; height: 6px; border-radius: 50%; background: #D0D0D0; transition: background 0.12s; }
+  .birdai-fp-carousel-dot.active { background: var(--blue); }
+
+  /* ── Text template grid ── */
+  .birdai-fp-text-tpl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 660px; }
+  .birdai-fp-text-tpl-card {
+    border: 1.5px solid #E8E8E8; border-radius: 10px; overflow: hidden;
+    cursor: pointer; transition: border-color 0.12s; position: relative; background: #fff;
+    user-select: none;
+  }
+  .birdai-fp-text-tpl-card:hover { border-color: #C8D8F8; }
+  .birdai-fp-text-tpl-card.selected { border-color: var(--blue); }
+  .birdai-fp-text-tpl-chk {
+    position: absolute; top: 8px; right: 8px; z-index: 2;
+    width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid #D0D0D0;
+    background: #fff; display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .birdai-fp-text-tpl-card.selected .birdai-fp-text-tpl-chk { background: var(--blue); border-color: var(--blue); }
+  .birdai-fp-text-tpl-chk svg { display: none; }
+  .birdai-fp-text-tpl-card.selected .birdai-fp-text-tpl-chk svg { display: block; }
+  /* Phone mock inside text card */
+  .birdai-fp-phone-mock {
+    background: #F2F3F5; padding: 8px; display: flex; justify-content: center;
+  }
+  .birdai-fp-phone-inner {
+    width: 82px; background: #fff; border-radius: 8px; padding: 6px 6px 5px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10); overflow: hidden;
+  }
+  .birdai-fp-phone-hdr { font-size: 6.5px; color: var(--text-3); text-align: center; margin-bottom: 5px; padding-bottom: 4px; border-bottom: 1px solid #F0F0F0; }
+  .birdai-fp-sms-bubble {
+    background: #E8F5E9; border-radius: 7px 7px 7px 2px; padding: 4px 6px;
+    font-size: 6.5px; color: #333; line-height: 1.45; word-break: break-word;
+  }
+  .birdai-fp-text-tpl-info { padding: 8px 10px 10px; border-top: 1px solid #F0F0F0; }
+  .birdai-fp-text-tpl-name { font-size: 12px; color: var(--text-1); line-height: 1.4; }
+  .birdai-fp-text-tpl-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+  /* Template skeleton loader */
+  .birdai-fp-tpl-skel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 660px; margin-top: 12px; }
+  .birdai-fp-tpl-skel-card { border: 1px solid #E8E8E8; border-radius: 10px; overflow: hidden; }
+  .birdai-fp-tpl-skel-thumb { height: 110px; background: #EBEBEB; overflow: hidden; position: relative; }
+  .birdai-fp-tpl-skel-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.65), transparent); animation: fpSkelShimmer 1.6s ease-in-out infinite; }
+  .birdai-fp-tpl-skel-body { padding: 9px 11px; display: flex; flex-direction: column; gap: 6px; }
 
   /* Bottom two-col */
   .dash-bottom-cols { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
@@ -6573,11 +6750,46 @@
   }
 
   // ── BirdAI Full-Page Expanded View ───────────────────
-  let _birdaiFpStep = 0; // 0=initial, 1=goals, 2=website, 3=loading, 4=agents
+  let _birdaiFpStep = 0; // 0=initial, 2=website, 3=loading, 4=agents
   let _birdaiFpSelectedGoals = new Set();
   let _birdaiFpCards = {};
   let _birdaiFpPublishedShown = false;
   let _birdaiFpLoopGoals = new Set();
+  let _birdaiFpWebsiteConfirmed = false;
+  let _birdaiFpCampaignsShown = 4;
+  let _birdaiFpGoalsShown = 6;
+  let _birdaiFpSelectedEmailTpls = new Set();
+  let _birdaiFpSelectedTextTpls = new Set();
+  let _birdaiFpTplTab = 'email';
+  let _birdaiFpEmailCarouselIdx = 0;
+
+  // ── Campaign recommendation data ──
+  const _FP_CAMPAIGNS = [
+    { name: 'Re-engagement — 90 day inactive',       sub: '847 contacts · Email & text', impact: 'high',
+      tip: '847 contacts haven\'t visited in 90+ days — high churn risk. Re-engagement with a discount typically recovers 15–25% of lapsed customers.' },
+    { name: 'High-intent leads — 7 day nurture',     sub: '120 contacts · Email & text', impact: 'high',
+      tip: '120 leads scored 80+ in the last 30 days. Nurturing within 7 days of an intent signal increases conversion up to 3× vs. waiting.' },
+    { name: 'Abandoned lead follow-up',              sub: '340 contacts · Email',        impact: 'high',
+      tip: '340 unconverted leads from the last 60 days. Immediate follow-up campaigns recover 20–30% of abandoned leads on average for this industry.' },
+    { name: 'Birthday reward campaign',              sub: '48 contacts · SMS & Email',   impact: 'high',
+      tip: '48 customer birthdays in the next 7 days. Birthday campaigns see 5× higher open rates and 3× conversion vs. standard sends.' },
+    { name: 'Repeat customer loyalty flow',          sub: '1,200 contacts · Email',      impact: 'medium',
+      tip: '1,200 repeat customers qualify. Loyalty campaigns drive 20% higher lifetime value but require a longer engagement window to measure ROI.' },
+    { name: 'Seasonal promo — summer preview',       sub: '2,300 contacts · Email & text', impact: 'medium',
+      tip: 'Summer spending trends detected in your industry. Broad audience reduces personalization score, lowering expected conversion vs. targeted sends.' },
+    { name: 'Cart abandonment recovery',             sub: '210 contacts · SMS',          impact: 'medium',
+      tip: '210 open carts in the last 48 hours. SMS recovery shows ~15% recapture, but timing sensitivity and cart value variance limit predictability.' },
+    { name: 'Post-purchase upsell sequence',         sub: '650 contacts · Email',        impact: 'medium',
+      tip: '650 recent buyers qualify. Post-purchase upsells convert at 8–12% — solid ROI but dependent on how well your product catalog cross-maps.' },
+    { name: 'Weekend flash sale blast',              sub: '3,100 contacts · Email & text', impact: 'low',
+      tip: 'High engagement window detected, but flash sale fatigue is rising in your segment. Broad targeting lowers the per-contact impact score.' },
+    { name: 'Referral program relaunch',             sub: '890 contacts · Email',        impact: 'low',
+      tip: 'Low referral activity detected. Referral campaigns have long lead times and success depends heavily on current customer advocacy levels.' },
+    { name: 'Review request — recent visitors',      sub: '380 contacts · Email',        impact: 'low',
+      tip: '380 unasked recent visitors. Review campaigns build long-term SEO value but rarely drive immediate revenue — ROI realized over 3–6 months.' },
+    { name: 'Win-back — 6 month lapsed',             sub: '520 contacts · Email & text', impact: 'low',
+      tip: '520 contacts lapsed 6+ months. Win-back success drops significantly after 6 months of inactivity — retention probability is below 10%.' }
+  ];
 
   function expandBirdAI(ctx) {
     // close the side panel first
@@ -6618,60 +6830,188 @@
     });
   }
 
+  // ── Shared data & HTML builder for the unified opening bubble ──
+  const _FP_ALL_GOALS = [
+    // ── First 6 (initial view) ──
+    { g: 'Re-engage my inactive customers',
+      impact: 'high', tip: '847 contacts haven\'t engaged in 90+ days — high churn risk. Re-engagement campaigns recover 15–25% of lapsed customers on average.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8A5 5 0 1 1 8 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 1v4l3-2-3-2Z" fill="currentColor"/></svg>' },
+    { g: 'Abandoned lead follow-up',
+      impact: 'high', tip: '340 unconverted leads from the last 60 days. Immediate follow-up campaigns recover 20–30% of abandoned leads for this industry.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6h4M6 9h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' },
+    { g: 'Setup a welcome journey',
+      impact: 'high', tip: 'New signups who receive a welcome series convert 3× better and show 33% higher lifetime value than those who don\'t.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 14c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+    { g: 'Promote my new service',
+      impact: 'medium', tip: 'Your newest service has broad audience appeal. Conversion depends on how well the offer is personalized to segment intent.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 9.5V6.5L12 4v8L3 9.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M3 8H1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3 9.5L2.5 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>' },
+    { g: 'Seasonal promotions',
+      impact: 'medium', tip: 'Seasonal campaigns see 2× open rates but timing sensitivity and broad targeting reduce per-contact impact vs. targeted sends.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 4V2M11 4V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 7h12" stroke="currentColor" stroke-width="1.3"/></svg>' },
+    { g: 'Build a loyalty campaign for VIP customers',
+      impact: 'medium', tip: 'Loyalty campaigns for repeat buyers drive 20% higher lifetime value but require a longer engagement window to measure ROI.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3.1 3.5.5-2.5 2.4.6 3.4L8 10l-3.1 1.4.6-3.4L3 5.6l3.5-.5L8 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>' },
+    // ── Next 6 (first "Show more") ──
+    { g: 'Birthday reward campaign',
+      impact: 'high', tip: '48 customer birthdays in the next 7 days. Birthday campaigns see 5× higher open rates and 3× conversion vs. standard sends.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z" stroke="currentColor" stroke-width="1.4"/><path d="M5 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M8 3V1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>' },
+    { g: 'Cart abandonment recovery',
+      impact: 'medium', tip: '210 open carts in the last 48 hours. SMS recovery shows ~15% recapture, but timing sensitivity limits predictability.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2h1.5l1.8 7h7l1.2-5H5.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="13" r="1" fill="currentColor"/><circle cx="11" cy="13" r="1" fill="currentColor"/></svg>' },
+    { g: 'Post-purchase upsell sequence',
+      impact: 'medium', tip: '650 recent buyers qualify. Post-purchase upsells convert at 8–12% — solid ROI but dependent on catalog cross-mapping.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13V8m3 5V5m3 8V3m3 10V6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>' },
+    { g: 'Review request — recent visitors',
+      impact: 'low', tip: 'Review campaigns build long-term SEO value but rarely drive immediate revenue — ROI is typically realized over 3–6 months.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1 2.8 3 .2-2.3 1.9.8 2.9L8 8.4l-2.5 1.4.8-2.9L4 5l3-.2L8 2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M3 14h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' },
+    { g: 'Win-back lapsed customers',
+      impact: 'low', tip: 'Win-back success drops significantly after 6 months of inactivity — retention probability falls below 10% for this segment.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 8s2-4 5.5-4 5.5 4 5.5 4-2 4-5.5 4S2.5 8 2.5 8Z" stroke="currentColor" stroke-width="1.4"/></svg>' },
+    { g: 'Referral program campaign',
+      impact: 'low', tip: 'Referral campaigns have long lead times and success depends heavily on current customer advocacy and satisfaction levels.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="4" cy="8" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="4" r="2" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.4"/><path d="M6 7l4-2M6 9l4 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' },
+    // ── Next 6 (second "Show more") ──
+    { g: 'Onboarding sequence for new leads',
+      impact: 'high', tip: 'Fresh leads engaged within 24 hours are 7× more likely to convert than those reached after 48 hours — early momentum matters.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 8h4M8 6v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="2" y="2" width="12" height="12" rx="3" stroke="currentColor" stroke-width="1.4"/></svg>' },
+    { g: 'Flash sale announcement',
+      impact: 'medium', tip: 'High engagement window detected, but flash sale fatigue is rising. Broad targeting lowers the per-contact impact score.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M9 2L4 9h4l-1 5 5-7H8l1-5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>' },
+    { g: 'Event invitation campaign',
+      impact: 'medium', tip: 'Personalized event invitations have 3× higher RSVP rates than broadcast announcements — personalization is key.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 4V2M11 4V2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M2 7h12" stroke="currentColor" stroke-width="1.3"/><path d="M5 10h2M9 10h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' },
+    { g: 'Cross-sell complementary products',
+      impact: 'medium', tip: '1,200 single-purchase customers qualify. Cross-sell sequences convert at 12–18% when product matching is well-calibrated.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="2" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="2" y="9" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="9" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg>' },
+    { g: 'Subscription renewal reminder',
+      impact: 'high', tip: 'Renewal campaigns sent 7 days before expiry reduce churn by up to 35%. High urgency with predictable timing makes it easy to win.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' },
+    { g: 'Customer satisfaction survey',
+      impact: 'low', tip: 'CSAT campaigns provide valuable insight but have minimal direct revenue impact. Best paired with recovery offers for detractors.',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 8.5c.5 1.5 5.5 1.5 6 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="6" cy="6" r="0.8" fill="currentColor"/><circle cx="10" cy="6" r="0.8" fill="currentColor"/></svg>' }
+  ];
+
+  // ── Email template data ──
+  const _FP_EMAIL_TEMPLATES = [
+    { id: 'et1', name: 'We miss you — 10% off', sub: 'Re-engagement · Warm tone',
+      bannerGrad: 'linear-gradient(135deg,#1976D2,#42A5F5)', bannerText: '🌿 We Miss You',
+      btnColor: '#1976D2', lines: [0.75, 0.55, 0.85, 0.60] },
+    { id: 'et2', name: 'Welcome to the family!', sub: 'Welcome series · Friendly',
+      bannerGrad: 'linear-gradient(135deg,#059669,#34D399)', bannerText: '👋 Welcome',
+      btnColor: '#059669', lines: [0.65, 0.80, 0.50, 0.70] },
+    { id: 'et3', name: 'Happy Birthday — your gift inside', sub: 'Birthday reward · Celebratory',
+      bannerGrad: 'linear-gradient(135deg,#7C3AED,#A78BFA)', bannerText: '🎂 Happy Birthday',
+      btnColor: '#7C3AED', lines: [0.70, 0.50, 0.90, 0.55] },
+    { id: 'et4', name: 'Flash sale — 24 hours only', sub: 'Promotional · Urgency',
+      bannerGrad: 'linear-gradient(135deg,#DC2626,#F97316)', bannerText: '⚡ Flash Sale',
+      btnColor: '#DC2626', lines: [0.80, 0.60, 0.45, 0.75] },
+    { id: 'et5', name: 'Introducing our new service', sub: 'Product launch · Informative',
+      bannerGrad: 'linear-gradient(135deg,#0891B2,#22D3EE)', bannerText: '✨ New This Month',
+      btnColor: '#0891B2', lines: [0.60, 0.85, 0.55, 0.65] },
+    { id: 'et6', name: 'VIP exclusive offer — just for you', sub: 'Loyalty · Premium',
+      bannerGrad: 'linear-gradient(135deg,#D97706,#FCD34D)', bannerText: '⭐ VIP Exclusive',
+      btnColor: '#D97706', lines: [0.70, 0.45, 0.80, 0.60] },
+    { id: 'et7', name: 'You might also love this…', sub: 'Post-purchase upsell · Gentle',
+      bannerGrad: 'linear-gradient(135deg,#4F46E5,#818CF8)', bannerText: '🛍 Just For You',
+      btnColor: '#4F46E5', lines: [0.65, 0.75, 0.50, 0.85] },
+    { id: 'et8', name: 'Come back — here\'s an offer', sub: 'Win-back · Compelling',
+      bannerGrad: 'linear-gradient(135deg,#BE185D,#FB7185)', bannerText: '💌 We\'d Love You Back',
+      btnColor: '#BE185D', lines: [0.80, 0.55, 0.70, 0.50] }
+  ];
+
+  // ── Text template data ──
+  const _FP_TEXT_TEMPLATES = [
+    { id: 'tt1', name: 'Re-engagement SMS', sub: '160 chars · Opt-out included',
+      msg: 'Hi [First name], we miss you! Come back for 10% off your next visit. Book: [Link] Reply STOP to opt out.' },
+    { id: 'tt2', name: 'Birthday reward SMS', sub: '130 chars · Personalized',
+      msg: 'Happy Birthday [First name]! 🎉 Enjoy a special gift from us — 15% off today only. Use: BDAY15. [Link]' },
+    { id: 'tt3', name: 'Flash sale alert', sub: '95 chars · Urgency',
+      msg: '⚡ [Business]: 24-hr flash sale starts NOW. Up to 30% off. Don\'t miss it → [Link]' },
+    { id: 'tt4', name: 'Appointment reminder', sub: '110 chars · Friendly',
+      msg: 'Hi [First name], just a reminder — your appointment is tomorrow at [Time]. Reply C to confirm or R to reschedule.' },
+    { id: 'tt5', name: 'Win-back offer', sub: '120 chars · Direct',
+      msg: 'We haven\'t seen you in a while, [First name]. Here\'s 20% off your next visit. Valid 7 days → [Link]' },
+    { id: 'tt6', name: 'Loyalty reward SMS', sub: '105 chars · Appreciative',
+      msg: 'You\'ve earned a reward, [First name]! 🌟 Redeem your 50 points for $5 off your next visit → [Link]' },
+    { id: 'tt7', name: 'Cart recovery SMS', sub: '115 chars · Nudge',
+      msg: 'Hey [First name], you left something behind! Complete your booking now and save 10% → [Link] Reply STOP to opt out.' },
+    { id: 'tt8', name: 'New service announcement', sub: '100 chars · Informative',
+      msg: 'Big news, [First name]! We\'ve just launched [Service]. Be among the first to try it → [Link]' }
+  ];
+
+  const _FP_ACTION_CARDS = [
+    { label: 'Create a campaign', bg: '#F0EBFF', color: '#7C3AED',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 10V6.5L11 4v8L2 10Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M2 8H0.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M2 10L1.5 13.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="14" cy="8" r="1.5" stroke="currentColor" stroke-width="1.3"/></svg>' },
+    { label: 'Create a workflow', bg: '#E8F7F0', color: '#059669',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="6" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="11" y="2" width="4" height="3.5" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="11" y="10" width="4" height="3.5" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M5 8h3.5M8.5 8V3.75H11M8.5 8v3.75H11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' },
+    { label: 'Create a template', bg: '#EBF3FF', color: '#2563EB',
+      icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="1.5" width="11" height="13" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 5h6M5 8h6M5 11h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>' }
+  ];
+
+  const _fpChkSVG = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+  function _fpGoalCardsHTML(goals, selectedGoals, toggleFn) {
+    return goals.map(({ g, icon, impact, tip }) => {
+      const hasImpact = !!impact;
+      const esc = g.replace(/'/g, "\\'");
+      return `
+        <label class="birdai-fp-goal-card${selectedGoals.has(g) ? ' selected' : ''}${hasImpact ? ' has-impact' : ''}" onclick="${toggleFn}(this,'${esc}')">
+          <div class="birdai-fp-goal-card-icon">${icon}</div>
+          <div class="birdai-fp-goal-card-name">${g}</div>
+          <div class="birdai-fp-goal-card-chk">${_fpChkSVG}</div>
+          ${hasImpact ? `<span class="birdai-fp-goal-impact ${impact}" data-tip="${(tip||'').replace(/"/g,'&quot;')}">${impact.charAt(0).toUpperCase()+impact.slice(1)}</span>` : ''}
+        </label>`;
+    }).join('');
+  }
+
+  function _fpOpeningBubbleHTML({ intro, goals, goalsShown, selectedGoals, toggleFn, showProceed, proceedFn, animClass, gridId, showMoreFn }) {
+    const visibleGoals = goalsShown != null ? goals.slice(0, goalsShown) : goals;
+    const hasMoreGoals = goalsShown != null && goalsShown < goals.length;
+
+    const actionCardsHTML = _FP_ACTION_CARDS.map(({ label, bg, color, icon }) => `
+      <div class="birdai-fp-action-card" onclick="birdaiFpChip('${label}')">
+        <div class="birdai-fp-action-icon" style="background:${bg};color:${color}">${icon}</div>
+        <div class="birdai-fp-action-name">${label}</div>
+      </div>`).join('');
+
+    const goalCardsHTML = _fpGoalCardsHTML(visibleGoals, selectedGoals, toggleFn);
+
+    return `
+      <div class="birdai-fp-msg-ai ${animClass || ''}">
+        <div class="birdai-fp-ai-avatar">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0.5L7.2 4H11L8 6.2l1.1 3.4L6 7.7 2.9 9.6 4 6.2 1 4h3.8L6 0.5Z" fill="white"/></svg>
+        </div>
+        <div class="birdai-fp-ai-content">
+          <div class="birdai-fp-ai-text">${intro}</div>
+          <div class="birdai-fp-goal-grid" style="margin-top:12px">${actionCardsHTML}</div>
+          <div class="birdai-fp-or-inner"><span>or</span></div>
+          <div class="birdai-fp-goal-section-label">Select a goal to proceed:</div>
+          <div class="birdai-fp-goal-grid"${gridId ? ` id="${gridId}"` : ''}>
+            ${goalCardsHTML}
+            ${hasMoreGoals ? `<div class="birdai-fp-goal-show-more-row"><button class="birdai-fp-show-more" onclick="${showMoreFn || 'birdaiFpShowMoreGoals()'}">Show more</button></div>` : ''}
+          </div>
+          ${showProceed ? `<button class="birdai-fp-proceed-btn" onclick="${proceedFn}" style="margin-top:14px">Proceed</button>` : ''}
+        </div>
+      </div>`;
+  }
+
   function birdaiFpRender() {
     const body = document.getElementById('birdai-fp-body');
     body.innerHTML = '';
 
-    // ── Step 0 & history: always render the merged opening two-bubble view ──
-    {
-      const _goalIcons = {
-        'Re-engage my inactive customers': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8A5 5 0 1 1 8 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 1v4l3-2-3-2Z" fill="currentColor"/></svg>',
-        'Abandoned lead follow-up': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6h4M6 9h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
-        'Promote my new service': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 9.5V6.5L12 4v8L3 9.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M3 8H1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3 9.5L2.5 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
-        'Setup a welcome journey': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 14c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
-        'Seasonal promotions': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 4V2M11 4V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 7h12" stroke="currentColor" stroke-width="1.3"/></svg>',
-        'Build a loyalty campaign for VIP customers with a flash sale offer': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3.1 3.5.5-2.5 2.4.6 3.4L8 10l-3.1 1.4.6-3.4L3 5.6l3.5-.5L8 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>'
-      };
-      const _goalList = Object.keys(_goalIcons);
-      const _goalCardsHTML = _goalList.map(g => `
-        <label class="birdai-fp-goal-card${_birdaiFpSelectedGoals.has(g) ? ' selected' : ''}" onclick="birdaiFpToggleGoal(this,'${g.replace(/'/g,"\\'")}')">
-          <div class="birdai-fp-goal-card-icon">${_goalIcons[g]}</div>
-          <div class="birdai-fp-goal-card-name">${g}</div>
-          <div class="birdai-fp-goal-card-chk"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        </label>`).join('');
-
-      body.innerHTML = `
-        <!-- Bubble 1: quick-action chips -->
-        <div class="birdai-fp-msg-ai birdai-fp-anim">
-          <div class="birdai-fp-ai-avatar">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0.5L7.2 4H11L8 6.2l1.1 3.4L6 7.7 2.9 9.6 4 6.2 1 4h3.8L6 0.5Z" fill="white"/></svg>
-          </div>
-          <div class="birdai-fp-ai-content">
-            <div class="birdai-fp-ai-text">Hi there! 👋 What would you like to build?</div>
-            <div class="birdai-fp-chips">
-              <button class="birdai-fp-chip" onclick="birdaiFpChip('Create a campaign')">Create a campaign</button>
-              <button class="birdai-fp-chip" onclick="birdaiFpChip('Create a workflow')">Create a workflow</button>
-              <button class="birdai-fp-chip" onclick="birdaiFpChip('Create a template')">Create a template</button>
-            </div>
-          </div>
-        </div>
-        <!-- "or" separator -->
-        <div class="birdai-fp-or-sep"><span>or</span></div>
-        <!-- Bubble 2: goal cards -->
-        <div class="birdai-fp-msg-ai">
-          <div class="birdai-fp-ai-avatar">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0.5L7.2 4H11L8 6.2l1.1 3.4L6 7.7 2.9 9.6 4 6.2 1 4h3.8L6 0.5Z" fill="white"/></svg>
-          </div>
-          <div class="birdai-fp-ai-content">
-            <div class="birdai-fp-ai-text">Select a goal to proceed:</div>
-            <div class="birdai-fp-goal-grid" id="fp-goal-grid">
-              ${_goalCardsHTML}
-              <div class="birdai-fp-goal-show-more-row"><button class="birdai-fp-show-more">Show more</button></div>
-            </div>
-            ${_birdaiFpStep === 0 ? `<button class="birdai-fp-proceed-btn" onclick="birdaiFpProceed()" style="margin-top:14px">Proceed</button>` : ''}
-          </div>
-        </div>`;
-    }
+    // ── Always render the unified single-bubble opening view ──
+    body.innerHTML = _fpOpeningBubbleHTML({
+      intro: 'Hi there! 👋 What would you like to build?',
+      goals: _FP_ALL_GOALS,
+      goalsShown: _birdaiFpGoalsShown,
+      selectedGoals: _birdaiFpSelectedGoals,
+      toggleFn: 'birdaiFpToggleGoal',
+      showProceed: _birdaiFpStep === 0,
+      proceedFn: 'birdaiFpProceed()',
+      animClass: 'birdai-fp-anim',
+      gridId: 'fp-goal-grid',
+      showMoreFn: 'birdaiFpShowMoreGoals()'
+    });
 
     if (_birdaiFpStep >= 2) {
       const goalText = Array.from(_birdaiFpSelectedGoals).join(', ') || 'Re-engage my inactive customers';
@@ -6760,7 +7100,19 @@
     }
   }
 
+  function birdaiFpShowMoreGoals() {
+    _birdaiFpGoalsShown = Math.min(_birdaiFpGoalsShown + 6, _FP_ALL_GOALS.length);
+    const grid = document.getElementById('fp-goal-grid');
+    if (!grid) return;
+    const hasMore = _birdaiFpGoalsShown < _FP_ALL_GOALS.length;
+    const visible = _FP_ALL_GOALS.slice(0, _birdaiFpGoalsShown);
+    grid.innerHTML = _fpGoalCardsHTML(visible, _birdaiFpSelectedGoals, 'birdaiFpToggleGoal') +
+      (hasMore ? `<div class="birdai-fp-goal-show-more-row"><button class="birdai-fp-show-more" onclick="birdaiFpShowMoreGoals()">Show more</button></div>` : '');
+  }
+
   function birdaiFpChip(text) {
+    if (text === 'Create a campaign') { birdaiFpStartCampaign(); return; }
+    if (text === 'Create a template') { birdaiFpStartTemplate(); return; }
     const body = document.getElementById('birdai-fp-body');
     body.innerHTML += `
       <div class="birdai-fp-msg-user">
@@ -6777,6 +7129,338 @@
     birdaiFpScrollToMsg(chipUserMsgs[chipUserMsgs.length - 1]);
   }
 
+  // ── Template flow ──
+  function birdaiFpStartTemplate() {
+    _birdaiFpSelectedEmailTpls = new Set();
+    _birdaiFpSelectedTextTpls = new Set();
+    _birdaiFpTplTab = 'email';
+    _birdaiFpEmailCarouselIdx = 0;
+    const body = document.getElementById('birdai-fp-body');
+    const userMsg = document.createElement('div');
+    userMsg.className = 'birdai-fp-msg-user birdai-fp-anim';
+    userMsg.innerHTML = `<div class="birdai-fp-user-avatar">AB</div><div class="birdai-fp-user-bubble">Create a template</div>`;
+    body.appendChild(userMsg);
+    birdaiFpScrollToMsg(userMsg);
+
+    setTimeout(() => {
+      if (_birdaiFpWebsiteConfirmed) {
+        birdaiFpShowTemplateLoading();
+      } else {
+        const aiMsg = document.createElement('div');
+        aiMsg.className = 'birdai-fp-msg-ai birdai-fp-anim';
+        aiMsg.innerHTML = `${_fpAiAvatarSVG}
+          <div class="birdai-fp-ai-content">
+            <div class="birdai-fp-ai-text">To match your brand, industry, and audience I need to confirm your business website first.</div>
+            <div class="birdai-fp-website-row" id="fp-tpl-website-row">
+              <div class="birdai-fp-website-wrap">
+                <select class="birdai-fp-website-select">
+                  <option>www.olivegarden.com</option>
+                  <option>www.myrestaurant.com</option>
+                  <option>www.mybusiness.com</option>
+                </select>
+              </div>
+              <button class="birdai-fp-confirm-btn" onclick="birdaiFpConfirmTemplateWebsite()">Confirm</button>
+              <span class="birdai-fp-or">or</span>
+              <button class="birdai-fp-add-manual">Add manually</button>
+            </div>
+          </div>`;
+        body.appendChild(aiMsg);
+        birdaiFpScrollBottom();
+      }
+    }, 500);
+  }
+
+  function birdaiFpConfirmTemplateWebsite() {
+    _birdaiFpWebsiteConfirmed = true;
+    const row = document.getElementById('fp-tpl-website-row');
+    if (row) row.outerHTML = '';
+    const body = document.getElementById('birdai-fp-body');
+    const userMsg = document.createElement('div');
+    userMsg.className = 'birdai-fp-msg-user birdai-fp-anim';
+    userMsg.innerHTML = `<div class="birdai-fp-user-avatar">AB</div><div class="birdai-fp-user-bubble">Confirmed business website: www.olivegarden.com</div>`;
+    body.appendChild(userMsg);
+    birdaiFpScrollToMsg(userMsg);
+    setTimeout(birdaiFpShowTemplateLoading, 500);
+  }
+
+  function birdaiFpShowTemplateLoading() {
+    const body = document.getElementById('birdai-fp-body');
+    const skelCards = [1,2,3].map(() => `
+      <div class="birdai-fp-tpl-skel-card">
+        <div class="birdai-fp-tpl-skel-thumb"></div>
+        <div class="birdai-fp-tpl-skel-body">
+          <div class="birdai-fp-skeleton-line" style="width:72%;height:11px"></div>
+          <div class="birdai-fp-skeleton-line" style="width:48%;height:9px;margin-top:5px"></div>
+        </div>
+      </div>`).join('');
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'birdai-fp-msg-ai birdai-fp-anim';
+    aiMsg.innerHTML = `${_fpAiAvatarSVG}
+      <div class="birdai-fp-ai-content" id="fp-tpl-content">
+        <div class="birdai-fp-ai-text">Analyzing your brand, audience, and past engagement to recommend the best templates…</div>
+        <div class="birdai-fp-tpl-skel-grid" style="margin-top:12px">${skelCards}</div>
+      </div>`;
+    body.appendChild(aiMsg);
+    birdaiFpScrollBottom();
+    setTimeout(() => {
+      const el = document.getElementById('fp-tpl-content');
+      if (!el) return;
+      el.style.transition = 'opacity 0.25s ease';
+      el.style.opacity = '0';
+      setTimeout(() => {
+        el.innerHTML = _fpTemplateResultsHTML(_birdaiFpTplTab);
+        el.style.opacity = '1';
+        birdaiFpScrollBottom();
+      }, 280);
+    }, 3000);
+  }
+
+  function _fpEmailCardHTML(t, isSelected) {
+    const chkSVG = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    return `
+      <div class="birdai-fp-email-tpl-card${isSelected ? ' selected' : ''}" onclick="birdaiFpToggleEmailTpl('${t.id}')">
+        <div class="birdai-fp-email-tpl-chk">${chkSVG}</div>
+        <div class="birdai-fp-email-mini">
+          <div class="birdai-fp-email-mini-banner" style="background:${t.bannerGrad}">${t.bannerText}</div>
+          <div class="birdai-fp-email-mini-body">
+            ${t.lines.map((w,i) => `<div class="birdai-fp-email-mini-line" style="width:${Math.round(w*100)}%;${i===0?'height:7px;margin-bottom:6px':''}"></div>`).join('')}
+            <div class="birdai-fp-email-mini-btn" style="background:${t.btnColor}"></div>
+          </div>
+        </div>
+        <div class="birdai-fp-email-tpl-info">
+          <div class="birdai-fp-email-tpl-name">${t.name}</div>
+          <div class="birdai-fp-email-tpl-sub">${t.sub}</div>
+        </div>
+      </div>`;
+  }
+
+  function _fpTemplateResultsHTML(tab) {
+    const tabsHTML = `
+      <div class="birdai-fp-tpl-tabs">
+        <button class="birdai-fp-tpl-tab${tab==='email'?' active':''}" onclick="birdaiFpSwitchTemplateTab('email')">Email templates</button>
+        <button class="birdai-fp-tpl-tab${tab==='text'?' active':''}" onclick="birdaiFpSwitchTemplateTab('text')">Text templates</button>
+      </div>`;
+
+    if (tab === 'email') {
+      const totalPages = Math.ceil(_FP_EMAIL_TEMPLATES.length / 3);
+      const pageIdx = _birdaiFpEmailCarouselIdx;
+      const offset = pageIdx * 3;
+      const visible = _FP_EMAIL_TEMPLATES.slice(offset, offset + 3);
+      const cardsHTML = visible.map(t => _fpEmailCardHTML(t, _birdaiFpSelectedEmailTpls.has(t.id))).join('');
+      const dotsHTML = Array.from({length: totalPages}, (_,i) =>
+        `<span class="birdai-fp-carousel-dot${i===pageIdx?' active':''}"></span>`).join('');
+      return `
+        <div class="birdai-fp-ai-text">Here are recommended email templates based on your brand and audience:</div>
+        ${tabsHTML}
+        <div class="birdai-fp-email-carousel">
+          <div class="birdai-fp-email-carousel-track">
+            <div class="birdai-fp-email-carousel-inner">${cardsHTML}</div>
+          </div>
+          <div class="birdai-fp-carousel-nav">
+            <button class="birdai-fp-carousel-btn" onclick="birdaiFpScrollEmailCarousel(-1)" ${pageIdx===0?'disabled':''}><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 3L5 7l3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="birdai-fp-carousel-btn" onclick="birdaiFpScrollEmailCarousel(1)" ${pageIdx>=totalPages-1?'disabled':''}><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3L9 7l-3.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="birdai-fp-carousel-dots">${dotsHTML}</div>
+          </div>
+        </div>
+        <button class="birdai-fp-proceed-btn" onclick="birdaiFpApproveTemplates()" style="margin-top:14px">Approve</button>`;
+    } else {
+      const chkSVG = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      const cardsHTML = _FP_TEXT_TEMPLATES.map(t => {
+        const sel = _birdaiFpSelectedTextTpls.has(t.id);
+        return `
+          <div class="birdai-fp-text-tpl-card${sel?' selected':''}" onclick="birdaiFpToggleTextTpl('${t.id}')">
+            <div class="birdai-fp-text-tpl-chk">${chkSVG}</div>
+            <div class="birdai-fp-phone-mock">
+              <div class="birdai-fp-phone-inner">
+                <div class="birdai-fp-phone-hdr">Messages</div>
+                <div class="birdai-fp-sms-bubble">${t.msg.slice(0, 80)}${t.msg.length>80?'…':''}</div>
+              </div>
+            </div>
+            <div class="birdai-fp-text-tpl-info">
+              <div class="birdai-fp-text-tpl-name">${t.name}</div>
+              <div class="birdai-fp-text-tpl-sub">${t.sub}</div>
+            </div>
+          </div>`;
+      }).join('');
+      return `
+        <div class="birdai-fp-ai-text">Here are recommended text templates for your campaigns:</div>
+        ${tabsHTML}
+        <div class="birdai-fp-text-tpl-grid">${cardsHTML}</div>
+        <button class="birdai-fp-proceed-btn" onclick="birdaiFpApproveTemplates()" style="margin-top:14px">Approve</button>`;
+    }
+  }
+
+  function birdaiFpSwitchTemplateTab(tab) {
+    _birdaiFpTplTab = tab;
+    const el = document.getElementById('fp-tpl-content');
+    if (!el) return;
+    el.innerHTML = _fpTemplateResultsHTML(tab);
+  }
+
+  function birdaiFpScrollEmailCarousel(dir) {
+    const total = _FP_EMAIL_TEMPLATES.length;
+    const pages = Math.ceil(total / 3);
+    _birdaiFpEmailCarouselIdx = Math.max(0, Math.min(pages - 1, _birdaiFpEmailCarouselIdx + dir));
+    const el = document.getElementById('fp-tpl-content');
+    if (el) el.innerHTML = _fpTemplateResultsHTML('email');
+  }
+
+  function birdaiFpToggleEmailTpl(id) {
+    if (_birdaiFpSelectedEmailTpls.has(id)) _birdaiFpSelectedEmailTpls.delete(id);
+    else _birdaiFpSelectedEmailTpls.add(id);
+    // Re-render just the carousel track without scrolling
+    const el = document.getElementById('fp-tpl-content');
+    if (el) el.innerHTML = _fpTemplateResultsHTML('email');
+  }
+
+  function birdaiFpToggleTextTpl(id) {
+    if (_birdaiFpSelectedTextTpls.has(id)) _birdaiFpSelectedTextTpls.delete(id);
+    else _birdaiFpSelectedTextTpls.add(id);
+    const el = document.getElementById('fp-tpl-content');
+    if (el) el.innerHTML = _fpTemplateResultsHTML('text');
+  }
+
+  function birdaiFpApproveTemplates() {
+    const emailCount = _birdaiFpSelectedEmailTpls.size;
+    const textCount = _birdaiFpSelectedTextTpls.size;
+    const totalCount = emailCount + textCount || (_birdaiFpTplTab === 'email' ? _FP_EMAIL_TEMPLATES.length : _FP_TEXT_TEMPLATES.length);
+    const el = document.getElementById('fp-tpl-content');
+    if (el) {
+      el.innerHTML = `<div class="birdai-fp-published-bar" style="padding-left:0">
+        ✅ ${totalCount} template${totalCount!==1?'s':''} saved to your library. <button class="birdai-fp-published-link" onclick="closeBirdAIFull()">View templates →</button>
+      </div>`;
+    }
+    setTimeout(() => birdaiFpShowNextGoals(), 1200);
+  }
+
+  // ── Campaign flow ──
+  function birdaiFpStartCampaign() {
+    const body = document.getElementById('birdai-fp-body');
+    const userMsg = document.createElement('div');
+    userMsg.className = 'birdai-fp-msg-user birdai-fp-anim';
+    userMsg.innerHTML = `<div class="birdai-fp-user-avatar">AB</div><div class="birdai-fp-user-bubble">Create a campaign</div>`;
+    body.appendChild(userMsg);
+    birdaiFpScrollToMsg(userMsg);
+
+    setTimeout(() => {
+      if (_birdaiFpWebsiteConfirmed) {
+        // Skip website — go straight to loading
+        _birdaiFpCampaignsShown = 4;
+        birdaiFpShowCampaignLoading();
+      } else {
+        // Ask website first
+        const aiMsg = document.createElement('div');
+        aiMsg.className = 'birdai-fp-msg-ai birdai-fp-anim';
+        aiMsg.innerHTML = `${_fpAiAvatarSVG}
+          <div class="birdai-fp-ai-content">
+            <div class="birdai-fp-ai-text">To personalize campaign recommendations for your business, confirm your website so I can match your brand, industry, and audience.</div>
+            <div class="birdai-fp-website-row" id="fp-camp-website-row">
+              <div class="birdai-fp-website-wrap">
+                <select class="birdai-fp-website-select">
+                  <option>www.olivegarden.com</option>
+                  <option>www.myrestaurant.com</option>
+                  <option>www.mybusiness.com</option>
+                </select>
+              </div>
+              <button class="birdai-fp-confirm-btn" onclick="birdaiFpConfirmCampaignWebsite()">Confirm</button>
+              <span class="birdai-fp-or">or</span>
+              <button class="birdai-fp-add-manual">Add manually</button>
+            </div>
+          </div>`;
+        body.appendChild(aiMsg);
+        birdaiFpScrollBottom();
+      }
+    }, 500);
+  }
+
+  function birdaiFpConfirmCampaignWebsite() {
+    _birdaiFpWebsiteConfirmed = true;
+    _birdaiFpCampaignsShown = 4;
+    const row = document.getElementById('fp-camp-website-row');
+    if (row) row.outerHTML = '';
+    const body = document.getElementById('birdai-fp-body');
+    const userMsg = document.createElement('div');
+    userMsg.className = 'birdai-fp-msg-user birdai-fp-anim';
+    userMsg.innerHTML = `<div class="birdai-fp-user-avatar">AB</div><div class="birdai-fp-user-bubble">Confirmed business website: www.olivegarden.com</div>`;
+    body.appendChild(userMsg);
+    birdaiFpScrollToMsg(userMsg);
+    setTimeout(birdaiFpShowCampaignLoading, 500);
+  }
+
+  function birdaiFpShowCampaignLoading() {
+    const body = document.getElementById('birdai-fp-body');
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'birdai-fp-msg-ai birdai-fp-anim';
+    const skelCards = [1,2,3,4].map(() => `
+      <div class="birdai-fp-camp-skel-card">
+        <div class="birdai-fp-camp-skel-chk"></div>
+        <div class="birdai-fp-camp-skel-lines">
+          <div class="birdai-fp-skeleton-line" style="width:58%;height:12px"></div>
+          <div class="birdai-fp-skeleton-line" style="width:36%;height:10px;margin-top:6px"></div>
+        </div>
+        <div class="birdai-fp-camp-skel-badge"></div>
+      </div>`).join('');
+    aiMsg.innerHTML = `${_fpAiAvatarSVG}
+      <div class="birdai-fp-ai-content" id="fp-camp-content">
+        <div class="birdai-fp-ai-text">Analyzing your contacts, industry data, and engagement patterns to find high-impact campaigns…</div>
+        <div class="birdai-fp-camp-skel" style="margin-top:12px">${skelCards}</div>
+      </div>`;
+    body.appendChild(aiMsg);
+    birdaiFpScrollBottom();
+    // Morph into results after 3s
+    setTimeout(() => {
+      const el = document.getElementById('fp-camp-content');
+      if (!el) return;
+      el.style.transition = 'opacity 0.25s ease';
+      el.style.opacity = '0';
+      setTimeout(() => {
+        el.innerHTML = _fpCampaignResultsHTML();
+        el.style.opacity = '1';
+        birdaiFpScrollBottom();
+      }, 280);
+    }, 3000);
+  }
+
+  function _fpCampaignResultsHTML() {
+    const visible = _FP_CAMPAIGNS.slice(0, _birdaiFpCampaignsShown);
+    const hasMore = _birdaiFpCampaignsShown < _FP_CAMPAIGNS.length;
+    const editSVG = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9.5 1.5l2 2L4 11H2v-2L9.5 1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const checkSVG = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l3 3 4-5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const cards = visible.map(c => `
+      <div class="birdai-fp-camp-card" onclick="this.querySelector('.birdai-fp-camp-chk').classList.toggle('off')">
+        <div class="birdai-fp-camp-chk">${checkSVG}</div>
+        <div class="birdai-fp-camp-info">
+          <div class="birdai-fp-camp-name">${c.name}</div>
+          <div class="birdai-fp-camp-sub">${c.sub}</div>
+        </div>
+        <div class="birdai-fp-camp-right">
+          <span class="birdai-fp-camp-badge ${c.impact}" data-tip="${c.tip}">${c.impact.charAt(0).toUpperCase()+c.impact.slice(1)}</span>
+          <button class="birdai-fp-icon-action-btn" onclick="event.stopPropagation()" title="Edit">${editSVG}</button>
+        </div>
+      </div>`).join('');
+    return `
+      <div class="birdai-fp-ai-text">Here are some recommended campaigns for you:</div>
+      <div class="birdai-fp-camp-list">${cards}</div>
+      ${hasMore ? `<div class="birdai-fp-goal-show-more-row" style="margin-top:10px"><button class="birdai-fp-show-more" onclick="birdaiFpShowMoreCampaigns()">Show more</button></div>` : ''}
+      <button class="birdai-fp-proceed-btn" onclick="birdaiFpApproveCampaigns()" style="margin-top:14px">Approve</button>`;
+  }
+
+  function birdaiFpShowMoreCampaigns() {
+    _birdaiFpCampaignsShown = Math.min(_birdaiFpCampaignsShown + 4, _FP_CAMPAIGNS.length);
+    const el = document.getElementById('fp-camp-content');
+    if (el) { el.innerHTML = _fpCampaignResultsHTML(); birdaiFpScrollBottom(); }
+  }
+
+  function birdaiFpApproveCampaigns() {
+    const el = document.getElementById('fp-camp-content');
+    if (el) {
+      el.innerHTML = `<div class="birdai-fp-published-bar" style="padding-left:0">
+        ✅ Campaigns created and scheduled. <button class="birdai-fp-published-link" onclick="showCampAgents();closeBirdAIFull()">View campaigns →</button>
+      </div>`;
+    }
+    setTimeout(() => birdaiFpShowNextGoals(), 1200);
+  }
+
   function birdaiFpProceed() {
     if (_birdaiFpSelectedGoals.size === 0) {
       _birdaiFpSelectedGoals.add('Re-engage my inactive customers');
@@ -6786,6 +7470,7 @@
   }
 
   function birdaiFpConfirmWebsite() {
+    _birdaiFpWebsiteConfirmed = true;
     _birdaiFpPublishedShown = false;
     _birdaiFpCards = { segment: { approved: false }, templates: { approved: false, email: false, text: false }, workflow: { approved: false } };
     _birdaiFpStep = 3;
@@ -7059,43 +7744,31 @@
 
   function birdaiFpShowNextGoals() {
     const body = document.getElementById('birdai-fp-body');
-    const allGoals = [
-      'Re-engage my inactive customers', 'Abandoned lead follow-up',
-      'Promote my new service', 'Setup a welcome journey',
-      'Seasonal promotions', 'Build a loyalty campaign for VIP customers with a flash sale offer'
-    ];
-    const remaining = allGoals.filter(g => !_birdaiFpSelectedGoals.has(g));
+    // Remaining goals (not yet built)
+    const remaining = _FP_ALL_GOALS.filter(({ g }) => !_birdaiFpSelectedGoals.has(g));
     _birdaiFpLoopGoals = new Set();
+    _birdaiFpLoopGoalsShown = 6;
+    const loopGoals = remaining.length > 0 ? remaining : _FP_ALL_GOALS;
+
+    // Reuse the same unified bubble structure with loop-specific copy
+    const html = _fpOpeningBubbleHTML({
+      intro: 'What else would you like to build?',
+      goals: loopGoals,
+      goalsShown: 6,
+      selectedGoals: _birdaiFpLoopGoals,
+      toggleFn: 'birdaiFpToggleLoopGoal',
+      showProceed: true,
+      proceedFn: 'birdaiFpProceedLoop()',
+      animClass: 'birdai-fp-anim',
+      gridId: null,
+      showMoreFn: 'birdaiFpShowMoreLoopGoals()'
+    });
 
     const block = document.createElement('div');
-    block.className = 'birdai-fp-msg-ai birdai-fp-anim';
-    block.innerHTML = `
-      ${_fpAiAvatarSVG}
-      <div class="birdai-fp-ai-content">
-        <div class="birdai-fp-ai-text">What else you want to build? Tell the agent your goals and it will build segments, templates, and workflows for you to review:</div>
-        <div class="birdai-fp-goal-grid">
-          ${remaining.map(g => {
-            const icons = {
-              'Re-engage my inactive customers': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8A5 5 0 1 1 8 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 1v4l3-2-3-2Z" fill="currentColor"/></svg>',
-              'Abandoned lead follow-up': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 6h4M6 9h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
-              'Promote my new service': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 9.5V6.5L12 4v8L3 9.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M3 8H1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3 9.5L2.5 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
-              'Setup a welcome journey': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 14c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
-              'Seasonal promotions': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 4V2M11 4V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 7h12" stroke="currentColor" stroke-width="1.3"/></svg>',
-              'Build a loyalty campaign for VIP customers with a flash sale offer': '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3.1 3.5.5-2.5 2.4.6 3.4L8 10l-3.1 1.4.6-3.4L3 5.6l3.5-.5L8 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>'
-            };
-            const icon = icons[g] || '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/></svg>';
-            return `<label class="birdai-fp-goal-card" onclick="birdaiFpToggleLoopGoal(this,'${g.replace(/'/g,"\\'")}')")>
-              <div class="birdai-fp-goal-card-icon">${icon}</div>
-              <div class="birdai-fp-goal-card-name">${g}</div>
-              <div class="birdai-fp-goal-card-chk"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            </label>`;
-          }).join('')}
-          <div class="birdai-fp-goal-show-more-row"><button class="birdai-fp-show-more">Show more</button></div>
-        </div>
-        <button class="birdai-fp-proceed-btn" onclick="birdaiFpProceedLoop()" style="margin-top:14px">Proceed</button>
-      </div>`;
-    body.appendChild(block);
-    birdaiFpScrollBottom();
+    block.innerHTML = html;
+    const msgEl = block.firstElementChild;
+    body.appendChild(msgEl);
+    birdaiFpScrollToMsg(msgEl);
   }
 
   function birdaiFpToggleLoopGoal(el, goal) {
@@ -7106,6 +7779,21 @@
       _birdaiFpLoopGoals.add(goal);
       el.classList.add('selected');
     }
+  }
+
+  // Show more goals in the loop bubble (no fixed grid id — find the last goal grid in the page)
+  let _birdaiFpLoopGoalsShown = 6;
+  function birdaiFpShowMoreLoopGoals() {
+    const remaining = _FP_ALL_GOALS.filter(({ g }) => !_birdaiFpSelectedGoals.has(g));
+    const loopGoals = remaining.length > 0 ? remaining : _FP_ALL_GOALS;
+    _birdaiFpLoopGoalsShown = Math.min(_birdaiFpLoopGoalsShown + 6, loopGoals.length);
+    // Find last goal-grid in the body (loop bubble doesn't have an id)
+    const grids = document.querySelectorAll('.birdai-fp-goal-grid');
+    const grid = grids[grids.length - 1];
+    if (!grid) return;
+    const hasMore = _birdaiFpLoopGoalsShown < loopGoals.length;
+    grid.innerHTML = _fpGoalCardsHTML(loopGoals.slice(0, _birdaiFpLoopGoalsShown), _birdaiFpLoopGoals, 'birdaiFpToggleLoopGoal') +
+      (hasMore ? `<div class="birdai-fp-goal-show-more-row"><button class="birdai-fp-show-more" onclick="birdaiFpShowMoreLoopGoals()">Show more</button></div>` : '');
   }
 
   function birdaiFpProceedLoop() {
