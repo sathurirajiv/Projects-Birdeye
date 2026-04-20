@@ -2540,16 +2540,23 @@
   .birdai-fp-agent-card {
     border: 1px solid #EBEBEB; border-radius: 12px; padding: 16px 18px; background: #fff;
   }
-  .birdai-fp-agent-label { font-size: 13px; color: var(--text-3); margin-bottom: 10px; }
-  .birdai-fp-agent-bar { height: 5px; background: #F0F0F0; border-radius: 3px; overflow: hidden; }
-  .birdai-fp-agent-progress {
-    height: 100%; border-radius: 3px;
-    background: linear-gradient(90deg, #7C3AED, #1976D2);
-    animation: fpAgentProg 2.8s ease-in-out infinite alternate;
+  .birdai-fp-agent-label { font-size: 13px; color: var(--text-3); margin-bottom: 12px; }
+  .birdai-fp-skeleton-line {
+    height: 10px; border-radius: 6px; background: #EBEBEB;
+    overflow: hidden; position: relative;
   }
-  .birdai-fp-agent-progress.d2 { animation-delay: 0.5s; }
-  .birdai-fp-agent-progress.d3 { animation-delay: 1s; }
-  @keyframes fpAgentProg { 0% { width: 5%; } 100% { width: 88%; } }
+  .birdai-fp-skeleton-line::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.7) 50%, transparent 100%);
+    animation: fpSkelShimmer 1.6s ease-in-out infinite;
+  }
+  .birdai-fp-skeleton-line.d2::after { animation-delay: 0.25s; }
+  .birdai-fp-skeleton-line.d3::after { animation-delay: 0.5s; }
+  @keyframes fpSkelShimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
 
   /* ── DASHBOARD SCREEN ── */
   .dash-screen {
@@ -6597,15 +6604,15 @@
             <div class="birdai-fp-agents">
               <div class="birdai-fp-agent-card">
                 <div class="birdai-fp-agent-label">Segmentation agent is working…</div>
-                <div class="birdai-fp-agent-bar"><div class="birdai-fp-agent-progress d1"></div></div>
+                <div class="birdai-fp-skeleton-line"></div>
               </div>
               <div class="birdai-fp-agent-card">
                 <div class="birdai-fp-agent-label">Template agent is working…</div>
-                <div class="birdai-fp-agent-bar"><div class="birdai-fp-agent-progress d2"></div></div>
+                <div class="birdai-fp-skeleton-line d2"></div>
               </div>
               <div class="birdai-fp-agent-card">
                 <div class="birdai-fp-agent-label">Workflow agent is working…</div>
-                <div class="birdai-fp-agent-bar"><div class="birdai-fp-agent-progress d3"></div></div>
+                <div class="birdai-fp-skeleton-line d3"></div>
               </div>
             </div>
           </div>
