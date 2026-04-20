@@ -6669,11 +6669,11 @@
 
     if (_birdaiFpStep >= 4) {
       body.innerHTML += `
-        <div class="birdai-fp-msg-ai">
+        <div class="birdai-fp-msg-ai" id="fp-agents-msg">
           <div class="birdai-fp-ai-avatar">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 0.5L7.2 4H11L8 6.2l1.1 3.4L6 7.7 2.9 9.6 4 6.2 1 4h3.8L6 0.5Z" fill="white"/></svg>
           </div>
-          <div class="birdai-fp-ai-content">
+          <div class="birdai-fp-ai-content" id="fp-agents-content">
             <div class="birdai-fp-ai-text">Got it. I am analyzing all your contact data and as per your goal designing a segment, templates and workflows…</div>
             <div class="birdai-fp-agents">
               <div class="birdai-fp-agent-card">
@@ -6782,13 +6782,8 @@
       ${hasSkip ? `<button class="birdai-fp-skip-btn" onclick="birdaiFpSkip('${type}')">Skip</button>` : ''}
     </div>`;
 
-  function birdaiFpShowReview() {
-    const body = document.getElementById('birdai-fp-body');
-    const block = document.createElement('div');
-    block.className = 'birdai-fp-msg-ai birdai-fp-anim';
-    block.innerHTML = `
-      ${_fpAiAvatarSVG}
-      <div class="birdai-fp-ai-content">
+  function _birdaiFpReviewHTML() {
+    return `
         <div class="birdai-fp-ai-text">Got it. I've analyzed your contact data and found 847 customers inactive for 90+ days. Approve, edit, or skip each step after reviewing it. Here's what I'll set up:</div>
         <div class="birdai-fp-reviews">
           <div class="birdai-fp-review-card" id="fp-card-segment">
@@ -6823,10 +6818,29 @@
             ${_fpActionBtns('workflow', true, true)}
           </div>
         </div>
-        <div class="birdai-fp-approve-all-bar">If all ok, you can <button class="birdai-fp-approve-all-btn" onclick="birdaiFpApproveAll()">Approve all</button> to create the above segment, templates and make the workflow active.</div>
-      </div>`;
-    body.appendChild(block);
-    birdaiFpScrollBottom();
+        <div class="birdai-fp-approve-all-bar">If all ok, you can <button class="birdai-fp-approve-all-btn" onclick="birdaiFpApproveAll()">Approve all</button> to create the above segment, templates and make the workflow active.</div>`;
+  }
+
+  function birdaiFpShowReview() {
+    const contentEl = document.getElementById('fp-agents-content');
+    if (contentEl) {
+      // Fade out, swap content, fade in — in-place morph
+      contentEl.style.transition = 'opacity 0.25s ease';
+      contentEl.style.opacity = '0';
+      setTimeout(() => {
+        contentEl.innerHTML = _birdaiFpReviewHTML();
+        contentEl.style.opacity = '1';
+        birdaiFpScrollBottom();
+      }, 280);
+    } else {
+      // Fallback: append new block
+      const body = document.getElementById('birdai-fp-body');
+      const block = document.createElement('div');
+      block.className = 'birdai-fp-msg-ai birdai-fp-anim';
+      block.innerHTML = `${_fpAiAvatarSVG}<div class="birdai-fp-ai-content">${_birdaiFpReviewHTML()}</div>`;
+      body.appendChild(block);
+      birdaiFpScrollBottom();
+    }
   }
 
   function birdaiFpApprove(type) {
@@ -6955,8 +6969,9 @@
     setTimeout(() => {
       const aiMsg = document.createElement('div');
       aiMsg.className = 'birdai-fp-msg-ai birdai-fp-anim';
+      aiMsg.id = 'fp-agents-msg';
       aiMsg.innerHTML = `${_fpAiAvatarSVG}
-        <div class="birdai-fp-ai-content">
+        <div class="birdai-fp-ai-content" id="fp-agents-content">
           <div class="birdai-fp-ai-text">Got it. I am analyzing all your contact data and as per your goal designing a segment, templates and workflows…</div>
           <div class="birdai-fp-agents">
             <div class="birdai-fp-agent-card"><div class="birdai-fp-agent-label">Segmentation agent is working…</div><div class="birdai-fp-skeleton-line"></div></div>
