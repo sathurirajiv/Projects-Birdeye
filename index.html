@@ -2969,8 +2969,9 @@
   .birdai-fp-tpl-skel-body { padding: 9px 11px; display: flex; flex-direction: column; gap: 6px; }
 
   /* Bottom two-col */
-  /* Recent AI-created assets + Recommended for you — stacked full width */
-  .dash-bottom-cols { display: flex; flex-direction: column; gap: 20px; margin-bottom: 32px; }
+  /* Recent AI-created assets + Recommended for you — 2-col responsive */
+  .dash-bottom-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  .dash-layout:has(#dash-birdai-panel.open) .dash-bottom-cols { grid-template-columns: 1fr; }
   /* Audience segments + Workflow activity — 2-col responsive */
   .dash-two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
   .dash-layout:has(#dash-birdai-panel.open) .dash-two-cols { grid-template-columns: 1fr; }
