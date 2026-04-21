@@ -33,7 +33,11 @@
       --text-4: #CCCCCC;
       --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
       --shadow-md: 0 4px 16px rgba(0,0,0,0.14);
+      /* ── Global design token: all buttons & CTAs use 4px corners ── */
+      --radius-btn: 4px;
     }
+    /* Apply 4px radius to all button elements by default */
+    button { border-radius: var(--radius-btn); }
 
     body {
       font-family: 'Roboto', sans-serif;
@@ -1053,7 +1057,7 @@
     .tpl-type-btn {
       display: flex; align-items: center; gap: 6px;
       height: 36px; padding: 0 12px;
-      border: 1px solid var(--border); border-radius: 8px;
+      border: 1px solid var(--border); border-radius: var(--radius-btn);
       font-size: 13px; color: var(--text-2); background: #fff;
       cursor: pointer; transition: border-color 0.15s; min-width: 110px;
       font-family: 'Roboto', sans-serif;
@@ -1096,7 +1100,7 @@
       background: #f0f1f5; border-radius: 8px; padding: 4px; gap: 2px;
     }
     .tpl-view-btn {
-      width: 28px; height: 28px; border-radius: 6px;
+      width: 28px; height: 28px; border-radius: var(--radius-btn);
       display: flex; align-items: center; justify-content: center;
       border: none; background: transparent; cursor: pointer;
       color: #888; transition: all 0.15s;
@@ -1109,14 +1113,14 @@
       display: flex; align-items: center; gap: 6px;
       height: 36px; padding: 0 16px;
       background: var(--blue); color: #fff; border: none;
-      border-radius: 8px; font-size: 13px; cursor: pointer;
+      border-radius: var(--radius-btn); font-size: 13px; cursor: pointer;
       font-family: 'Roboto', sans-serif; transition: background 0.15s;
     }
     .tpl-create-btn:hover { background: var(--blue-dark); }
 
     /* Icon buttons in header */
     .tpl-icon-btn {
-      width: 36px; height: 36px; border-radius: 8px;
+      width: 36px; height: 36px; border-radius: var(--radius-btn);
       display: flex; align-items: center; justify-content: center;
       border: 1px solid var(--border); background: #fff;
       color: var(--text-2); cursor: pointer; transition: background 0.15s;
@@ -2280,7 +2284,7 @@
     display: flex; align-items: center;
     height: 34px; padding: 0 16px;
     background: linear-gradient(135deg, #7C3AED 0%, #1976D2 100%);
-    color: #fff; border: none; border-radius: 8px;
+    color: #fff; border: none; border-radius: var(--radius-btn);
     font-size: 13px; font-family: 'Roboto', sans-serif;
     cursor: pointer; transition: opacity 0.15s; flex-shrink: 0;
     letter-spacing: 0.1px;
@@ -2546,7 +2550,7 @@
   }
   .birdai-fp-show-more:hover { text-decoration: underline; }
   .birdai-fp-proceed-btn {
-    height: 36px; padding: 0 20px; border: 1.5px solid var(--blue); border-radius: 8px;
+    height: 36px; padding: 0 20px; border: 1.5px solid var(--blue); border-radius: var(--radius-btn);
     color: var(--blue); background: #fff; font-size: 13.5px; cursor: pointer;
     font-family: 'Roboto', sans-serif; transition: background 0.12s;
     align-self: flex-start; width: auto;
@@ -2564,7 +2568,7 @@
     outline: none; cursor: pointer; min-width: 220px; appearance: none;
   }
   .birdai-fp-confirm-btn {
-    height: 36px; padding: 0 18px; border: 1.5px solid var(--blue); border-radius: 8px;
+    height: 36px; padding: 0 18px; border: 1.5px solid var(--blue); border-radius: var(--radius-btn);
     color: var(--blue); background: #fff; font-size: 13.5px; cursor: pointer;
     font-family: 'Roboto', sans-serif; transition: background 0.12s;
   }
@@ -2618,13 +2622,13 @@
   .birdai-fp-badge.workflow { background: #F3F4F6; color: #6B7280; }
   .birdai-fp-card-actions { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
   .birdai-fp-approve-btn {
-    height: 32px; padding: 0 16px; border: 1.5px solid var(--blue); border-radius: 7px;
+    height: 32px; padding: 0 16px; border: 1.5px solid var(--blue); border-radius: var(--radius-btn);
     color: var(--blue); background: #fff; font-size: 13px; cursor: pointer;
     font-family: 'Roboto', sans-serif; transition: background 0.12s;
   }
   .birdai-fp-approve-btn:hover { background: #EEF5FF; }
   .birdai-fp-icon-action-btn {
-    width: 32px; height: 32px; border: 1px solid #E0E0E0; border-radius: 7px;
+    width: 32px; height: 32px; border: 1px solid #E0E0E0; border-radius: var(--radius-btn);
     display: flex; align-items: center; justify-content: center; background: #fff;
     cursor: pointer; color: var(--text-3); transition: background 0.12s, color 0.12s;
   }
@@ -2736,18 +2740,24 @@
   .dash-date-picker {
     display: flex; align-items: center; gap: 6px;
     height: 34px; padding: 0 12px; border: 1px solid var(--border);
-    border-radius: 8px; background: #fff; cursor: pointer;
+    border-radius: var(--radius-btn); background: #fff; cursor: pointer;
     font-size: 13px; color: var(--text-1); font-family: 'Roboto', sans-serif;
     transition: border-color 0.12s;
   }
   .dash-date-picker:hover { border-color: #B0B8C8; }
   .dash-date-picker svg { color: var(--text-3); }
   .dash-filter-btn {
-    width: 34px; height: 34px; border: 1px solid var(--border); border-radius: 8px;
+    width: 34px; height: 34px; border: 1px solid var(--border); border-radius: var(--radius-btn);
     background: #fff; cursor: pointer; display: flex; align-items: center;
     justify-content: center; color: var(--text-2); transition: border-color 0.12s;
   }
   .dash-filter-btn:hover { border-color: #B0B8C8; }
+  .dash-download-btn {
+    width: 34px; height: 34px; border: 1px solid var(--border); border-radius: var(--radius-btn);
+    background: #fff; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; color: var(--text-2); transition: border-color 0.12s;
+  }
+  .dash-download-btn:hover { border-color: #B0B8C8; }
   .dash-date-menu {
     position: absolute; top: calc(100% + 6px); right: 44px; z-index: 200;
     background: #fff; border: 1px solid var(--border); border-radius: 10px;
@@ -2905,7 +2915,7 @@
   /* Carousel nav */
   .birdai-fp-carousel-nav { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
   .birdai-fp-carousel-btn {
-    width: 28px; height: 28px; border: 1px solid #E0E0E0; border-radius: 6px;
+    width: 28px; height: 28px; border: 1px solid #E0E0E0; border-radius: var(--radius-btn);
     background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
     color: var(--text-2); transition: background 0.12s, border-color 0.12s;
   }
@@ -8702,6 +8712,12 @@
             <button onclick="setDashDate('This year')">This year</button>
             <button onclick="setDashDate('Custom range…')">Custom range…</button>
           </div>
+          <button class="dash-download-btn" title="Download">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+              <path d="M7.5 2v8M4.5 7.5l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2.5 12.5h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </button>
           <button class="dash-filter-btn" title="Filters">
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 4h11M4 7.5h7M6 11h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
           </button>
